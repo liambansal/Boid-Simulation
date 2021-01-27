@@ -32,5 +32,8 @@
     <ClInclude Include="..\..\..\Programming Resources\glad\include\KHR\khrplatform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Programming Resources\stb\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
