@@ -80,17 +80,17 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(Programming_Resources)\glfw\include;$(Programming_Resources)\glad\include;$(Programming_Resources)\glm\glm;$(Programming_Resources)\stb;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(Programming_Resources)\glfw\include;$(Programming_Resources)\glad\include;$(Programming_Resources)\glm;$(Programming_Resources)\stb;$(Programming_Resources)\assimp\include;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)source;$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(Programming_Resources)\glfw\include;$(Programming_Resources)\glad\include;$(Programming_Resources)\glm\glm;$(Programming_Resources)\stb;$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(Programming_Resources)\glfw\include;$(Programming_Resources)\glad\include;$(Programming_Resources)\glm;$(Programming_Resources)\stb;$(Programming_Resources)\assimp\include;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)source;$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

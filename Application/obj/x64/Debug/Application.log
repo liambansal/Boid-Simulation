@@ -1,6 +1,6 @@
 ﻿  Main.cpp
 Framework.lib(osmesa_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'Framework.lib(osmesa_context.obj)' or at 'G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\glfw.pdb'; linking object as if no debug info
-Framework.lib(egl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'Framework.lib(egl_context.obj)' or at 'G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\glfw.pdb'; linking object as if no debug info
+Framework.lib(egl_context.obj) : warning LNK4099: PDB '' was not found with 'Framework.lib(egl_context.obj)' or at ''; linking object as if no debug info
 Framework.lib(wgl_context.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'Framework.lib(wgl_context.obj)' or at 'G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\glfw.pdb'; linking object as if no debug info
 Framework.lib(win32_window.obj) : warning LNK4099: PDB 'glfw.pdb' was not found with 'Framework.lib(win32_window.obj)' or at 'G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\glfw.pdb'; linking object as if no debug info
 Framework.lib(win32_thread.obj) : warning LNK4099: PDB '' was not found with 'Framework.lib(win32_thread.obj)' or at ''; linking object as if no debug info

@@ -1,9 +1,12 @@
 #include "Framework.h" //FIle's header.
 #include <iostream>
-#include "glm.hpp"
-#include "GTC/matrix_transform.hpp"
-#include "GTC/type_ptr.hpp"
+#include "GLM/glm.hpp"
+#include "GLM/GTC/matrix_transform.hpp"
+#include "GLM/GTC/type_ptr.hpp"
 #include "stb_image.h"
+#include "ASSIMP/Importer.hpp"
+#include "ASSIMP/scene.h"
+#include "ASSIMP/postprocess.h"
 
 Framework::Framework() : m_pWindow(nullptr)
 {}
