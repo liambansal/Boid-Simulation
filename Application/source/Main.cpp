@@ -1,22 +1,28 @@
+//////////////////////////////
+// Author: Liam Bansal.
+// Date Created: 21/01/2021.
+//////////////////////////////
+
 #include "Framework.h"
 
 int main()
 {
-	Framework* framework = new Framework();
+	Framework* pFramework = Framework::GetInstance();
 
-	if (framework != nullptr)
+	if (pFramework != nullptr)
 	{
-		const int width = 480;
-		const int height = 320;
+		const int width = 1080;
+		const int height = 720;
 		const char* name = "Hello Library";
+		bool isInitialised = pFramework->Initialize(name, width, height);
 
-		if (framework->Initialize(name, width, height))
+		if (isInitialised)
 		{
-			framework->Update();
-			framework->Destory();
+			pFramework->Update();
+			pFramework->Destory();
 		}
 
-		delete framework;
-		framework = nullptr;
+		delete pFramework;
+		pFramework = nullptr;
 	}
 }
