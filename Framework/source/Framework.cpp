@@ -77,8 +77,8 @@ bool Framework::Initialize(const char* a_windowName,
 	}
 
 	m_pCamera = new Camera(glm::vec3(0.0f, 0.0f, 0.3f));
-	m_pShader = new Shader("shaders/model_loading.vs", "shaders/model_loading.fs");
-	m_pModel = new Model("models/nanosuit/nanosuit.obj");
+	m_pShader = new Shader("Resources/Shaders/model_loading.vs", "Resources/Shaders/model_loading.fs");
+	m_pModel = new Model("Resources/Models/Nanosuit/nanosuit.obj");
 
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);
@@ -93,16 +93,16 @@ void Framework::Update()
 {
 	do
 	{
+		glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 		// Per-frame time logic.
 		float currentFrame = glfwGetTime();
 		m_fDeltaTime = currentFrame - m_fLastFrame;
 		m_fLastFrame = currentFrame;
-
+		
 		// Input.
 		ProcessInput(m_pWindow);
-
-		glClearColor(0.6f, 0.2f, 0.4f, 0.1f);
-		glClear(GL_COLOR_BUFFER_BIT);
 
 		if (m_pCamera == nullptr || m_pModel == nullptr || m_pShader == nullptr)
 		{
@@ -112,9 +112,11 @@ void Framework::Update()
 
 		// Don't forget to enable shader before setting uniforms.
 		m_pShader->use();
-
 		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(m_pCamera->Zoom), (float)mc_uiScreenWidth / (float)mc_uiScreenHeight, 0.1f, 100.0f);
+		glm::mat4 projection = glm::perspective(glm::radians(m_pCamera->Zoom),
+			(float)mc_uiScreenWidth / (float)mc_uiScreenHeight,
+			0.1f,
+			100.0f);
 		glm::mat4 view = m_pCamera->GetViewMatrix();
 		m_pShader->setMat4("projection", projection);
 		m_pShader->setMat4("view", view);
