@@ -7,8 +7,8 @@
 #define FRAMEWORK_H
 
 struct GLFWwindow;
+class Entity;
 class Camera;
-class Model;
 class Shader;
 
 // Singleton class.
@@ -19,8 +19,7 @@ public:
 		const int a_width,
 		const int a_height,
 		const char* a_pVertexShader,
-		const char* a_pFragmentShader,
-		const char* a_pModelFilepath);
+		const char* a_pFragmentShader);
 	void Update();
 	void Destory();
 
@@ -48,7 +47,6 @@ private:
 	GLFWwindow* m_pWindow;
 	Camera* m_pCamera;
 	Shader* m_pShader;
-	Model* m_pModel;
 };
 
 #endif // FRAMEWORK_H.

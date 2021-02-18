@@ -3,7 +3,11 @@
 // Date Created: 21/01/2021.
 //////////////////////////////
 
+// Header includes.
 #include "Framework.h"
+#include "Entity.h"
+#include "ModelComponent.h"
+#include "TransformComponent.h"
 
 int main()
 {
@@ -18,8 +22,15 @@ int main()
 			width,
 			height,
 			"Resources/Shaders/model_loading.vs",
-			"Resources/Shaders/model_loading.fs",
-			"Resources/Models/Nanosuit/nanosuit.obj");
+			"Resources/Shaders/model_loading.fs");
+
+		// Create a 3D model entity.
+		Entity entity;
+		TransformComponent transform(&entity);
+		entity.AddComponent(static_cast<Component*>(&transform));
+		ModelComponent model(&entity);
+		model.LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
+		entity.AddComponent(static_cast<Component*>(&model));
 
 		if (isInitialised)
 		{

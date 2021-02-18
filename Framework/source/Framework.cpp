@@ -11,7 +11,6 @@
 #include "glm/gtc/type_ptr.hpp"
 #include <iostream>
 #include "LearnOpenGL/camera.h"
-#include "LearnOpenGL/model.h"
 #include "LearnOpenGL/shader.h"
 
 Framework* Framework::ms_pInstance = nullptr;
@@ -25,7 +24,6 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 	m_bFirstMouse(true),
 	m_pWindow(nullptr),
 	m_pCamera(nullptr),
-	m_pModel(nullptr),
 	m_pShader(nullptr)
 {}
 
@@ -33,8 +31,7 @@ bool Framework::Initialize(const char* a_windowName,
 	const int a_width,
 	const int a_height,
 	const char* a_pVertexShader,
-	const char* a_pFragmentShader,
-	const char* a_pModelFilepath)
+	const char* a_pFragmentShader)
 {
 	// Initialize GLFW.
 	if (!glfwInit())
@@ -81,8 +78,7 @@ bool Framework::Initialize(const char* a_windowName,
 
 	m_pCamera = new Camera(glm::vec3(0.0f, 0.0f, 0.3f));
 	m_pShader = new Shader(a_pVertexShader, a_pFragmentShader);
-	m_pModel = new Model(a_pModelFilepath);
-
+	
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);
 	const int major = glfwGetWindowAttrib(m_pWindow, GLFW_CONTEXT_VERSION_MAJOR);
@@ -104,14 +100,14 @@ void Framework::Update()
 		m_fDeltaTime = currentFrame - m_fLastFrame;
 		m_fLastFrame = currentFrame;
 		
-		// Input.
-		ProcessInput(m_pWindow);
-
-		if (m_pCamera == nullptr || m_pModel == nullptr || m_pShader == nullptr)
+		if (m_pCamera == nullptr || m_pShader == nullptr)
 		{
 			// Early out if any pointers are null.
 			return;
 		}
+
+		// Input.
+		ProcessInput(m_pWindow);
 
 		// Don't forget to enable shader before setting uniforms.
 		m_pShader->use();
@@ -124,14 +120,8 @@ void Framework::Update()
 		m_pShader->setMat4("projection", projection);
 		m_pShader->setMat4("view", view);
 
-		// Render the loaded model.
-		glm::mat4 model = glm::mat4(1.0f);
-		// Translate it down so it's at the center of the scene.
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		// It's a bit too big for our scene, so scale it down.
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-		m_pShader->setMat4("model", model);
-		m_pModel->Draw(*m_pShader);
+		// Draw.
+		// TODO draw models here.
 
 		glfwSwapBuffers(m_pWindow);
 		glfwPollEvents();
@@ -145,8 +135,6 @@ void Framework::Destory()
 	m_pCamera = nullptr;
 	delete m_pShader;
 	m_pShader = nullptr;
-	delete m_pModel;
-	m_pModel = nullptr;
 	// Destroy the scene window.
 	glfwDestroyWindow(m_pWindow);
 	// Clear all previously allocated GLFW resources.

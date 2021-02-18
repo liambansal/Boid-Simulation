@@ -2,18 +2,20 @@
   Component.cpp
   Entity.cpp
   Framework.cpp
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(99,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(194,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(195,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(199,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(200,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(201,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(202,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(221,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  ModelComponent.cpp
 G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\include\learnopengl\mesh.h(88,1): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(103,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(206,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(207,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(211,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(212,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(213,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(214,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(233,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  TransformComponent.cpp
   Generating Code...
 assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
-Framework.obj : warning LNK4006: "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
-Framework.obj : warning LNK4006: "public: unsigned int __cdecl aiMaterial::GetTextureCount(enum aiTextureType)const " (?GetTextureCount@aiMaterial@@QEBAIW4aiTextureType@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
-Framework.obj : warning LNK4006: "public: enum aiReturn __cdecl aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QEBA?AW4aiReturn@@W4aiTextureType@@IPEAUaiString@@PEAW4aiTextureMapping@@PEAIPEAMPEAW4aiTextureOp@@PEAW4aiTextureMapMode@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
+ModelComponent.obj : warning LNK4006: "public: struct aiScene const * __cdecl Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QEAAPEBUaiScene@@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
+ModelComponent.obj : warning LNK4006: "public: unsigned int __cdecl aiMaterial::GetTextureCount(enum aiTextureType)const " (?GetTextureCount@aiMaterial@@QEBAIW4aiTextureType@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
+ModelComponent.obj : warning LNK4006: "public: enum aiReturn __cdecl aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QEBA?AW4aiReturn@@W4aiTextureType@@IPEAUaiString@@PEAW4aiTextureMapping@@PEAIPEAMPEAW4aiTextureOp@@PEAW4aiTextureMapMode@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
   Framework.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\lib\x64\Debug\Framework.lib

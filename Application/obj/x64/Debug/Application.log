@@ -1,2 +1,2 @@
 ﻿  Main.cpp
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\source\Main.cpp(12): error C4700: uninitialized local variable 'pFramework' used
+  Application.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\Application.exe

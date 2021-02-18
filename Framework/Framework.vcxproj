@@ -158,23 +158,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Programming Resources\glad\src\glad.c" />
-    <ClCompile Include="Component.cpp" />
-    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="source\Component.cpp" />
+    <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Framework.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
+    <ClCompile Include="source\ModelComponent.cpp" />
+    <ClCompile Include="source\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Programming Resources\glad\include\glad\glad.h" />
     <ClInclude Include="..\..\..\Programming Resources\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="..\..\..\Programming Resources\stb\stb_image.h" />
-    <ClInclude Include="Component.h" />
-    <ClInclude Include="Entity.h" />
+    <ClInclude Include="include\Component.h" />
+    <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Framework.h" />
     <ClInclude Include="include\LearnOpenGL\camera.h" />
     <ClInclude Include="include\LearnOpenGL\mesh.h" />
     <ClInclude Include="include\LearnOpenGL\model.h" />
     <ClInclude Include="include\LearnOpenGL\shader.h" />
-    <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="include\ModelComponent.h" />
+    <ClInclude Include="include\TransformComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
