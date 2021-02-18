@@ -31,7 +31,10 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 
 bool Framework::Initialize(const char* a_windowName,
 	const int a_width,
-	const int a_height)
+	const int a_height,
+	const char* a_pVertexShader,
+	const char* a_pFragmentShader,
+	const char* a_pModelFilepath)
 {
 	// Initialize GLFW.
 	if (!glfwInit())
@@ -77,8 +80,8 @@ bool Framework::Initialize(const char* a_windowName,
 	}
 
 	m_pCamera = new Camera(glm::vec3(0.0f, 0.0f, 0.3f));
-	m_pShader = new Shader("Resources/Shaders/model_loading.vs", "Resources/Shaders/model_loading.fs");
-	m_pModel = new Model("Resources/Models/Nanosuit/nanosuit.obj");
+	m_pShader = new Shader(a_pVertexShader, a_pFragmentShader);
+	m_pModel = new Model(a_pModelFilepath);
 
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);

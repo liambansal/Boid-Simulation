@@ -14,7 +14,12 @@ int main()
 		const int width = 1080;
 		const int height = 720;
 		const char* name = "Hello Library";
-		bool isInitialised = pFramework->Initialize(name, width, height);
+		bool isInitialised = pFramework->Initialize(name,
+			width,
+			height,
+			"Resources/Shaders/model_loading.vs",
+			"Resources/Shaders/model_loading.fs",
+			"Resources/Models/Nanosuit/nanosuit.obj");
 
 		if (isInitialised)
 		{
@@ -24,5 +29,8 @@ int main()
 
 		delete pFramework;
 		pFramework = nullptr;
+		return 0;
 	}
+
+	return 1;
 }

@@ -17,7 +17,10 @@ class Framework
 public:
 	bool Initialize(const char* a_windowName,
 		const int a_width,
-		const int a_height);
+		const int a_height,
+		const char* a_pVertexShader,
+		const char* a_pFragmentShader,
+		const char* a_pModelFilepath);
 	void Update();
 	void Destory();
 
