@@ -162,6 +162,7 @@
     <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Framework.cpp" />
     <ClCompile Include="source\ModelComponent.cpp" />
+    <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="include\LearnOpenGL\model.h" />
     <ClInclude Include="include\LearnOpenGL\shader.h" />
     <ClInclude Include="include\ModelComponent.h" />
+    <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\TransformComponent.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

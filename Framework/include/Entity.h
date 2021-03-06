@@ -28,6 +28,7 @@ public:
 	// Returns the first found component attached to this entity of a 
 	// specified type, if present.
 	Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;
+	inline const unsigned int GetID() const;
 
 private:
 	static unsigned int ms_uiEntityCount;
@@ -40,6 +41,11 @@ private:
 void Entity::AddComponent(Component* a_pComponent)
 {
 	m_components.push_back(a_pComponent);
+}
+
+inline const unsigned int Entity::GetID() const
+{
+	return m_uiEntityID;
 }
 
 #endif // !ENTITY_H.

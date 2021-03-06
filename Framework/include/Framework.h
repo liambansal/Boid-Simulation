@@ -7,8 +7,7 @@
 #define FRAMEWORK_H
 
 struct GLFWwindow;
-class Entity;
-class Camera;
+class Scene;
 class Shader;
 
 // Singleton class.
@@ -29,6 +28,7 @@ public:
 	static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 	static Framework* GetInstance();
+	Scene* GetScene() const;
 
 private:
 	Framework();
@@ -45,7 +45,7 @@ private:
 
 	static Framework* ms_pInstance;
 	GLFWwindow* m_pWindow;
-	Camera* m_pCamera;
+	Scene* m_pScene;
 	Shader* m_pShader;
 };
 

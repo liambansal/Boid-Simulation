@@ -7,6 +7,7 @@
 #include "Framework.h"
 #include "Entity.h"
 #include "ModelComponent.h"
+#include "Scene.h"
 #include "TransformComponent.h"
 
 int main()
@@ -31,6 +32,7 @@ int main()
 		ModelComponent model(&entity);
 		model.LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
 		entity.AddComponent(static_cast<Component*>(&model));
+		pFramework->GetScene()->AddEntity(&entity);
 
 		if (isInitialised)
 		{

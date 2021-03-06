@@ -12,6 +12,7 @@
 #include <iostream>
 #include "LearnOpenGL/camera.h"
 #include "LearnOpenGL/shader.h"
+#include "Scene.h"
 
 Framework* Framework::ms_pInstance = nullptr;
 
@@ -23,7 +24,6 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 	m_fLastFrame(0.0f),
 	m_bFirstMouse(true),
 	m_pWindow(nullptr),
-	m_pCamera(nullptr),
 	m_pShader(nullptr)
 {}
 
@@ -76,7 +76,7 @@ bool Framework::Initialize(const char* a_windowName,
 		return false;
 	}
 
-	m_pCamera = new Camera(glm::vec3(0.0f, 0.0f, 0.3f));
+	m_pScene = new Scene();
 	m_pShader = new Shader(a_pVertexShader, a_pFragmentShader);
 	
 	// Configure global opengl state.
@@ -99,10 +99,9 @@ void Framework::Update()
 		float currentFrame = glfwGetTime();
 		m_fDeltaTime = currentFrame - m_fLastFrame;
 		m_fLastFrame = currentFrame;
-		
-		if (m_pCamera == nullptr || m_pShader == nullptr)
+
+		if (!m_pScene || !m_pScene->GetCamera())
 		{
-			// Early out if any pointers are null.
 			return;
 		}
 
@@ -112,17 +111,17 @@ void Framework::Update()
 		// Don't forget to enable shader before setting uniforms.
 		m_pShader->use();
 		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(m_pCamera->Zoom),
+		glm::mat4 projection = glm::perspective(glm::radians(m_pScene->GetCamera()->Zoom),
 			(float)mc_uiScreenWidth / (float)mc_uiScreenHeight,
 			0.1f,
 			100.0f);
-		glm::mat4 view = m_pCamera->GetViewMatrix();
+		glm::mat4 view = m_pScene->GetCamera()->GetViewMatrix();
 		m_pShader->setMat4("projection", projection);
 		m_pShader->setMat4("view", view);
 
 		// Draw.
-		// TODO draw models here.
-
+		m_pScene->Draw(m_pShader);
+		
 		glfwSwapBuffers(m_pWindow);
 		glfwPollEvents();
 		// Return whether to close or not.
@@ -131,8 +130,8 @@ void Framework::Update()
 
 void Framework::Destory()
 {
-	delete m_pCamera;
-	m_pCamera = nullptr;
+	delete m_pScene;
+	m_pScene = nullptr;
 	delete m_pShader;
 	m_pShader = nullptr;
 	// Destroy the scene window.
@@ -144,6 +143,11 @@ void Framework::Destory()
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void Framework::ProcessInput(GLFWwindow* window)
 {
+	if (!m_pScene)
+	{
+		return;
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(window, true);
@@ -151,22 +155,22 @@ void Framework::ProcessInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		m_pCamera->ProcessKeyboard(FORWARD, m_fDeltaTime);
+		m_pScene->GetCamera()->ProcessKeyboard(FORWARD, m_fDeltaTime);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		m_pCamera->ProcessKeyboard(BACKWARD, m_fDeltaTime);
+		m_pScene->GetCamera()->ProcessKeyboard(BACKWARD, m_fDeltaTime);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		m_pCamera->ProcessKeyboard(LEFT, m_fDeltaTime);
+		m_pScene->GetCamera()->ProcessKeyboard(LEFT, m_fDeltaTime);
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		m_pCamera->ProcessKeyboard(RIGHT, m_fDeltaTime);
+		m_pScene->GetCamera()->ProcessKeyboard(RIGHT, m_fDeltaTime);
 	}
 }
 
@@ -201,9 +205,9 @@ void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	pFramework->m_fLastX = xpos;
 	pFramework->m_fLastY = ypos;
 
-	if (pFramework->m_pCamera)
+	if (pFramework->m_pScene->GetCamera())
 	{
-		pFramework->m_pCamera->ProcessMouseMovement(xoffset, yoffset);
+		pFramework->m_pScene->GetCamera()->ProcessMouseMovement(xoffset, yoffset);
 	}
 }
 
@@ -212,13 +216,13 @@ void Framework::ScrollCallback(GLFWwindow* window, double xoffset, double yoffse
 {
 	Framework* pFramework = Framework::GetInstance();
 
-	if (!pFramework || !pFramework->m_pCamera)
+	if (!pFramework || !pFramework->m_pScene->GetCamera())
 	{
 		// Return early.
 		return;
 	}
 
-	pFramework->m_pCamera->ProcessMouseScroll(yoffset);
+	pFramework->m_pScene->GetCamera()->ProcessMouseScroll(yoffset);
 }
 
 Framework* Framework::GetInstance()
@@ -229,4 +233,9 @@ Framework* Framework::GetInstance()
 	}
 
 	return ms_pInstance;
+}
+
+Scene* Framework::GetScene() const
+{
+	return m_pScene;
 }
