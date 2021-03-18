@@ -9,6 +9,7 @@
 #include "ModelComponent.h"
 #include "Scene.h"
 #include "TransformComponent.h"
+#include "Utilities.h"
 
 int main()
 {
@@ -16,6 +17,9 @@ int main()
 
 	if (pFramework != nullptr)
 	{
+		// Seed rand number generator.
+		srand(time(nullptr));
+
 		const int width = 1080;
 		const int height = 720;
 		const char* name = "Hello Library";
@@ -24,15 +28,24 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
+		const int maximumBoidCount = 5;
 
-		// Create a 3D model entity.
-		Entity entity;
-		TransformComponent transform(&entity);
-		entity.AddComponent(static_cast<Component*>(&transform));
-		ModelComponent model(&entity);
-		model.LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
-		entity.AddComponent(static_cast<Component*>(&model));
-		pFramework->GetScene()->AddEntity(&entity);
+		// Instantiate the boid.
+		for (int i = 0; i < maximumBoidCount; ++i)
+		{
+			// Create a boid.
+			Entity* pBoid = new Entity();
+			TransformComponent* pTransform = new TransformComponent(pBoid);
+			const int upperRange = 10;
+			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR, glm::vec3(Utilities::RandomRange(0, upperRange),
+				Utilities::RandomRange(0, upperRange),
+				Utilities::RandomRange(0, upperRange)));
+			ModelComponent* pModel = new ModelComponent(pBoid);
+			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
+			pBoid->AddComponent(static_cast<Component*>(pTransform));
+			pBoid->AddComponent(static_cast<Component*>(pModel));
+			pFramework->GetScene()->AddEntity(pBoid);
+		}
 
 		if (isInitialised)
 		{

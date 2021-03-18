@@ -28,6 +28,7 @@ public:
 	virtual void Update(float a_deltaTime);
 	virtual void Draw(Shader* a_pShader);
 
+	void SetPosition(MATRIX_ROW a_row, glm::vec3 a_position);
 	inline const glm::mat4& GetMatrix();
 
 private:

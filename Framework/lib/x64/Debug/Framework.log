@@ -1,4 +1,15 @@
-﻿  ModelComponent.cpp
+﻿  Component.cpp
+  Entity.cpp
+  Framework.cpp
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(99,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(185,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(186,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(190,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(191,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(192,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(193,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(212,56): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  ModelComponent.cpp
 G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\include\learnopengl\mesh.h(88,1): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
   Scene.cpp
   Generating Code...

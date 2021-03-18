@@ -179,6 +179,7 @@
     <ClInclude Include="include\ModelComponent.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\TransformComponent.h" />
+    <ClInclude Include="include\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

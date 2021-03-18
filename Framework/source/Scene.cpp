@@ -13,14 +13,57 @@
 
 // Typedefs.
 typedef std::pair<unsigned int, Entity*> EntityPair;
+typedef std::map<unsigned int, Entity*> EntityMap;
 
-Scene::Scene() : m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 0.3f)))
+Scene::Scene() : m_uiNumberOfBoids(0),
+	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 0.3f)))
 {}
 
 Scene::~Scene()
 {
 	delete m_pCamera;
 	m_pCamera = nullptr;
+}
+
+// Calls update on all the scene's entities.
+void Scene::Update(float a_deltaTime)
+{
+	EntityMap entities = GetEntityList();
+
+	for (EntityMap::const_iterator iterator = entities.begin(); iterator != entities.end(); ++iterator)
+	{
+		Entity* entity = iterator->second;
+
+		if (entity)
+		{
+			entity->Update(a_deltaTime);
+		}
+	}
+}
+
+// Draws all scene's entities.
+void Scene::Draw(unsigned int a_screenWidth, unsigned int a_screenHeight, Shader* a_pShader) const
+{
+	if (m_sceneEntities.empty())
+	{
+		return;
+	}
+
+	// Don't forget to enable shader before setting uniforms.
+	a_pShader->use();
+	// view/projection transformations
+	glm::mat4 projection = glm::perspective(glm::radians(GetCamera()->Zoom),
+		(float)a_screenWidth / (float)a_screenHeight,
+		0.1f,
+		100.0f);
+	glm::mat4 view = GetCamera()->GetViewMatrix();
+	a_pShader->setMat4("projection", projection);
+	a_pShader->setMat4("view", view);
+
+	for (auto iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
+	{
+		(*iterator).second->Draw(a_pShader);
+	}
 }
 
 void Scene::AddEntity(Entity* a_pNewEntity)
@@ -32,18 +75,4 @@ void Scene::AddEntity(Entity* a_pNewEntity)
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
-}
-
-// Draws all scene Entity's.
-void Scene::Draw(Shader* a_pShader) const
-{
-	if (m_sceneEntities.empty())
-	{
-		return;
-	}
-
-	for (auto iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
-	{
-		(*iterator).second->Draw(a_pShader);
-	}
 }

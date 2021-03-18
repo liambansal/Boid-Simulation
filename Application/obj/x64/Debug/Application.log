@@ -1,1 +1,13 @@
-﻿  Application.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\Application.exe
+﻿  Main.cpp
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\source\Main.cpp(21,13): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\include\Utilities.h(24,58): warning C4244: 'return': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=int
+          ]
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\source\Main.cpp(40): message : see reference to function template instantiation 'float Utilities::RandomRange<int>(T,T)' being compiled
+          with
+          [
+              T=int
+          ]
+  Application.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Application\bin\x64\Debug\Application.exe

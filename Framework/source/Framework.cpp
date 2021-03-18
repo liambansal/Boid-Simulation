@@ -4,6 +4,7 @@
 //////////////////////////////
 
 #include "Framework.h" // File's header.
+#include "Entity.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
@@ -94,33 +95,19 @@ void Framework::Update()
 	{
 		glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 		// Per-frame time logic.
 		float currentFrame = glfwGetTime();
 		m_fDeltaTime = currentFrame - m_fLastFrame;
 		m_fLastFrame = currentFrame;
 
-		if (!m_pScene || !m_pScene->GetCamera())
+		if (!m_pScene)
 		{
 			return;
 		}
 
-		// Input.
 		ProcessInput(m_pWindow);
-
-		// Don't forget to enable shader before setting uniforms.
-		m_pShader->use();
-		// view/projection transformations
-		glm::mat4 projection = glm::perspective(glm::radians(m_pScene->GetCamera()->Zoom),
-			(float)mc_uiScreenWidth / (float)mc_uiScreenHeight,
-			0.1f,
-			100.0f);
-		glm::mat4 view = m_pScene->GetCamera()->GetViewMatrix();
-		m_pShader->setMat4("projection", projection);
-		m_pShader->setMat4("view", view);
-
-		// Draw.
-		m_pScene->Draw(m_pShader);
+		m_pScene->Update(m_fDeltaTime);
+		m_pScene->Draw(mc_uiScreenWidth, mc_uiScreenHeight, m_pShader);
 		
 		glfwSwapBuffers(m_pWindow);
 		glfwPollEvents();
