@@ -15,7 +15,7 @@
 typedef Component Parent;
 
 ModelComponent::ModelComponent(Entity* a_owner) : Parent(a_owner),
-	m_scale(glm::vec3(0.2f, 0.2f, 0.2f)),
+	m_scale(glm::vec3(1.0f, 1.0f, 1.0f)),
 	m_pModel(nullptr)
 {}
 
@@ -50,4 +50,10 @@ void ModelComponent::Draw(Shader* a_pShader)
 void ModelComponent::LoadModel(const char* a_pModelFilepath)
 {
 	m_pModel = new Model(a_pModelFilepath);
+}
+
+
+void ModelComponent::SetScale(glm::vec3 a_scale)
+{
+	m_scale = a_scale;
 }

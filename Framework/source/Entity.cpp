@@ -22,6 +22,22 @@ Entity::Entity()
 	ms_EntityList.insert(EntityPair(m_uiEntityID, this));
 }
 
+Entity::~Entity()
+{
+	ComponentList::iterator componentIterator;
+
+	for (componentIterator = m_components.begin();
+		componentIterator < m_components.end();
+		++componentIterator)
+	{
+		if (*componentIterator)
+		{
+			delete *componentIterator;
+			*componentIterator = nullptr;
+		}
+	}
+}
+
 // Update entity's components one by one.
 void Entity::Update(float a_deltaTime)
 {

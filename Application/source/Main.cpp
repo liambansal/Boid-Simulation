@@ -30,7 +30,6 @@ int main()
 			"Resources/Shaders/model_loading.fs");
 		const int maximumBoidCount = 5;
 
-		// Instantiate the boid.
 		for (int i = 0; i < maximumBoidCount; ++i)
 		{
 			// Create a boid.
@@ -42,6 +41,7 @@ int main()
 				Utilities::RandomRange(0, upperRange)));
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
+			pModel->SetScale(glm::vec3(0.04f, 0.04f, 0.04f));
 			pBoid->AddComponent(static_cast<Component*>(pTransform));
 			pBoid->AddComponent(static_cast<Component*>(pModel));
 			pFramework->GetScene()->AddEntity(pBoid);

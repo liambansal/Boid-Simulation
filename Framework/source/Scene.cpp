@@ -21,6 +21,19 @@ Scene::Scene() : m_uiNumberOfBoids(0),
 
 Scene::~Scene()
 {
+	for (EntityMap::const_iterator iterator = m_sceneEntities.begin();
+		iterator != m_sceneEntities.end();
+		++iterator)
+	{
+		Entity* entity = iterator->second;
+
+		if (entity)
+		{
+			delete entity;
+			entity = nullptr;
+		}
+	}
+
 	delete m_pCamera;
 	m_pCamera = nullptr;
 }

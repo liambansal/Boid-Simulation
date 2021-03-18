@@ -18,6 +18,7 @@ class Entity
 {
 public:
 	Entity();
+	~Entity();
 
 	// Update entity's components one by one.
 	virtual void Update(float a_deltaTime);

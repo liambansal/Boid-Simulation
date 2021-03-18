@@ -22,8 +22,9 @@ public:
 
 	virtual void Update(float a_deltaTime);
 	virtual void Draw(Shader* a_pShader);
-
 	void LoadModel(const char* a_pModelFilepath);
+
+	void SetScale(glm::vec3 a_scale);
 
 private:
 	glm::vec3 m_scale;
