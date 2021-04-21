@@ -27,10 +27,10 @@ void TransformComponent::Draw(Shader* a_pShader)
 
 void TransformComponent::SetPosition(MATRIX_ROW a_row, glm::vec3 a_position)
 {
-	SetEntityMatrix(a_row, a_position);
+	SetEntityMatrixRow(a_row, a_position);
 }
 
-void TransformComponent::SetEntityMatrix(MATRIX_ROW a_row, glm::vec3 a_vector)
+void TransformComponent::SetEntityMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector)
 {
 	m_matrix[a_row] = glm::vec4(a_vector,
 		(a_row == MATRIX_ROW_POSITION_VECTOR ? 1.0f : 0.0f));

@@ -16,7 +16,7 @@ typedef std::pair<unsigned int, Entity*> EntityPair;
 typedef std::map<unsigned int, Entity*> EntityMap;
 
 Scene::Scene() : m_uiNumberOfBoids(0),
-	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 0.3f)))
+	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 5.0f)))
 {}
 
 Scene::~Scene()

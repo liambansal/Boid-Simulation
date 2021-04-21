@@ -28,7 +28,7 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		const int maximumBoidCount = 5;
+		const int maximumBoidCount = 25;
 
 		for (int i = 0; i < maximumBoidCount; ++i)
 		{
@@ -37,7 +37,7 @@ int main()
 			TransformComponent* pTransform = new TransformComponent(pBoid);
 			const int maximumDistance = 10;
 			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR, glm::vec3(Utilities::RandomRange(0, maximumDistance),
-				Utilities::RandomRange(0, maximumDistance),
+				0.0f,
 				Utilities::RandomRange(0, maximumDistance)));
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");

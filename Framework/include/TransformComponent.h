@@ -32,7 +32,7 @@ public:
 	inline const glm::mat4& GetMatrix();
 
 private:
-	void SetEntityMatrix(MATRIX_ROW a_row, glm::vec3 a_vector);
+	void SetEntityMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
 	glm::vec3 GetEntityMatrixRow(MATRIX_ROW a_row);
 
 	glm::mat4 m_matrix;

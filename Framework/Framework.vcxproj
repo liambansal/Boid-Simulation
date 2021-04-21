@@ -158,6 +158,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Programming Resources\glad\src\glad.c" />
+    <ClCompile Include="BrainComponent.cpp" />
     <ClCompile Include="source\Component.cpp" />
     <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Framework.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="..\..\..\Programming Resources\glad\include\glad\glad.h" />
     <ClInclude Include="..\..\..\Programming Resources\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="..\..\..\Programming Resources\stb\stb_image.h" />
+    <ClInclude Include="BrainComponent.h" />
     <ClInclude Include="include\Component.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Framework.h" />
