@@ -35,10 +35,10 @@ int main()
 			// Create a boid.
 			Entity* pBoid = new Entity();
 			TransformComponent* pTransform = new TransformComponent(pBoid);
-			const int upperRange = 10;
-			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR, glm::vec3(Utilities::RandomRange(0, upperRange),
-				Utilities::RandomRange(0, upperRange),
-				Utilities::RandomRange(0, upperRange)));
+			const int maximumDistance = 10;
+			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR, glm::vec3(Utilities::RandomRange(0, maximumDistance),
+				Utilities::RandomRange(0, maximumDistance),
+				Utilities::RandomRange(0, maximumDistance)));
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
 			pModel->SetScale(glm::vec3(0.04f, 0.04f, 0.04f));
