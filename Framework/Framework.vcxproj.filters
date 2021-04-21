@@ -36,7 +36,7 @@
     <ClCompile Include="source\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BrainComponent.cpp">
+    <ClCompile Include="source\BrainComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,7 +83,7 @@
     <ClInclude Include="include\Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BrainComponent.h">
+    <ClInclude Include="include\BrainComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

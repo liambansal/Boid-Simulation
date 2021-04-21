@@ -5,6 +5,7 @@
 
 // Header includes.
 #include "Framework.h"
+#include "BrainComponent.h"
 #include "Entity.h"
 #include "ModelComponent.h"
 #include "Scene.h"
@@ -28,7 +29,7 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		const int maximumBoidCount = 25;
+		const int maximumBoidCount = 50;
 
 		for (int i = 0; i < maximumBoidCount; ++i)
 		{
@@ -42,8 +43,10 @@ int main()
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
 			pModel->SetScale(glm::vec3(0.04f, 0.04f, 0.04f));
+			BrainComponent* pBrain = new BrainComponent(pBoid);
 			pBoid->AddComponent(static_cast<Component*>(pTransform));
 			pBoid->AddComponent(static_cast<Component*>(pModel));
+			pBoid->AddComponent(static_cast<Component*>(pBrain));
 			pFramework->GetScene()->AddEntity(pBoid);
 		}
 
