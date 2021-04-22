@@ -82,7 +82,7 @@
     <IntDir>$(ProjectDir)lib\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(Programming_Resources)\glfw\include;$(Programming_Resources)\glad\include;$(Programming_Resources)\glm;$(Programming_Resources)\;$(Programming_Resources)\assimp\include;$(DEV)glfw\include;$(DEV)glad\include;$(DEV)glm;$(DEV);$(DEV)assimp\include;$(ProjectDir)include;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)source;$(VC_SourcePath);</SourcePath>
-    <LibraryPath>$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\code\debug;$(DEV)glfw\libs\$(Configuration);$(DEV)glm\libs\$(Configuration);$(DEV)assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <LibraryPath>$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\code\$(Configuration);$(DEV)glfw\libs\$(Configuration);$(DEV)glm\libs\$(Configuration);$(DEV)assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -133,7 +133,7 @@
       <AdditionalDependencies>glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Lib>
-      <AdditionalDependencies>glm_static.lib;glfw3.lib;opengl32.lib;assimp.lib</AdditionalDependencies>
+      <AdditionalDependencies>glm_static.lib;glfw3.lib;opengl32.lib;assimp-vc140-mt.lib</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -157,7 +157,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\DEV\glad\src\glad.c" />
+    <ClCompile Include="..\..\..\Programming Resources\glad\src\glad.c" />
     <ClCompile Include="source\BrainComponent.cpp" />
     <ClCompile Include="source\Component.cpp" />
     <ClCompile Include="source\Entity.cpp" />

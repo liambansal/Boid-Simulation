@@ -12,6 +12,7 @@ BrainComponent::BrainComponent(Entity* a_pOwner) : Component(a_pOwner),
 	m_iNeighbourCount(0),
 	mc_fSpeed(1.0f),
 	mc_fMaximumVelocity(2.0f),
+	m_fLastUpdate(0.0f),
 	m_velocity(0.0f),
 	m_wanderPoint(0.0f)
 {
@@ -20,6 +21,9 @@ BrainComponent::BrainComponent(Entity* a_pOwner) : Component(a_pOwner),
 
 void BrainComponent::Update(float a_deltaTime)
 {
+	m_fLastUpdate += a_deltaTime;
+	const float updateStep = 0.15f;
+
 	// Get this components owner entity.
 	Entity* pOwnerEntity = GetEntity();
 
@@ -37,18 +41,23 @@ void BrainComponent::Update(float a_deltaTime)
 
 	glm::vec3 forwardDirection = pOwnerTransform->GetMatrix()[MATRIX_ROW_FORWARD_VECTOR];
 	glm::vec3 currentPosition = pOwnerTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
-	glm::vec3 seperationVelocity(0.0f);
-	glm::vec3 alignmentVelocity(0.0f);
-	glm::vec3 cohesionVelocity(0.0f);
-	CalculateBehaviouralVelocities(seperationVelocity, alignmentVelocity, cohesionVelocity);
-	seperationVelocity *= 0.4f;
-	alignmentVelocity *= 0.1f;
-	cohesionVelocity *= 0.5f;
-	glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.6f;
-	glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
+
+	if (m_fLastUpdate >= updateStep)
+	{
+		m_fLastUpdate = 0.0f;
+		glm::vec3 seperationVelocity(0.0f);
+		glm::vec3 alignmentVelocity(0.0f);
+		glm::vec3 cohesionVelocity(0.0f);
+		CalculateBehaviouralVelocities(seperationVelocity, alignmentVelocity, cohesionVelocity);
+		seperationVelocity *= 0.4f;
+		alignmentVelocity *= 0.1f;
+		cohesionVelocity *= 0.5f;
+		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.6f;
+		glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
+		// Apply force.
+		m_velocity += newForce;
+	}
 	
-	// Apply force.
-	m_velocity += newForce;
 	m_velocity = glm::clamp(m_velocity,
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));

@@ -41,6 +41,7 @@ private:
 	int m_iNeighbourCount;
 	const float mc_fSpeed;
 	const float mc_fMaximumVelocity;
+	float m_fLastUpdate;
 	glm::vec3 m_velocity;
 	glm::vec3 m_wanderPoint;
 };

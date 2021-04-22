@@ -130,7 +130,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Framework.lib;glm_static.lib;glfw3.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Framework.lib;glm_static.lib;glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
