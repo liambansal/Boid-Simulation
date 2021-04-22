@@ -132,9 +132,6 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& a_forwardDirecti
 
 glm::vec3 BrainComponent::CalculateSeparationForce()
 {
-	// Final vector to return
-	glm::vec3 separationVelocity(0.0f);
-	unsigned int neighbourCount = 0;
 	// Get the component's owner entity.
 	Entity* pOwnerEntity = GetEntity();
 
@@ -151,11 +148,14 @@ glm::vec3 BrainComponent::CalculateSeparationForce()
 		return glm::vec3(0.0f);
 	}
 
+	// Final vector to return
+	glm::vec3 separationVelocity(0.0f);
 	// Get entity position.
 	glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 	// Get the scene's entities.
 	const std::map<const unsigned int, Entity*>& entityMap = Entity::GetEntityMap();
 	std::map<const unsigned int, Entity*>::const_iterator iterator = entityMap.begin();
+	unsigned int neighbourCount = 0;
 
 	// Loop over all entities in scene.
 	for (iterator; iterator != entityMap.end(); ++iterator)
@@ -205,11 +205,142 @@ glm::vec3 BrainComponent::CalculateSeparationForce()
 
 glm::vec3 BrainComponent::CalculateAlignmentForce()
 {
+	// Get the component's owner entity.
+	Entity* pOwnerEntity = GetEntity();
 
-	return glm::vec3(0.0f);
+	if (!pOwnerEntity)
+	{
+		return glm::vec3(0.0f);
+	}
+
+	// Get this entities transform.
+	TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+	if (!pEntityTransform)
+	{
+		return glm::vec3(0.0f);
+	}
+
+	glm::vec3 alignmentVelocity(0.0f);
+	// Get entity position.
+	glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	// Get the scene's entities.
+	const std::map<const unsigned int, Entity*>& entityMap = Entity::GetEntityMap();
+	std::map<const unsigned int, Entity*>::const_iterator iterator = entityMap.begin();
+	unsigned int neighbourCount = 0;
+
+	// Loop over all entities in scene.
+	for (iterator; iterator != entityMap.end(); ++iterator)
+	{
+		const Entity* pTargetEntity = iterator->second;
+
+		if (!pTargetEntity)
+		{
+			continue;
+		}
+
+		// make sure we haven't found this entity.
+		if (pTargetEntity->GetID() != pOwnerEntity->GetID())
+		{
+			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_AI));
+
+			if (!ptargetTransform)
+			{
+				break;
+			}
+
+			// Find distance to iterator entity
+			glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+			float distance = glm::length(targetPosition - localPosition);
+			// Check distance is within our neighbourhood.
+			const float neighbourhoodRadius = 5.0f;
+
+			if (distance < neighbourhoodRadius)
+			{
+				// Add neighbours' velocities
+				alignmentVelocity += pTargetBrain->GetVelocity();
+				++neighbourCount;
+			}
+		}
+	}
+
+	alignmentVelocity /= neighbourCount;
+
+	if (glm::length(alignmentVelocity) > 0.0f)
+	{
+		alignmentVelocity = glm::normalize(alignmentVelocity);
+	}
+
+	return alignmentVelocity;
 }
 
 glm::vec3 BrainComponent::CalculateCohesionForce()
 {
-	return glm::vec3(0.0f);
+	// Get the component's owner entity.
+	Entity* pOwnerEntity = GetEntity();
+
+	if (!pOwnerEntity)
+	{
+		return glm::vec3(0.0f);
+	}
+
+	// Get this entities transform.
+	TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+	if (!pEntityTransform)
+	{
+		return glm::vec3(0.0f);
+	}
+
+	// Get entity position.
+	glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	glm::vec3 cohesionVelocity(0.0f);
+	// Get the scene's entities.
+	const std::map<const unsigned int, Entity*>& entityMap = Entity::GetEntityMap();
+	std::map<const unsigned int, Entity*>::const_iterator iterator = entityMap.begin();
+	unsigned int neighbourCount = 0;
+
+	// Loop over all entities in scene.
+	for (iterator; iterator != entityMap.end(); ++iterator)
+	{
+		const Entity* pTargetEntity = iterator->second;
+
+		if (!pTargetEntity)
+		{
+			continue;
+		}
+
+		// make sure we haven't found this entity.
+		if (pTargetEntity->GetID() != pOwnerEntity->GetID())
+		{
+			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+			if (!ptargetTransform)
+			{
+				break;
+			}
+
+			// Find distance to iterator entity
+			glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+			float distance = glm::length(targetPosition - localPosition);
+			// Check distance is within our neighbourhood.
+			const float neighbourhoodRadius = 5.0f;
+
+			if (distance < neighbourhoodRadius)
+			{
+				cohesionVelocity += targetPosition;
+				++neighbourCount;
+			}
+		}
+	}
+
+	cohesionVelocity /= neighbourCount;
+
+	if (glm::length(cohesionVelocity) > 0.0f)
+	{
+		cohesionVelocity = glm::normalize(cohesionVelocity - localPosition);
+	}
+
+	return cohesionVelocity;
 }
