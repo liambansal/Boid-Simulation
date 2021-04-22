@@ -30,12 +30,13 @@ public:
 	// specified type, if present.
 	Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;
 	inline const unsigned int GetID() const;
+	inline static const std::map<const unsigned int, Entity*> GetEntityMap();
 
 private:
 	static unsigned int ms_uiEntityCount;
 	unsigned int m_uiEntityID;
 
-	static std::map<const unsigned int, Entity*> ms_EntityList;
+	static std::map<const unsigned int, Entity*> ms_EntityMap;
 	std::vector<Component*> m_components;
 };
 
@@ -44,9 +45,14 @@ void Entity::AddComponent(Component* a_pComponent)
 	m_components.push_back(a_pComponent);
 }
 
-inline const unsigned int Entity::GetID() const
+const unsigned int Entity::GetID() const
 {
 	return m_uiEntityID;
+}
+
+const std::map<const unsigned int, Entity*> Entity::GetEntityMap()
+{
+	return ms_EntityMap;
 }
 
 #endif // !ENTITY_H.

@@ -19,14 +19,14 @@ BrainComponent::BrainComponent(Entity* a_pOwner) : Component(a_pOwner),
 void BrainComponent::Update(float a_deltaTime)
 {
 	// Get this components owner entity.
-	Entity* pEntity = GetEntity();
+	Entity* pOwnerEntity = GetEntity();
 
-	if (!pEntity)
+	if (!pOwnerEntity)
 	{
 		return;
 	}
 
-	TransformComponent* pOwnerTransform = static_cast<TransformComponent*>(pEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+	TransformComponent* pOwnerTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
 	if (!pOwnerTransform)
 	{
@@ -35,7 +35,7 @@ void BrainComponent::Update(float a_deltaTime)
 
 	glm::vec3 forwardDirection = pOwnerTransform->GetMatrix()[MATRIX_ROW_FORWARD_VECTOR];
 	glm::vec3 currentPosition = pOwnerTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
-	glm::vec3 newForce = glm::vec3(0.0f);
+	glm::vec3 newForce(0.0f);
 	// Seek.
 	//newForce = CalculateSeekForce(glm::vec3(4.0f, 0.0f, 4.0f), currentPosition);
 	// Flee.
@@ -128,4 +128,87 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& a_forwardDirecti
 	// Add jitter to movement
 	m_wanderPoint += glm::sphericalRand(jitter);
 	return CalculateSeekForce(m_wanderPoint, a_currentPosition);
+}
+
+glm::vec3 BrainComponent::CalculateSeparationForce()
+{
+	// Final vector to return
+	glm::vec3 separationVelocity(0.0f);
+	unsigned int neighbourCount = 0;
+	// Get the component's owner entity.
+	Entity* pOwnerEntity = GetEntity();
+
+	if (!pOwnerEntity)
+	{
+		return glm::vec3(0.0f);
+	}
+
+	// Get this entities transform.
+	TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+	if (!pEntityTransform)
+	{
+		return glm::vec3(0.0f);
+	}
+
+	// Get entity position.
+	glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	// Get the scene's entities.
+	const std::map<const unsigned int, Entity*>& entityMap = Entity::GetEntityMap();
+	std::map<const unsigned int, Entity*>::const_iterator iterator = entityMap.begin();
+
+	// Loop over all entities in scene.
+	for (iterator; iterator != entityMap.end(); ++iterator)
+	{
+		const Entity* pTargetEntity = iterator->second;
+
+		if (!pTargetEntity)
+		{
+			continue;
+		}
+
+		// make sure we haven't found this entity.
+		if (pTargetEntity->GetID() != pOwnerEntity->GetID())
+		{
+			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+			if (!ptargetTransform)
+			{
+				break;
+			}
+
+			// Find distance to iterator entity
+			glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+			float distance = glm::length(targetPosition - localPosition);
+			// Check distance is within our neighbourhood.
+			const float neighbourhoodRadius = 5.0f;
+
+			if (distance < neighbourhoodRadius)
+			{
+				separationVelocity += localPosition - targetPosition;
+				++neighbourCount;
+			}
+		}
+	}
+
+	// Average the separation force
+	separationVelocity /= neighbourCount;
+
+	if (glm::length(separationVelocity) > 0.0f)
+	{
+		// Only normalise vector with length greater than zero
+		separationVelocity = glm::normalize(separationVelocity);
+	}
+
+	return glm::vec3(0.0f);
+}
+
+glm::vec3 BrainComponent::CalculateAlignmentForce()
+{
+	return glm::vec3(0.0f);
+}
+
+glm::vec3 BrainComponent::CalculateCohesionForce()
+{
+	return glm::vec3(0.0f);
 }

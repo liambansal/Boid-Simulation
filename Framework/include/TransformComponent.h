@@ -29,18 +29,23 @@ public:
 	virtual void Draw(Shader* a_pShader);
 
 	void SetPosition(MATRIX_ROW a_row, glm::vec3 a_position);
-	inline const glm::mat4& GetMatrix();
+	inline const glm::mat4& GetMatrix() const;
 
 private:
 	void SetEntityMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
-	glm::vec3 GetEntityMatrixRow(MATRIX_ROW a_row);
+	inline glm::vec3 GetEntityMatrixRow(MATRIX_ROW a_row) const;
 
 	glm::mat4 m_matrix;
 };
 
-inline const glm::mat4& TransformComponent::GetMatrix()
+const glm::mat4& TransformComponent::GetMatrix() const
 {
 	return m_matrix;
+}
+
+glm::vec3 TransformComponent::GetEntityMatrixRow(MATRIX_ROW a_row) const
+{
+	return m_matrix[a_row];
 }
 
 #endif // !TRANSFORM_COMPONENT_H.
