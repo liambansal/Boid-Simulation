@@ -200,11 +200,12 @@ glm::vec3 BrainComponent::CalculateSeparationForce()
 		separationVelocity = glm::normalize(separationVelocity);
 	}
 
-	return glm::vec3(0.0f);
+	return separationVelocity;
 }
 
 glm::vec3 BrainComponent::CalculateAlignmentForce()
 {
+
 	return glm::vec3(0.0f);
 }
 
