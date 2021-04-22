@@ -241,7 +241,7 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity()
 			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_AI));
 
-			if (!ptargetTransform)
+			if (!ptargetTransform || !pTargetBrain)
 			{
 				break;
 			}
