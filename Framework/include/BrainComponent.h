@@ -23,19 +23,20 @@ public:
 
 private:
 	// Steering behaviours
-	glm::vec3 CalculateSeekForce(const glm::vec3& a_targetPosition,
+	glm::vec3 CalculateSeekVelocity(const glm::vec3& a_targetPosition,
 		const glm::vec3& a_currentPosition) const;
-	glm::vec3 CalculateFleeForce(const glm::vec3& a_targetPosition,
+	glm::vec3 CalculateFleeVelocity(const glm::vec3& a_targetPosition,
 		const glm::vec3& a_currentPosition) const;
-	glm::vec3 CalculateWanderForce(const glm::vec3& a_forwardDirection,
+	glm::vec3 CalculateWanderVelocity(const glm::vec3& a_forwardDirection,
 		const glm::vec3& a_currentPosition);
 
 	// Flocking behaviours
-	glm::vec3 CalculateSeparationForce();
-	glm::vec3 CalculateAlignmentForce();
-	glm::vec3 CalculateCohesionForce();
+	glm::vec3 CalculateSeparationVelocity();
+	glm::vec3 CalculateAlignmentVelocity();
+	glm::vec3 CalculateCohesionVelocity();
 
-	const float m_fSpeed;
+	const float mc_fSpeed;
+	const float mc_fMaximumVelocity;
 	glm::vec3 m_velocity;
 	glm::vec3 m_wanderPoint;
 };

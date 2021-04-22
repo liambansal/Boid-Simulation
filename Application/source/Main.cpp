@@ -29,17 +29,18 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		const int maximumBoidCount = 50;
+		const int maximumBoidCount = 30;
 
 		for (int i = 0; i < maximumBoidCount; ++i)
 		{
 			// Create a boid.
 			Entity* pBoid = new Entity();
 			TransformComponent* pTransform = new TransformComponent(pBoid);
-			const int maximumDistance = 10;
-			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR, glm::vec3(Utilities::RandomRange(0, maximumDistance),
-				0.0f,
-				Utilities::RandomRange(0, maximumDistance)));
+			const int maximumDistance = 5;
+			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR,
+				glm::vec3(Utilities::RandomRange(-maximumDistance, maximumDistance),
+				Utilities::RandomRange(-maximumDistance, maximumDistance),
+				Utilities::RandomRange(-maximumDistance, maximumDistance)));
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
 			pModel->SetScale(glm::vec3(0.04f, 0.04f, 0.04f));

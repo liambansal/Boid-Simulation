@@ -9,7 +9,8 @@
 #include "TransformComponent.h"
 
 BrainComponent::BrainComponent(Entity* a_pOwner) : Component(a_pOwner),
-	m_fSpeed(3.0f),
+	mc_fSpeed(1.0f),
+	mc_fMaximumVelocity(2.0f),
 	m_velocity(0.0f),
 	m_wanderPoint(0.0f)
 {
@@ -35,22 +36,17 @@ void BrainComponent::Update(float a_deltaTime)
 
 	glm::vec3 forwardDirection = pOwnerTransform->GetMatrix()[MATRIX_ROW_FORWARD_VECTOR];
 	glm::vec3 currentPosition = pOwnerTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
-	glm::vec3 newForce(0.0f);
-	// Seek.
-	//newForce = CalculateSeekForce(glm::vec3(4.0f, 0.0f, 4.0f), currentPosition);
-	// Flee.
-	//newForce = CalculateFleeForce(glm::vec3(0.0f, 0.0f, 0.0f), currentPosition);
-	// Wander.
-	newForce = CalculateWanderForce(forwardDirection, currentPosition);
-
+	glm::vec3 seperationVelocity = CalculateSeparationVelocity() * 0.4f;
+	glm::vec3 alignmentVelocity = CalculateAlignmentVelocity() * 0.2f;
+	glm::vec3 cohesionVelocity = CalculateCohesionVelocity() * 0.5f;
+	glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.6f;
+	glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
+	
 	// Apply force.
 	m_velocity += newForce;
-	// Clamp velocity
-	const float maximumVelocity = 10.0f;
 	m_velocity = glm::clamp(m_velocity,
-		glm::vec3(-maximumVelocity, 0.0f, -maximumVelocity),
-		glm::vec3(maximumVelocity, 0.0f, maximumVelocity));
-	// Apply velocity to position.
+		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
+		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
 	currentPosition += m_velocity * a_deltaTime;
 
 	// Update transform matrix rows.
@@ -72,7 +68,7 @@ void BrainComponent::Update(float a_deltaTime)
 void BrainComponent::Draw(Shader* a_pShader)
 {}
 
-glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& a_targetPosition,
+glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_targetPosition,
 	const glm::vec3& a_currentPosition) const
 {
 	glm::vec3 targetDirection(a_targetPosition - a_currentPosition);
@@ -83,11 +79,11 @@ glm::vec3 BrainComponent::CalculateSeekForce(const glm::vec3& a_targetPosition,
 	}
 
 	// Calculate new velocity.
-	glm::vec3 newVelocity = (targetDirection * m_fSpeed) - m_velocity;
-	return newVelocity;
+	glm::vec3 seekVelocity = (targetDirection * mc_fSpeed) - m_velocity;
+	return seekVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& a_targetPosition,
+glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_targetPosition,
 	const glm::vec3& a_currentPosition) const
 {
 	glm::vec3 targetDirection(a_currentPosition - a_targetPosition);
@@ -98,11 +94,11 @@ glm::vec3 BrainComponent::CalculateFleeForce(const glm::vec3& a_targetPosition,
 	}
 
 	// Calculate new velocity.
-	glm::vec3 newVelocity = (targetDirection * m_fSpeed) - m_velocity;
-	return newVelocity;
+	glm::vec3 fleeVelocity = (targetDirection * mc_fSpeed) - m_velocity;
+	return fleeVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& a_forwardDirection,
+glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_forwardDirection,
 	const glm::vec3& a_currentPosition)
 {
 	// Greater values result in wider turning angles.
@@ -127,10 +123,11 @@ glm::vec3 BrainComponent::CalculateWanderForce(const glm::vec3& a_forwardDirecti
 	m_wanderPoint = sphereOrigin + targetDirection;
 	// Add jitter to movement
 	m_wanderPoint += glm::sphericalRand(jitter);
-	return CalculateSeekForce(m_wanderPoint, a_currentPosition);
+	// Seek to the wander point
+	return CalculateSeekVelocity(m_wanderPoint, a_currentPosition);
 }
 
-glm::vec3 BrainComponent::CalculateSeparationForce()
+glm::vec3 BrainComponent::CalculateSeparationVelocity()
 {
 	// Get the component's owner entity.
 	Entity* pOwnerEntity = GetEntity();
@@ -191,11 +188,10 @@ glm::vec3 BrainComponent::CalculateSeparationForce()
 		}
 	}
 
-	// Average the separation force
-	separationVelocity /= neighbourCount;
-
 	if (glm::length(separationVelocity) > 0.0f)
 	{
+		// Average the separation force
+		separationVelocity /= neighbourCount;
 		// Only normalise vector with length greater than zero
 		separationVelocity = glm::normalize(separationVelocity);
 	}
@@ -203,7 +199,7 @@ glm::vec3 BrainComponent::CalculateSeparationForce()
 	return separationVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateAlignmentForce()
+glm::vec3 BrainComponent::CalculateAlignmentVelocity()
 {
 	// Get the component's owner entity.
 	Entity* pOwnerEntity = GetEntity();
@@ -265,17 +261,16 @@ glm::vec3 BrainComponent::CalculateAlignmentForce()
 		}
 	}
 
-	alignmentVelocity /= neighbourCount;
-
 	if (glm::length(alignmentVelocity) > 0.0f)
 	{
+		alignmentVelocity /= neighbourCount;
 		alignmentVelocity = glm::normalize(alignmentVelocity);
 	}
 
 	return alignmentVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateCohesionForce()
+glm::vec3 BrainComponent::CalculateCohesionVelocity()
 {
 	// Get the component's owner entity.
 	Entity* pOwnerEntity = GetEntity();
@@ -335,10 +330,9 @@ glm::vec3 BrainComponent::CalculateCohesionForce()
 		}
 	}
 
-	cohesionVelocity /= neighbourCount;
-
 	if (glm::length(cohesionVelocity) > 0.0f)
 	{
+		cohesionVelocity /= neighbourCount;
 		cohesionVelocity = glm::normalize(cohesionVelocity - localPosition);
 	}
 
