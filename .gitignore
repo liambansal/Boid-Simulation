@@ -1,3 +1,4 @@
 *.vs
+!Application/Resources/**
 *obj/
 *bin/
