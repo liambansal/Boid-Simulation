@@ -33,7 +33,7 @@ public:
 
 private:
 	void SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
-	inline glm::vec3 GetMatrixRow(MATRIX_ROW a_row) const;
+	inline const glm::vec3 GetMatrixRow(MATRIX_ROW a_row) const;
 
 	glm::mat4 m_matrix;
 };
@@ -43,7 +43,7 @@ const glm::mat4& TransformComponent::GetMatrix() const
 	return m_matrix;
 }
 
-glm::vec3 TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
+const glm::vec3 TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
 {
 	return m_matrix[a_row];
 }

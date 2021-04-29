@@ -104,7 +104,7 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPositi
 	}
 
 	// Calculate new velocity.
-	glm::vec3 seekVelocity = (targetDirection * mc_fSpeed) - m_velocity;
+	glm::vec3 seekVelocity = targetDirection * mc_fSpeed - m_velocity;
 	return seekVelocity;
 }
 
@@ -127,12 +127,12 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDir
 	const glm::vec3& a_rCurrentPosition)
 {
 	// Greater values result in wider turning angles.
-	const float projectDistance = 2.0f;
+	const float projectDistance = 4.0f;
 	// Project a point in front for the center of a sphere.
 	glm::vec3 sphereOrigin = a_rCurrentPosition + a_rForwardDirection * projectDistance;
 	const float jitter = 0.5f;
 	// Effects radius of sphere to cast forward.
-	const float wanderRadius = 4.0f;
+	const float wanderRadius = 2.0f;
 
 	if (glm::length(m_wanderPoint) == 0.0f)
 	{
@@ -271,7 +271,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 			const glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 			const float distance = glm::length(targetPosition - localPosition);
 			// Check distance is within our neighbourhood.
-			const float neighbourhoodRadius = 5.0f;
+			const float neighbourhoodRadius = 10.0f;
 
 			if (distance < neighbourhoodRadius)
 			{
