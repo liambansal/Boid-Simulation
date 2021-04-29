@@ -50,11 +50,10 @@ void BrainComponent::Update(float a_deltaTime)
 		glm::vec3 cohesionVelocity(0.0f);
 		CalculateBehaviouralVelocities(seperationVelocity, alignmentVelocity, cohesionVelocity);
 		seperationVelocity *= 0.4f;
-		alignmentVelocity *= 0.25f;
+		alignmentVelocity *= 0.2f;
 		cohesionVelocity *= 0.6f;
-		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.325f;
+		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.5f;
 		glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
-		// Apply force.
 		m_velocity += newForce;
 	}
 	
@@ -191,7 +190,7 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	glm::vec3 a_localPosition)
 {
 	// Get the component's owner entity.
-	Entity* pOwnerEntity = GetEntity();
+	const Entity* pOwnerEntity = GetEntity();
 
 	if (!pOwnerEntity)
 	{
@@ -199,7 +198,7 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	}
 
 	// Get this entities transform.
-	TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+	const TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
 	if (!pEntityTransform)
 	{
@@ -207,7 +206,7 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	}
 
 	// Get entity position.
-	glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 
 	a_cohesionVelocity += a_targetVector;
 
