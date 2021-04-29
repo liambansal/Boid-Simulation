@@ -62,8 +62,6 @@ void BrainComponent::Update(float a_deltaTime)
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
 	currentPosition += m_velocity * a_deltaTime;
-
-	// Update transform matrix rows.
 	forwardDirection = m_velocity;
 
 	if (glm::length(forwardDirection) > 0.0f)
@@ -72,8 +70,22 @@ void BrainComponent::Update(float a_deltaTime)
 	}
 
 	glm::vec3 upDirection = pOwnerTransform->GetMatrix()[MATRIX_ROW_UP_VECTOR];
+	upDirection -= forwardDirection * glm::dot(forwardDirection, upDirection);
+	
+	if (glm::length(upDirection) > 0.0f)
+	{
+		glm::normalize(upDirection);
+	}
+
 	glm::vec3 rightDirection = glm::cross(upDirection, forwardDirection);
+	
+	if (glm::length(rightDirection) > 0.0f)
+	{
+		glm::normalize(rightDirection);
+	}
+	
 	// Update transform matrix.
+	pOwnerTransform->SetPosition(MATRIX_ROW_UP_VECTOR, upDirection);
 	pOwnerTransform->SetPosition(MATRIX_ROW_RIGHT_VECTOR, rightDirection);
 	pOwnerTransform->SetPosition(MATRIX_ROW_FORWARD_VECTOR, forwardDirection);
 	pOwnerTransform->SetPosition(MATRIX_ROW_POSITION_VECTOR, currentPosition);
