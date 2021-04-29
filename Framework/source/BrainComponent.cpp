@@ -50,9 +50,9 @@ void BrainComponent::Update(float a_deltaTime)
 		glm::vec3 cohesionVelocity(0.0f);
 		CalculateBehaviouralVelocities(seperationVelocity, alignmentVelocity, cohesionVelocity);
 		seperationVelocity *= 0.4f;
-		alignmentVelocity *= 0.1f;
-		cohesionVelocity *= 0.5f;
-		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.6f;
+		alignmentVelocity *= 0.25f;
+		cohesionVelocity *= 0.6f;
+		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.325f;
 		glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
 		// Apply force.
 		m_velocity += newForce;
@@ -153,11 +153,13 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_forwardDire
 	return CalculateSeekVelocity(m_wanderPoint, a_currentPosition);
 }
 
-glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity, glm::vec3 a_targetVector)
+glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
+	glm::vec3 a_targetVector)
 {
 	a_separationVelocity += a_targetVector;
 
-	if (glm::length(a_separationVelocity) > 0.0f)
+	if (glm::length(a_separationVelocity) > 0.0f &&
+		m_iNeighbourCount > 0)
 	{
 		// Average the separation force
 		a_separationVelocity /= m_iNeighbourCount;
@@ -168,12 +170,14 @@ glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelo
 	return a_separationVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity, glm::vec3 a_targetVector)
+glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
+	glm::vec3 a_targetVector)
 {
 	// Add neighbours' velocities
 	a_alignmentVelocity += a_targetVector;
 
-	if (glm::length(a_alignmentVelocity) > 0.0f)
+	if (glm::length(a_alignmentVelocity) > 0.0f &&
+		m_iNeighbourCount > 0)
 	{
 		a_alignmentVelocity /= m_iNeighbourCount;
 		a_alignmentVelocity = glm::normalize(a_alignmentVelocity);
@@ -182,7 +186,9 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 	return a_alignmentVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity, glm::vec3 a_targetVector)
+glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
+	glm::vec3 a_targetVector,
+	glm::vec3 a_localPosition)
 {
 	// Get the component's owner entity.
 	Entity* pOwnerEntity = GetEntity();
@@ -205,7 +211,8 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 
 	a_cohesionVelocity += a_targetVector;
 
-	if (glm::length(a_cohesionVelocity) > 0.0f)
+	if (glm::length(a_cohesionVelocity) > 0.0f &&
+		m_iNeighbourCount > 0)
 	{
 		a_cohesionVelocity /= m_iNeighbourCount;
 		a_cohesionVelocity = glm::normalize(a_cohesionVelocity - localPosition);
@@ -219,7 +226,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 	glm::vec3& a_cohesionVelocity)
 {
 	// Get the component's owner entity.
-	Entity* pOwnerEntity = GetEntity();
+	const Entity* pOwnerEntity = GetEntity();
 
 	if (!pOwnerEntity)
 	{
@@ -227,7 +234,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 	}
 
 	// Get this entities transform.
-	TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+	const TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
 	if (!pEntityTransform)
 	{
@@ -235,11 +242,11 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 	}
 
 	// Get entity position.
-	glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 	// Get the scene's entities.
 	const std::map<const unsigned int, Entity*>& entityMap = Entity::GetEntityMap();
 	std::map<const unsigned int, Entity*>::const_iterator iterator = entityMap.begin();
-	unsigned int neighbourCount = 0;
+	m_iNeighbourCount = 0;
 
 	// Loop over all entities in scene.
 	for (iterator; iterator != entityMap.end(); ++iterator)
@@ -263,17 +270,17 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 			}
 
 			// Find distance to iterator entity
-			glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
-			float distance = glm::length(targetPosition - localPosition);
+			const glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+			const float distance = glm::length(targetPosition - localPosition);
 			// Check distance is within our neighbourhood.
 			const float neighbourhoodRadius = 5.0f;
 
 			if (distance < neighbourhoodRadius)
 			{
-				CalculateSeparationVelocity(a_separationVelocity, localPosition - targetPosition);
-				CalculateAlignmentVelocity(a_alignmentVelocity, pTargetBrain->GetVelocity());
-				CalculateCohesionVelocity(a_cohesionVelocity, targetPosition);
-				++neighbourCount;
+				++m_iNeighbourCount;
+				a_separationVelocity = CalculateSeparationVelocity(a_separationVelocity, localPosition - targetPosition);
+				a_alignmentVelocity = CalculateAlignmentVelocity(a_alignmentVelocity, pTargetBrain->GetVelocity());
+				a_cohesionVelocity = CalculateCohesionVelocity(a_cohesionVelocity, targetPosition, localPosition);
 			}
 		}
 	}

@@ -29,7 +29,7 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		const int maximumBoidCount = 50;
+		const int maximumBoidCount = 60;
 
 		for (int i = 0; i < maximumBoidCount; ++i)
 		{

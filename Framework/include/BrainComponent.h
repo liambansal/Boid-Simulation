@@ -31,9 +31,13 @@ private:
 		const glm::vec3& a_currentPosition);
 
 	// Flocking behaviours
-	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity, glm::vec3 a_targetVector);
-	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity, glm::vec3 a_targetVector);
-	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity, glm::vec3 a_targetVector);
+	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
+		glm::vec3 a_targetVector);
+	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
+		glm::vec3 a_targetVector);
+	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
+		glm::vec3 a_targetVector,
+		glm::vec3 a_localPosition);
 	void CalculateBehaviouralVelocities(glm::vec3& a_separationVelocity,
 		glm::vec3& a_alignmentVelocity,
 		glm::vec3& a_cohesionVelocity);
