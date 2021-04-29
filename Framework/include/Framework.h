@@ -32,7 +32,7 @@ public:
 
 private:
 	Framework();
-	Framework(const Framework& a_framework);
+	Framework(const Framework& a_rFramework);
 	Framework& operator=(const Framework&);
 	
 	const unsigned int mc_uiScreenWidth;

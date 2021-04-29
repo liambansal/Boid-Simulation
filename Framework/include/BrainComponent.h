@@ -23,12 +23,12 @@ public:
 
 private:
 	// Steering behaviours
-	glm::vec3 CalculateSeekVelocity(const glm::vec3& a_targetPosition,
-		const glm::vec3& a_currentPosition) const;
-	glm::vec3 CalculateFleeVelocity(const glm::vec3& a_targetPosition,
-		const glm::vec3& a_currentPosition) const;
-	glm::vec3 CalculateWanderVelocity(const glm::vec3& a_forwardDirection,
-		const glm::vec3& a_currentPosition);
+	glm::vec3 CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
+		const glm::vec3& a_rCurrentPosition) const;
+	glm::vec3 CalculateFleeVelocity(const glm::vec3& a_rTargetPosition,
+		const glm::vec3& a_rCurrentPosition) const;
+	glm::vec3 CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
+		const glm::vec3& a_rCurrentPosition);
 
 	// Flocking behaviours
 	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
@@ -38,9 +38,9 @@ private:
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 		glm::vec3 a_targetVector,
 		glm::vec3 a_localPosition);
-	void CalculateBehaviouralVelocities(glm::vec3& a_separationVelocity,
-		glm::vec3& a_alignmentVelocity,
-		glm::vec3& a_cohesionVelocity);
+	void CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelocity,
+		glm::vec3& a_rAlignmentVelocity,
+		glm::vec3& a_rCohesionVelocity);
 
 	int m_iNeighbourCount;
 	const float mc_fSpeed;

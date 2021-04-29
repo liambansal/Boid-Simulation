@@ -93,10 +93,10 @@ void BrainComponent::Update(float a_deltaTime)
 void BrainComponent::Draw(Shader* a_pShader)
 {}
 
-glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_targetPosition,
-	const glm::vec3& a_currentPosition) const
+glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
+	const glm::vec3& a_rCurrentPosition) const
 {
-	glm::vec3 targetDirection(a_targetPosition - a_currentPosition);
+	glm::vec3 targetDirection(a_rTargetPosition - a_rCurrentPosition);
 
 	if (glm::length(targetDirection) > 0.0f)
 	{
@@ -108,10 +108,10 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_targetPositio
 	return seekVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_targetPosition,
-	const glm::vec3& a_currentPosition) const
+glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_rTargetPosition,
+	const glm::vec3& a_rCurrentPosition) const
 {
-	glm::vec3 targetDirection(a_currentPosition - a_targetPosition);
+	glm::vec3 targetDirection(a_rCurrentPosition - a_rTargetPosition);
 
 	if (glm::length(targetDirection) > 0.0f)
 	{
@@ -123,13 +123,13 @@ glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_targetPositio
 	return fleeVelocity;
 }
 
-glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_forwardDirection,
-	const glm::vec3& a_currentPosition)
+glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
+	const glm::vec3& a_rCurrentPosition)
 {
 	// Greater values result in wider turning angles.
 	const float projectDistance = 2.0f;
 	// Project a point in front for the center of a sphere.
-	glm::vec3 sphereOrigin = a_currentPosition + a_forwardDirection * projectDistance;
+	glm::vec3 sphereOrigin = a_rCurrentPosition + a_rForwardDirection * projectDistance;
 	const float jitter = 0.5f;
 	// Effects radius of sphere to cast forward.
 	const float wanderRadius = 4.0f;
@@ -149,7 +149,7 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_forwardDire
 	// Add jitter to movement
 	m_wanderPoint += glm::sphericalRand(jitter);
 	// Seek to the wander point
-	return CalculateSeekVelocity(m_wanderPoint, a_currentPosition);
+	return CalculateSeekVelocity(m_wanderPoint, a_rCurrentPosition);
 }
 
 glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
@@ -220,9 +220,9 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	return a_cohesionVelocity;
 }
 
-void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVelocity,
-	glm::vec3& a_alignmentVelocity,
-	glm::vec3& a_cohesionVelocity)
+void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelocity,
+	glm::vec3& a_rAlignmentVelocity,
+	glm::vec3& a_rCohesionVelocity)
 {
 	// Get the component's owner entity.
 	const Entity* pOwnerEntity = GetEntity();
@@ -243,12 +243,11 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 	// Get entity position.
 	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 	// Get the scene's entities.
-	const std::map<const unsigned int, Entity*>& entityMap = Entity::GetEntityMap();
-	std::map<const unsigned int, Entity*>::const_iterator iterator = entityMap.begin();
+	const std::map<const unsigned int, Entity*>& rEntityMap = Entity::GetEntityMap();
 	m_iNeighbourCount = 0;
 
 	// Loop over all entities in scene.
-	for (iterator; iterator != entityMap.end(); ++iterator)
+	for (std::map<const unsigned int, Entity*>::const_iterator iterator = rEntityMap.begin(); iterator != rEntityMap.end(); ++iterator)
 	{
 		const Entity* pTargetEntity = iterator->second;
 
@@ -263,9 +262,9 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_AI));
 
-			if (!ptargetTransform)
+			if (!ptargetTransform || !pTargetBrain)
 			{
-				break;
+				continue;
 			}
 
 			// Find distance to iterator entity
@@ -277,9 +276,9 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_separationVeloc
 			if (distance < neighbourhoodRadius)
 			{
 				++m_iNeighbourCount;
-				a_separationVelocity = CalculateSeparationVelocity(a_separationVelocity, localPosition - targetPosition);
-				a_alignmentVelocity = CalculateAlignmentVelocity(a_alignmentVelocity, pTargetBrain->GetVelocity());
-				a_cohesionVelocity = CalculateCohesionVelocity(a_cohesionVelocity, targetPosition, localPosition);
+				a_rSeparationVelocity = CalculateSeparationVelocity(a_rSeparationVelocity, localPosition - targetPosition);
+				a_rAlignmentVelocity = CalculateAlignmentVelocity(a_rAlignmentVelocity, pTargetBrain->GetVelocity());
+				a_rCohesionVelocity = CalculateCohesionVelocity(a_rCohesionVelocity, targetPosition, localPosition);
 			}
 		}
 	}
