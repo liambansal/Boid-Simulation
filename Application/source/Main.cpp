@@ -43,8 +43,8 @@ int main()
 				Utilities::RandomRange(-maximumDistance, maximumDistance)));
 			pBoid->AddComponent(static_cast<Component*>(pTransform));
 			ModelComponent* pModel = new ModelComponent(pBoid);
-			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
-			pModel->SetScale(glm::vec3(0.04f, 0.04f, 0.04f));
+			pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
+			pModel->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 			pBoid->AddComponent(static_cast<Component*>(pModel));
 			BrainComponent* pBrain = new BrainComponent(pBoid);
 			pBoid->AddComponent(static_cast<Component*>(pBrain));
