@@ -24,30 +24,19 @@ Entity::Entity()
 
 Entity::~Entity()
 {
-	ComponentList::iterator componentIterator;
-
-	for (componentIterator = m_components.begin();
-		componentIterator < m_components.end();
-		++componentIterator)
-	{
-		if (*componentIterator)
-		{
-			delete *componentIterator;
-			*componentIterator = nullptr;
-		}
-	}
+	m_components.clear();
 }
 
 // Update entity's components one by one.
 void Entity::Update(float a_deltaTime)
 {
-	ComponentList::iterator componentIterator;
+	std::map<COMPONENT_TYPE, Component*>::iterator componentIterator;
 
 	for (componentIterator = m_components.begin();
-		componentIterator < m_components.end();
+		componentIterator != m_components.end();
 		++componentIterator)
 	{
-		Component* pComponent = *componentIterator;
+		Component* pComponent = componentIterator->second;
 
 		if (pComponent)
 		{
@@ -59,13 +48,13 @@ void Entity::Update(float a_deltaTime)
 // Draw entity's components one by one.
 void Entity::Draw(Shader* a_pShader)
 {
-	ComponentList::iterator componentIterator;
+	std::map<COMPONENT_TYPE, Component*>::iterator componentIterator;
 
 	for (componentIterator = m_components.begin();
-		componentIterator < m_components.end();
+		componentIterator != m_components.end();
 		++componentIterator)
 	{
-		Component* pComponent = *componentIterator;
+		Component* pComponent = componentIterator->second;
 
 		if (pComponent)
 		{
@@ -74,23 +63,3 @@ void Entity::Draw(Shader* a_pShader)
 	}
 }
 
-// Returns the first found component attached to this entity of a specified 
-// type, if present.
-Component* Entity::GetComponentOfType(COMPONENT_TYPE a_componentType) const
-{
-	ComponentList::const_iterator componentIterator;
-
-	for (componentIterator = m_components.begin();
-		componentIterator < m_components.end();
-		++componentIterator)
-	{
-		Component* pComponent = *componentIterator;
-
-		if (pComponent && pComponent->GetComponentType() == a_componentType)
-		{
-			return pComponent;
-		}
-	}
-
-	return nullptr;
-}

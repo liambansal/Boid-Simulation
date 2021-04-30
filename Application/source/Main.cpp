@@ -41,13 +41,13 @@ int main()
 				glm::vec3(Utilities::RandomRange(-maximumDistance, maximumDistance),
 				Utilities::RandomRange(-maximumDistance, maximumDistance),
 				Utilities::RandomRange(-maximumDistance, maximumDistance)));
-			pBoid->AddComponent(static_cast<Component*>(pTransform));
+			pBoid->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
 			pModel->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
-			pBoid->AddComponent(static_cast<Component*>(pModel));
+			pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 			BrainComponent* pBrain = new BrainComponent(pBoid);
-			pBoid->AddComponent(static_cast<Component*>(pBrain));
+			pBoid->AddComponent(COMPONENT_TYPE_AI, static_cast<Component*>(pBrain));
 			pFramework->GetScene()->AddEntity(pBoid);
 		}
 

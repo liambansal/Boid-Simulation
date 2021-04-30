@@ -25,10 +25,8 @@ public:
 	// Draw entity's components one by one.
 	virtual void Draw(Shader* a_pShader);
 
-	inline void AddComponent(Component* a_pComponent);
-	// Returns the first found component attached to this entity of a 
-	// specified type, if present.
-	Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;
+	inline void AddComponent(COMPONENT_TYPE a_key, Component* a_pComponent);
+	inline Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;
 	inline const unsigned int GetID() const;
 	inline static const std::map<const unsigned int, Entity*> GetEntityMap();
 
@@ -37,12 +35,17 @@ private:
 	unsigned int m_uiEntityID;
 
 	static std::map<const unsigned int, Entity*> ms_EntityMap;
-	std::vector<Component*> m_components;
+	std::map<COMPONENT_TYPE, Component*> m_components;
 };
 
-void Entity::AddComponent(Component* a_pComponent)
+void Entity::AddComponent(COMPONENT_TYPE a_key, Component* a_pComponent)
 {
-	m_components.push_back(a_pComponent);
+	m_components.insert(std::pair<COMPONENT_TYPE, Component*>(a_key, a_pComponent));
+}
+
+Component* Entity::GetComponentOfType(COMPONENT_TYPE a_componentType) const
+{
+	return m_components.find(a_componentType)->second;
 }
 
 const unsigned int Entity::GetID() const
