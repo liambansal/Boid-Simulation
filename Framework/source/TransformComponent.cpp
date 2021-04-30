@@ -25,11 +25,6 @@ void TransformComponent::Update(float a_deltaTime)
 void TransformComponent::Draw(Shader* a_pShader)
 {}
 
-void TransformComponent::SetPosition(MATRIX_ROW a_row, glm::vec3 a_position)
-{
-	SetMatrixRow(a_row, a_position);
-}
-
 void TransformComponent::SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector)
 {
 	m_matrix[a_row] = glm::vec4(a_vector,

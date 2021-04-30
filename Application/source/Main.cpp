@@ -37,16 +37,16 @@ int main()
 			Entity* pBoid = new Entity();
 			TransformComponent* pTransform = new TransformComponent(pBoid);
 			const int maximumDistance = 5;
-			pTransform->SetPosition(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR,
+			pTransform->SetMatrixRow(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR,
 				glm::vec3(Utilities::RandomRange(-maximumDistance, maximumDistance),
 				Utilities::RandomRange(-maximumDistance, maximumDistance),
 				Utilities::RandomRange(-maximumDistance, maximumDistance)));
+			pBoid->AddComponent(static_cast<Component*>(pTransform));
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Nanosuit/nanosuit.obj");
 			pModel->SetScale(glm::vec3(0.04f, 0.04f, 0.04f));
-			BrainComponent* pBrain = new BrainComponent(pBoid);
-			pBoid->AddComponent(static_cast<Component*>(pTransform));
 			pBoid->AddComponent(static_cast<Component*>(pModel));
+			BrainComponent* pBrain = new BrainComponent(pBoid);
 			pBoid->AddComponent(static_cast<Component*>(pBrain));
 			pFramework->GetScene()->AddEntity(pBoid);
 		}

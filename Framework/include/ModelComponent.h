@@ -28,9 +28,9 @@ public:
 	void SetScale(glm::vec3 a_scale);
 
 private:
-	glm::vec3 m_scale;
+	glm::mat4 m_scaleMatrix;
 	Model* m_pModel;
-	static std::map<const char*, Model> m_loadedModels;
+	static std::map<const char*, Model> ms_loadedModels;
 };
 
 #endif // !MODEL_COMPONENT_H.

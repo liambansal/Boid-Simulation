@@ -84,10 +84,10 @@ void BrainComponent::Update(float a_deltaTime)
 	}
 	
 	// Update transform matrix.
-	pOwnerTransform->SetPosition(MATRIX_ROW_UP_VECTOR, upDirection);
-	pOwnerTransform->SetPosition(MATRIX_ROW_RIGHT_VECTOR, rightDirection);
-	pOwnerTransform->SetPosition(MATRIX_ROW_FORWARD_VECTOR, forwardDirection);
-	pOwnerTransform->SetPosition(MATRIX_ROW_POSITION_VECTOR, currentPosition);
+	pOwnerTransform->SetMatrixRow(MATRIX_ROW_UP_VECTOR, upDirection);
+	pOwnerTransform->SetMatrixRow(MATRIX_ROW_RIGHT_VECTOR, rightDirection);
+	pOwnerTransform->SetMatrixRow(MATRIX_ROW_FORWARD_VECTOR, forwardDirection);
+	pOwnerTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR, currentPosition);
 }
 
 void BrainComponent::Draw(Shader* a_pShader)
