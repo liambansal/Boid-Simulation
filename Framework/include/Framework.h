@@ -20,6 +20,7 @@ public:
 		const char* a_pVertexShader,
 		const char* a_pFragmentShader);
 	void Update();
+	void Draw();
 	void Destory();
 
 	void ProcessInput(GLFWwindow* window);
@@ -29,6 +30,7 @@ public:
 
 	static Framework* GetInstance();
 	Scene* GetScene() const;
+	inline GLFWwindow* GetWindow() const;
 
 private:
 	Framework();
@@ -48,5 +50,10 @@ private:
 	Scene* m_pScene;
 	Shader* m_pShader;
 };
+
+GLFWwindow* Framework::GetWindow() const
+{
+	return m_pWindow;
+}
 
 #endif // FRAMEWORK_H.

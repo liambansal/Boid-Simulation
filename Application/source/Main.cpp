@@ -12,6 +12,12 @@
 #include "TransformComponent.h"
 #include "Utilities.h"
 
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
+#include "imgui.h"
+
 int main()
 {
 	Framework* pFramework = Framework::GetInstance();
@@ -51,12 +57,39 @@ int main()
 			pFramework->GetScene()->AddEntity(pBoid);
 		}
 
-		if (isInitialised)
+		while (isInitialised && glfwWindowShouldClose(pFramework->GetWindow()) == 0)
 		{
+			glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 			pFramework->Update();
-			pFramework->Destory();
+			pFramework->Draw();
+
+			// Start the Dear ImGui frame
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
+			ImGuiIO& io = ImGui::GetIO();
+			const ImVec2 windowPosition = ImVec2(1.0f, io.DisplaySize.y * 0.75f);
+			ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
+
+			// Setup sliders
+			if (ImGui::Begin("Slider Menu"))
+			{
+				io.MouseDrawCursor = true;
+				int boidCount = 30;
+				ImGui::SliderInt("Boid Count", &boidCount, 0, 60);
+			}
+
+			ImGui::End();
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			glfwSwapBuffers(pFramework->GetWindow());
+			glfwPollEvents();
 		}
 
+		pFramework->Destory();
 		delete pFramework;
 		pFramework = nullptr;
 		return 0;

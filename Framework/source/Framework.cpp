@@ -4,19 +4,19 @@
 //////////////////////////////
 
 #include "Framework.h" // File's header.
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 #include "Entity.h"
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "imgui.h"
 #include <iostream>
 #include "LearnOpenGL/camera.h"
 #include "LearnOpenGL/shader.h"
 #include "Scene.h"
-#include "imgui.h"
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
 
 Framework* Framework::ms_pInstance = nullptr;
 
@@ -112,28 +112,28 @@ bool Framework::Initialize(const char* a_windowName,
 
 void Framework::Update()
 {
-	do
+	// Per-frame time logic.
+	float currentFrame = glfwGetTime();
+	m_fDeltaTime = currentFrame - m_fLastFrame;
+	m_fLastFrame = currentFrame;
+
+	if (!m_pScene)
 	{
-		glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// Per-frame time logic.
-		float currentFrame = glfwGetTime();
-		m_fDeltaTime = currentFrame - m_fLastFrame;
-		m_fLastFrame = currentFrame;
+		return;
+	}
 
-		if (!m_pScene)
-		{
-			return;
-		}
+	ProcessInput(m_pWindow);
+	m_pScene->Update(m_fDeltaTime);
+}
 
-		ProcessInput(m_pWindow);
-		m_pScene->Update(m_fDeltaTime);
-		m_pScene->Draw(mc_uiScreenWidth, mc_uiScreenHeight, m_pShader);
-		
-		glfwSwapBuffers(m_pWindow);
-		glfwPollEvents();
-		// Return whether to close or not.
-	} while (glfwWindowShouldClose(m_pWindow) == 0);
+void Framework::Draw()
+{
+	if (!m_pScene)
+	{
+		return;
+	}
+
+	m_pScene->Draw(mc_uiScreenWidth, mc_uiScreenHeight, m_pShader);
 }
 
 void Framework::Destory()
@@ -142,6 +142,10 @@ void Framework::Destory()
 	m_pScene = nullptr;
 	delete m_pShader;
 	m_pShader = nullptr;
+	// Clean up imgui
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
 	// Destroy the scene window.
 	glfwDestroyWindow(m_pWindow);
 	// Clear all previously allocated GLFW resources.
