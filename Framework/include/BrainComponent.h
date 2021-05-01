@@ -36,13 +36,13 @@ private:
 	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
 		glm::vec3 a_targetVector);
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
-		glm::vec3 a_targetVector,
+		glm::vec3 a_targetPosition,
 		glm::vec3 a_localPosition);
 	void CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelocity,
 		glm::vec3& a_rAlignmentVelocity,
 		glm::vec3& a_rCohesionVelocity);
 
-	int m_iNeighbourCount;
+	unsigned int m_uiNeighbourCount;
 	const float mc_fSpeed;
 	const float mc_fMaximumVelocity;
 	float m_fLastUpdate;

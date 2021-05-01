@@ -14,6 +14,9 @@
 #include "LearnOpenGL/camera.h"
 #include "LearnOpenGL/shader.h"
 #include "Scene.h"
+#include "imgui.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 Framework* Framework::ms_pInstance = nullptr;
 
@@ -25,6 +28,7 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 	m_fLastFrame(0.0f),
 	m_bFirstMouse(true),
 	m_pWindow(nullptr),
+	m_pScene(),
 	m_pShader(nullptr)
 {}
 
@@ -34,6 +38,7 @@ bool Framework::Initialize(const char* a_windowName,
 	const char* a_pVertexShader,
 	const char* a_pFragmentShader)
 {
+#pragma region GLFW Setup
 	// Initialize GLFW.
 	if (!glfwInit())
 	{
@@ -60,7 +65,9 @@ bool Framework::Initialize(const char* a_windowName,
 
 	// Tell GLFW to capture our mouse.
 	glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+#pragma endregion
 
+#pragma region GLAD Setup
 	// Initialize GLAD.
 	if (!gladLoadGL())
 	{
@@ -76,6 +83,20 @@ bool Framework::Initialize(const char* a_windowName,
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return false;
 	}
+#pragma endregion
+
+#pragma region ImGui setup
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	(void)io;
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	const char* glsl_version = "#version 150";
+	ImGui_ImplGlfw_InitForOpenGL(m_pWindow, true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
+#pragma endregion
 
 	m_pScene = new Scene();
 	m_pShader = new Shader(a_pVertexShader, a_pFragmentShader);
@@ -164,7 +185,7 @@ void Framework::ProcessInput(GLFWwindow* window)
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void Framework::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-	// make sure the viewport matches the new window dimensions; note that width and 
+	// make sure the view port matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
