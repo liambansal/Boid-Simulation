@@ -13,87 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Resource Files\LearnOpenGL">
+      <UniqueIdentifier>{c08f8d14-75ac-4089-abfd-d6379ace77a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Glad">
+      <UniqueIdentifier>{5919afdc-7710-420c-abc1-afa0b6d6d292}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Framework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Component.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\ModelComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\TransformComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="source\BrainComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Programming Resources\glad\src\glad.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files\Glad</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Programming Resources\glad\include\KHR\khrplatform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Programming Resources\stb\stb_image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LearnOpenGL\camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\LearnOpenGL\mesh.h">
-      <Filter>Header Files</Filter>
+      <Filter>Resource Files\LearnOpenGL</Filter>
     </ClInclude>
     <ClInclude Include="include\LearnOpenGL\model.h">
-      <Filter>Header Files</Filter>
+      <Filter>Resource Files\LearnOpenGL</Filter>
     </ClInclude>
     <ClInclude Include="include\LearnOpenGL\shader.h">
-      <Filter>Header Files</Filter>
+      <Filter>Resource Files\LearnOpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Entity.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="include\LearnOpenGL\camera.h">
+      <Filter>Resource Files\LearnOpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Component.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\Programming Resources\stb\stb_image.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TransformComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ModelComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Scene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Utilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BrainComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="..\..\..\Programming Resources\glad\include\KHR\khrplatform.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

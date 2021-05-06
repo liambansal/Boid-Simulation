@@ -27,10 +27,17 @@ public:
 
 	void SetScale(glm::vec3 a_scale);
 
+	inline Model* GetModel();
+
 private:
 	glm::mat4 m_scaleMatrix;
 	Model* m_pModel;
-	static std::map<const char*, Model> ms_loadedModels;
+	static std::map<const char*, Model*> ms_loadedModels;
 };
+
+Model* ModelComponent::GetModel()
+{
+	return m_pModel;
+}
 
 #endif // !MODEL_COMPONENT_H.

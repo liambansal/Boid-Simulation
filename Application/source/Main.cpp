@@ -3,26 +3,24 @@
 // Date Created: 21/01/2021.
 //////////////////////////////
 
-// Header includes.
 #include "Framework.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 #include "BrainComponent.h"
 #include "Entity.h"
+#include "GLFW/glfw3.h"
+#include "imgui.h"
 #include "ModelComponent.h"
 #include "Scene.h"
 #include "TransformComponent.h"
 #include "Utilities.h"
 
-#include "backends/imgui_impl_glfw.h"
-#include "backends/imgui_impl_opengl3.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "imgui.h"
-
 int main()
 {
 	Framework* pFramework = Framework::GetInstance();
+	Scene scene;
 
-	if (pFramework != nullptr)
+	if (pFramework)
 	{
 		// Seed rand number generator.
 		srand(time(nullptr));
@@ -35,26 +33,30 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		const int maximumBoidCount = 60;
+		const unsigned int maximumBoidCount = 60;
+		// The absolute value for the maximum spawn distance.
+		const int maximumSpawnDistance = 5;
 
-		for (int i = 0; i < maximumBoidCount; ++i)
+		for (unsigned int i = 0; i < maximumBoidCount; ++i)
 		{
-			// Create a boid.
+			// Create a new boid.
 			Entity* pBoid = new Entity();
+			// Create transform
 			TransformComponent* pTransform = new TransformComponent(pBoid);
-			const int maximumDistance = 5;
 			pTransform->SetMatrixRow(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR,
-				glm::vec3(Utilities::RandomRange(-maximumDistance, maximumDistance),
-				Utilities::RandomRange(-maximumDistance, maximumDistance),
-				Utilities::RandomRange(-maximumDistance, maximumDistance)));
+				glm::vec3(Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
+				Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
+				Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance)));
 			pBoid->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
+			// create model
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
 			pModel->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
 			pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+			// create brain i.e. AI controller
 			BrainComponent* pBrain = new BrainComponent(pBoid);
 			pBoid->AddComponent(COMPONENT_TYPE_AI, static_cast<Component*>(pBrain));
-			pFramework->GetScene()->AddEntity(pBoid);
+			scene.AddEntity(pBoid);
 		}
 
 		while (isInitialised && glfwWindowShouldClose(pFramework->GetWindow()) == 0)
@@ -62,9 +64,13 @@ int main()
 			glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+			// Update
 			pFramework->Update();
-			pFramework->Draw();
+			scene.Update(pFramework->GetDeltaTime());
 
+			// Draw
+			scene.Draw(pFramework);
+			// UI
 			// Start the Dear ImGui frame
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();

@@ -15,7 +15,7 @@
 // Typedefs
 typedef Component Parent;
 
-std::map<const char*, Model> ModelComponent::ms_loadedModels = std::map<const char*, Model>();
+std::map<const char*, Model*> ModelComponent::ms_loadedModels = std::map<const char*, Model*>();
 
 ModelComponent::ModelComponent(Entity* a_owner) : Parent(a_owner),
 	m_scaleMatrix(glm::mat4(1.0f)),
@@ -52,13 +52,13 @@ void ModelComponent::LoadModel(const char* a_pFilepath)
 	if (ms_loadedModels.count(a_pFilepath))
 	{
 		// Find the already existing model.
-		m_pModel = &ms_loadedModels.at(a_pFilepath);
+		m_pModel = ms_loadedModels.at(a_pFilepath);
 	}
 	else
 	{
 		// Load an instance of a new model.
 		m_pModel = new Model(a_pFilepath);
-		ms_loadedModels.insert(std::pair<const char*, Model>(a_pFilepath, *m_pModel));
+		ms_loadedModels.insert(std::pair<const char*, Model*>(a_pFilepath, m_pModel));
 	}
 }
 

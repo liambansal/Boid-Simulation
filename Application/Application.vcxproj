@@ -80,7 +80,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Framework\include;$(Programming_Resources)\glfw\include\;$(Programming_Resources)\glm\;$(Programming_Resources)\glad\include\;$(Programming_Resources)\;$(Programming_Resources)\assimp\include\;$(Programming_Resources)\imgui;$(Programming_Resources)\imgui\backends;$(DEV)\glfw\include\;$(DEV)\glm\;$(DEV)\glad\include\;$(DEV)\;$(DEV)\assimp\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Framework\include;$(ProjectDir)include;$(Programming_Resources)\glfw\include\;$(Programming_Resources)\glm\;$(Programming_Resources)\glad\include\;$(Programming_Resources)\;$(Programming_Resources)\assimp\include\;$(Programming_Resources)\imgui;$(Programming_Resources)\imgui\backends;$(DEV)\glfw\include\;$(DEV)\glm\;$(DEV)\glad\include\;$(DEV)\;$(DEV)\assimp\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Framework\lib\$(Platform)\$(Configuration);$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\code\debug;$(Programming_Resources)\imgui\lib\$(Configuration);$(DEV)glfw\libs\$(Configuration);$(DEV)glm\libs\$(Configuration);$(DEV)assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -88,7 +88,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(SolutionDir)Framework\include;$(Programming_Resources)\glfw\include\;$(Programming_Resources)\glm\;$(Programming_Resources)\glad\include\;$(Programming_Resources)\;$(Programming_Resources)\assimp\include\;$(Programming_Resources)\imgui;$(Programming_Resources)\imgui\backends;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Framework\include;$(ProjectDir)include;$(Programming_Resources)\glfw\include\;$(Programming_Resources)\glm\;$(Programming_Resources)\glad\include\;$(Programming_Resources)\;$(Programming_Resources)\assimp\include\;$(Programming_Resources)\imgui;$(Programming_Resources)\imgui\backends;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Framework\lib\$(Platform)\$(Configuration);$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\code\debug;$(Programming_Resources)\imgui\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -156,12 +156,31 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="source\BrainComponent.cpp" />
+    <ClCompile Include="source\Component.cpp" />
+    <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Main.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="source\ModelComponent.cpp" />
+    <ClCompile Include="source\Scene.cpp" />
+    <ClCompile Include="source\TransformComponent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="include\BrainComponent.h" />
+    <ClInclude Include="include\Component.h" />
+    <ClInclude Include="include\Entity.h" />
+    <ClInclude Include="include\ModelComponent.h" />
+    <ClInclude Include="include\Scene.h" />
+    <ClInclude Include="include\TransformComponent.h" />
+    <ClInclude Include="include\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

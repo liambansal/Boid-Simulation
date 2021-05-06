@@ -158,33 +158,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Programming Resources\glad\src\glad.c" />
-    <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.cpp" />
-    <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="source\BrainComponent.cpp" />
-    <ClCompile Include="source\Component.cpp" />
-    <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Framework.cpp" />
-    <ClCompile Include="source\ModelComponent.cpp" />
-    <ClCompile Include="source\Scene.cpp" />
-    <ClCompile Include="source\TransformComponent.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Programming Resources\glad\include\KHR\khrplatform.h" />
-    <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="..\..\..\Programming Resources\stb\stb_image.h" />
-    <ClInclude Include="include\BrainComponent.h" />
-    <ClInclude Include="include\Component.h" />
-    <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\Framework.h" />
     <ClInclude Include="include\LearnOpenGL\camera.h" />
     <ClInclude Include="include\LearnOpenGL\mesh.h" />
     <ClInclude Include="include\LearnOpenGL\model.h" />
     <ClInclude Include="include\LearnOpenGL\shader.h" />
-    <ClInclude Include="include\ModelComponent.h" />
-    <ClInclude Include="include\Scene.h" />
-    <ClInclude Include="include\TransformComponent.h" />
-    <ClInclude Include="include\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

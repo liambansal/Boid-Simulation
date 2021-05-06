@@ -42,6 +42,11 @@ private:
 		glm::vec3& a_rAlignmentVelocity,
 		glm::vec3& a_rCohesionVelocity);
 
+	static float ms_fSeparationForce;
+	static float ms_fAlignmentForce;
+	static float ms_fCohesionForce;
+	static float ms_fWanderForce;
+
 	unsigned int m_uiNeighbourCount;
 	const float mc_fSpeed;
 	const float mc_fMaximumVelocity;

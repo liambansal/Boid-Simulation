@@ -10,9 +10,9 @@
 #include <map>
 
 // Forward declarations.
-class Camera;
 class Entity;
 class Shader;
+class Framework;
 
 class Scene
 {
@@ -23,24 +23,17 @@ public:
 	// Calls update on all the scene's entities.
 	void Update(float a_deltaTime);
 	// Draws all scene's entities.
-	void Draw(unsigned int a_screenWidth, unsigned int a_screenHeight, Shader* a_pShader) const;
+	void Draw(Framework* a_pRenderingFramework) const;
 	void AddEntity(Entity* a_pNewEntity);
 
-	inline Camera* GetCamera() const;
 	// Returns a pointer to an entity using its unique identifier.
 	inline Entity* GetEntity(unsigned int a_uniqueID);
 	// Returns a reference to all entities in the scene.
 	inline const std::map<unsigned int, Entity*>& GetEntityList() const;
 private:
 	unsigned int m_uiNumberOfBoids;
-	Camera* m_pCamera;
 	std::map<unsigned int, Entity*> m_sceneEntities;
 };
-
-inline Camera* Scene::GetCamera() const
-{
-	return m_pCamera;
-}
 
 // Returns a pointer to an entity using its unique identifier.
 inline Entity* Scene::GetEntity(unsigned int a_uniqueID)

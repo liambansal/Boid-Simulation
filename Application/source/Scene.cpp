@@ -10,13 +10,14 @@
 #include "glm/ext.hpp"
 #include "LearnOpenGL/camera.h"
 #include "LearnOpenGL/shader.h"
+#include "ModelComponent.h"
+#include "Framework.h"
 
 // Typedefs.
 typedef std::pair<unsigned int, Entity*> EntityPair;
 typedef std::map<unsigned int, Entity*> EntityMap;
 
-Scene::Scene() : m_uiNumberOfBoids(0),
-	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 5.0f)))
+Scene::Scene() : m_uiNumberOfBoids(0)
 {}
 
 Scene::~Scene()
@@ -33,9 +34,6 @@ Scene::~Scene()
 			entity = nullptr;
 		}
 	}
-
-	delete m_pCamera;
-	m_pCamera = nullptr;
 }
 
 // Calls update on all the scene's entities.
@@ -55,27 +53,20 @@ void Scene::Update(float a_deltaTime)
 }
 
 // Draws all scene's entities.
-void Scene::Draw(unsigned int a_screenWidth, unsigned int a_screenHeight, Shader* a_pShader) const
+void Scene::Draw(Framework* a_pRenderingFramework) const
 {
 	if (m_sceneEntities.empty())
 	{
 		return;
 	}
 
-	// Don't forget to enable shader before setting uniforms.
-	a_pShader->use();
-	// view/projection transformations
-	glm::mat4 projection = glm::perspective(glm::radians(GetCamera()->Zoom),
-		(float)a_screenWidth / (float)a_screenHeight,
-		0.1f,
-		100.0f);
-	glm::mat4 view = GetCamera()->GetViewMatrix();
-	a_pShader->setMat4("projection", projection);
-	a_pShader->setMat4("view", view);
-
 	for (auto iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
 	{
-		(*iterator).second->Draw(a_pShader);
+		if (iterator->second->GetComponentOfType(COMPONENT_TYPE_MODEL)->GetComponentType() == COMPONENT_TYPE_MODEL)
+		{
+			ModelComponent* modelComponent = static_cast<ModelComponent*>(iterator->second->GetComponentOfType(COMPONENT_TYPE_MODEL));
+			a_pRenderingFramework->Draw(modelComponent->GetModel());
+		}
 	}
 }
 

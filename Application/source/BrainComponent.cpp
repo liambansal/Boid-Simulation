@@ -3,10 +3,16 @@
 // Date Created: 21/04/2021
 //////////////////////////////
 
-#include "BrainComponent.h" // File's header.
+// File's header.
+#include "BrainComponent.h"
 #include "Entity.h"
 #include "LearnOpenGL/shader.h"
 #include "TransformComponent.h"
+
+float BrainComponent::ms_fSeparationForce = 0.4f;
+float BrainComponent::ms_fAlignmentForce = 0.2f;
+float BrainComponent::ms_fCohesionForce = 0.6f;
+float BrainComponent::ms_fWanderForce = 0.5f;
 
 BrainComponent::BrainComponent(Entity* a_pOwner) : Component(a_pOwner),
 	m_uiNeighbourCount(0),
@@ -49,10 +55,10 @@ void BrainComponent::Update(float a_deltaTime)
 		glm::vec3 alignmentVelocity(0.0f);
 		glm::vec3 cohesionVelocity(0.0f);
 		CalculateBehaviouralVelocities(seperationVelocity, alignmentVelocity, cohesionVelocity);
-		seperationVelocity *= 0.4f;
-		alignmentVelocity *= 0.2f;
-		cohesionVelocity *= 0.6f;
-		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * 0.5f;
+		seperationVelocity *= ms_fSeparationForce;
+		alignmentVelocity *= ms_fAlignmentForce;
+		cohesionVelocity *= ms_fCohesionForce;
+		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * ms_fWanderForce;
 		glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
 		m_velocity += newForce;
 	}
@@ -189,32 +195,13 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	glm::vec3 a_targetPosition,
 	glm::vec3 a_localPosition)
 {
-	// Get the component's owner entity.
-	const Entity* pOwnerEntity = GetEntity();
-
-	if (!pOwnerEntity)
-	{
-		return glm::vec3(0.0f);
-	}
-
-	// Get this entities transform.
-	const TransformComponent* pEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-
-	if (!pEntityTransform)
-	{
-		return glm::vec3(0.0f);
-	}
-
-	// Get entity position.
-	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
-
 	a_cohesionVelocity += a_targetPosition;
 
 	if (glm::length(a_cohesionVelocity) > 0.0f &&
 		m_uiNeighbourCount > 0)
 	{
 		a_cohesionVelocity /= m_uiNeighbourCount;
-		a_cohesionVelocity = glm::normalize(a_cohesionVelocity - localPosition);
+		a_cohesionVelocity = glm::normalize(a_cohesionVelocity - a_localPosition);
 	}
 
 	return a_cohesionVelocity;

@@ -14,12 +14,12 @@ class Utilities
 public:
 	// Returns an almost random numerical value between two ranges.
 	template<typename T>
-	static inline float RandomRange(T a_lowerRange, T a_upperRange);
+	static inline T RandomRange(T a_lowerRange, T a_upperRange);
 };
 
 // Returns an almost random numerical value between two ranges.
 template<typename T>
-float Utilities::RandomRange(T a_lowerRange, T a_upperRange)
+T Utilities::RandomRange(T a_lowerRange, T a_upperRange)
 {
 	return rand() % (glm::abs(a_lowerRange - a_upperRange)) + a_lowerRange;
 }

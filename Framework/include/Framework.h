@@ -7,7 +7,8 @@
 #define FRAMEWORK_H
 
 struct GLFWwindow;
-class Scene;
+class Camera;
+class Model;
 class Shader;
 
 // Singleton class.
@@ -20,7 +21,7 @@ public:
 		const char* a_pVertexShader,
 		const char* a_pFragmentShader);
 	void Update();
-	void Draw();
+	void Draw(Model* a_pModel);
 	void Destory();
 
 	void ProcessInput(GLFWwindow* window);
@@ -29,8 +30,9 @@ public:
 	static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 
 	static Framework* GetInstance();
-	Scene* GetScene() const;
 	inline GLFWwindow* GetWindow() const;
+	inline Camera* GetCamera() const;
+	inline const float GetDeltaTime() const;
 
 private:
 	Framework();
@@ -47,13 +49,23 @@ private:
 
 	static Framework* ms_pInstance;
 	GLFWwindow* m_pWindow;
-	Scene* m_pScene;
+	Camera* m_pCamera;
 	Shader* m_pShader;
 };
 
 GLFWwindow* Framework::GetWindow() const
 {
 	return m_pWindow;
+}
+
+Camera* Framework::GetCamera() const
+{
+	return m_pCamera;
+}
+
+const float Framework::GetDeltaTime() const
+{
+	return m_fDeltaTime;
 }
 
 #endif // FRAMEWORK_H.
