@@ -10,6 +10,8 @@
 #include "Component.h"
 #include "glm/ext.hpp"
 
+class Framework;
+
 enum MATRIX_ROW
 {
 	MATRIX_ROW_RIGHT_VECTOR,
@@ -26,7 +28,7 @@ public:
 	~TransformComponent();
 
 	virtual void Update(float a_deltaTime);
-	virtual void Draw(Shader* a_pShader);
+	virtual void Draw(Framework* a_pRenderingFramework);
 
 	void SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
 	inline const glm::mat4& GetMatrix() const;

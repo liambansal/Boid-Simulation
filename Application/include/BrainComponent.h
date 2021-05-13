@@ -10,6 +10,7 @@
 #include "glm/glm.hpp"
 
 class Entity;
+class Framework;
 
 class BrainComponent : public Component
 {
@@ -17,7 +18,7 @@ public:
 	BrainComponent(Entity* a_pOwner);
 
 	virtual void Update(float a_deltaTime);
-	virtual void Draw(Shader* a_pShader);
+	virtual void Draw(Framework* a_pRenderingFramework);
 
 	inline glm::vec3 GetVelocity() const;
 

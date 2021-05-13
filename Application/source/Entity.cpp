@@ -46,7 +46,7 @@ void Entity::Update(float a_deltaTime)
 }
 
 // Draw entity's components one by one.
-void Entity::Draw(Shader* a_pShader)
+void Entity::Draw(Framework* a_pRenderingFramework)
 {
 	std::map<COMPONENT_TYPE, Component*>::iterator componentIterator;
 
@@ -58,7 +58,7 @@ void Entity::Draw(Shader* a_pShader)
 
 		if (pComponent)
 		{
-			pComponent->Draw(a_pShader);
+			pComponent->Draw(a_pRenderingFramework);
 		}
 	}
 }

@@ -8,7 +8,7 @@
 
 // Forwards declarations.
 class Entity;
-class Shader;
+class Framework;
 
 enum COMPONENT_TYPE
 {
@@ -25,7 +25,7 @@ public:
 	Component(Entity* a_pOwner);
 
 	virtual void Update(float a_deltaTime) = 0;
-	virtual void Draw(Shader* a_pShader) = 0;
+	virtual void Draw(Framework* a_pRenderingFramework) = 0;
 
 	// Returns the entity this component is attached to.
 	inline Entity* GetEntity() const;

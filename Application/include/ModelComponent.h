@@ -13,6 +13,7 @@
 
 // Forward declarations.
 class Entity;
+class Framework;
 class Model;
 
 class ModelComponent : public Component
@@ -22,7 +23,7 @@ public:
 	~ModelComponent();
 
 	virtual void Update(float a_deltaTime);
-	virtual void Draw(Shader* a_pShader);
+	virtual void Draw(Framework* a_pRenderingFramework);
 	void LoadModel(const char* a_pFilepath);
 
 	void SetScale(glm::vec3 a_scale);

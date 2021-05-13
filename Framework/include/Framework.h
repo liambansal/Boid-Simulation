@@ -33,6 +33,7 @@ public:
 	inline GLFWwindow* GetWindow() const;
 	inline Camera* GetCamera() const;
 	inline const float GetDeltaTime() const;
+	inline const Shader* GetShader() const;
 
 private:
 	Framework();
@@ -50,6 +51,8 @@ private:
 	static Framework* ms_pInstance;
 	GLFWwindow* m_pWindow;
 	Camera* m_pCamera;
+	const float mc_fNearClipPlane;
+	const float mc_fFarClipPlane;
 	Shader* m_pShader;
 };
 
@@ -66,6 +69,11 @@ Camera* Framework::GetCamera() const
 const float Framework::GetDeltaTime() const
 {
 	return m_fDeltaTime;
+}
+
+const Shader* Framework::GetShader() const
+{
+	return m_pShader;
 }
 
 #endif // FRAMEWORK_H.

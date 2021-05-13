@@ -6,6 +6,7 @@
 // File's header.
 #include "ModelComponent.h"
 #include "Entity.h"
+#include "Framework.h"
 #include "glm/ext.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "LearnOpenGL/shader.h"
@@ -20,7 +21,9 @@ std::map<const char*, Model*> ModelComponent::ms_loadedModels = std::map<const c
 ModelComponent::ModelComponent(Entity* a_owner) : Parent(a_owner),
 	m_scaleMatrix(glm::mat4(1.0f)),
 	m_pModel(nullptr)
-{}
+{
+	m_componentType = COMPONENT_TYPE_MODEL;
+}
 
 ModelComponent::~ModelComponent()
 {}
@@ -28,12 +31,12 @@ ModelComponent::~ModelComponent()
 void ModelComponent::Update(float a_deltaTime)
 {}
 
-void ModelComponent::Draw(Shader* a_pShader)
+void ModelComponent::Draw(Framework* a_pRenderingFramework)
 {
 	// Get transform component.
 	TransformComponent* pTransform = static_cast<TransformComponent*>(m_pAttachedEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
-	if (!m_pModel || !a_pShader || !pTransform)
+	if (!m_pModel || !pTransform)
 	{
 		// Early out if any pointers are null.
 		return;
@@ -41,9 +44,9 @@ void ModelComponent::Draw(Shader* a_pShader)
 
 	// Update the scale transform's position row.
 	m_scaleMatrix[MATRIX_ROW_POSITION_VECTOR] = pTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
-	a_pShader->setMat4("model", m_scaleMatrix);
+	a_pRenderingFramework->GetShader()->setMat4("model", m_scaleMatrix);
 	// Render the loaded model.
-	m_pModel->Draw(*a_pShader);
+	a_pRenderingFramework->Draw(m_pModel);
 }
 
 void ModelComponent::LoadModel(const char* a_pFilepath)

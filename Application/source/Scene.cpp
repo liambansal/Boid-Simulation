@@ -60,13 +60,9 @@ void Scene::Draw(Framework* a_pRenderingFramework) const
 		return;
 	}
 
-	for (auto iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
+	for (std::map<unsigned int, Entity*>::const_iterator iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
 	{
-		if (iterator->second->GetComponentOfType(COMPONENT_TYPE_MODEL)->GetComponentType() == COMPONENT_TYPE_MODEL)
-		{
-			ModelComponent* modelComponent = static_cast<ModelComponent*>(iterator->second->GetComponentOfType(COMPONENT_TYPE_MODEL));
-			a_pRenderingFramework->Draw(modelComponent->GetModel());
-		}
+		iterator->second->Draw(a_pRenderingFramework);
 	}
 }
 

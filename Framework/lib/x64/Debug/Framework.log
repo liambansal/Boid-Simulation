@@ -1,12 +1,12 @@
 ﻿  Framework.cpp
 G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\include\learnopengl\mesh.h(88,1): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(114,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(201,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(202,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(206,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(207,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(208,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(209,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(228,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(116,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(203,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(204,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(208,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(209,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(210,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(211,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(230,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
   Framework.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\lib\x64\Debug\Framework.lib

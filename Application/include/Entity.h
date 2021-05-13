@@ -12,7 +12,7 @@
 #include <vector>
 
 // Forward declarations.
-class Shader;
+class Framework;
 
 class Entity
 {
@@ -23,7 +23,7 @@ public:
 	// Update entity's components one by one.
 	virtual void Update(float a_deltaTime);
 	// Draw entity's components one by one.
-	virtual void Draw(Shader* a_pShader);
+	virtual void Draw(Framework* a_pRenderingFramework);
 
 	inline void AddComponent(COMPONENT_TYPE a_key, Component* a_pComponent);
 	inline Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;

@@ -22,7 +22,7 @@ TransformComponent::~TransformComponent()
 void TransformComponent::Update(float a_deltaTime)
 {}
 
-void TransformComponent::Draw(Shader* a_pShader)
+void TransformComponent::Draw(Framework* a_pRenderingFramework)
 {}
 
 void TransformComponent::SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector)

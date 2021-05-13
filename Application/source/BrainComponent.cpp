@@ -96,7 +96,7 @@ void BrainComponent::Update(float a_deltaTime)
 	pOwnerTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR, currentPosition);
 }
 
-void BrainComponent::Draw(Shader* a_pShader)
+void BrainComponent::Draw(Framework* a_pRenderingFramework)
 {}
 
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,

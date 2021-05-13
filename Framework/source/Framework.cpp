@@ -28,6 +28,8 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 	m_bFirstMouse(true),
 	m_pWindow(nullptr),
 	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 5.0f))),
+	mc_fNearClipPlane(0.1f),
+	mc_fFarClipPlane(100.0f),
 	m_pShader(nullptr)
 {}
 
@@ -124,8 +126,8 @@ void Framework::Draw(Model* a_pModel)
 	// view/projection transformations
 	glm::mat4 projection = glm::perspective(glm::radians(GetCamera()->Zoom),
 		(float)mc_uiScreenWidth / (float)mc_uiScreenHeight,
-		0.1f,
-		100.0f);
+		mc_fNearClipPlane,
+		mc_fFarClipPlane);
 	glm::mat4 view = GetCamera()->GetViewMatrix();
 	m_pShader->setMat4("projection", projection);
 	m_pShader->setMat4("view", view);
