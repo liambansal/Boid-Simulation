@@ -28,8 +28,6 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 	m_bFirstMouse(true),
 	m_pWindow(nullptr),
 	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 5.0f))),
-	mc_fNearClipPlane(0.1f),
-	mc_fFarClipPlane(100.0f),
 	m_pShader(nullptr)
 {}
 
@@ -103,9 +101,12 @@ bool Framework::Initialize(const char* a_windowName,
 	
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);
-	const int major = glfwGetWindowAttrib(m_pWindow, GLFW_CONTEXT_VERSION_MAJOR);
-	const int minor = glfwGetWindowAttrib(m_pWindow, GLFW_CONTEXT_VERSION_MINOR);
-	const int revision = glfwGetWindowAttrib(m_pWindow, GLFW_CONTEXT_REVISION);
+	const int major = glfwGetWindowAttrib(m_pWindow,
+		GLFW_CONTEXT_VERSION_MAJOR);
+	const int minor = glfwGetWindowAttrib(m_pWindow,
+		GLFW_CONTEXT_VERSION_MINOR);
+	const int revision = glfwGetWindowAttrib(m_pWindow,
+		GLFW_CONTEXT_REVISION);
 	std::cout << "OpenGl Version Supported: " << major << "." << minor << "." << revision << std::endl;
 	return true;
 }
@@ -123,14 +124,11 @@ void Framework::Draw(Model* a_pModel)
 {
 	// Don't forget to enable shader before setting uniforms.
 	m_pShader->use();
-	// view/projection transformations
-	glm::mat4 projection = glm::perspective(glm::radians(GetCamera()->Zoom),
-		(float)mc_uiScreenWidth / (float)mc_uiScreenHeight,
-		mc_fNearClipPlane,
-		mc_fFarClipPlane);
-	glm::mat4 view = GetCamera()->GetViewMatrix();
-	m_pShader->setMat4("projection", projection);
-	m_pShader->setMat4("view", view);
+	// view/projection transforms.
+	m_pShader->setMat4("projection",
+		GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
+	m_pShader->setMat4("view",
+		GetCamera()->GetViewMatrix());
 	a_pModel->Draw(*m_pShader);
 }
 

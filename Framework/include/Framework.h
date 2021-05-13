@@ -51,8 +51,6 @@ private:
 	static Framework* ms_pInstance;
 	GLFWwindow* m_pWindow;
 	Camera* m_pCamera;
-	const float mc_fNearClipPlane;
-	const float mc_fFarClipPlane;
 	Shader* m_pShader;
 };
 
