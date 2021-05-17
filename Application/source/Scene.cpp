@@ -20,7 +20,7 @@
 typedef std::pair<unsigned int, Entity*> EntityPair;
 typedef std::map<unsigned int, Entity*> EntityMap;
 
-Scene::Scene() : m_uiNumberOfBoids(0)
+Scene::Scene() : m_uiEntityCount(0)
 {}
 
 Scene::~Scene()
@@ -78,13 +78,7 @@ void Scene::AddEntity(Entity* a_pNewEntity)
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
-
-	if (a_pNewEntity->GetTag() == "Boid")
-	{
-		++m_uiNumberOfBoids;
-	}
-
-	// TODO increase the scenes entity count
+	++m_uiEntityCount;
 }
 
 void Scene::AddEntities(Entity a_EntityToCopy, unsigned int a_spawnAmount)
@@ -93,7 +87,7 @@ void Scene::AddEntities(Entity a_EntityToCopy, unsigned int a_spawnAmount)
 	{
 		Entity* pNewEntity = new Entity(a_EntityToCopy);
 		AddEntity(pNewEntity);
-		++m_uiNumberOfBoids;
+		++m_uiEntityCount;
 	}
 }
 
@@ -103,6 +97,7 @@ void Scene::DestroyEntity(Entity* a_pEntityToDestroy)
 	if (m_sceneEntities.count(a_pEntityToDestroy->GetID()) > 0)
 	{
 		m_sceneEntities.erase(a_pEntityToDestroy->GetID());
+		--m_uiEntityCount;
 	}
 }
 
@@ -125,7 +120,7 @@ void Scene::DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_destr
 				// May be more types of this entity, keep going until desired amount is cleared.
 				entityTypeCleared = false;
 				m_sceneEntities.erase(iterator);
-				--m_uiNumberOfBoids;
+				--m_uiEntityCount;
 				break;
 			}
 		}

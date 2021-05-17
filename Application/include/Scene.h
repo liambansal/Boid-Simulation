@@ -37,7 +37,7 @@ public:
 	inline const unsigned int GetBoidCount() const;
 
 private:
-	unsigned int m_uiNumberOfBoids;
+	unsigned int m_uiEntityCount;
 	std::map<unsigned int, Entity*> m_sceneEntities;
 };
 
@@ -55,7 +55,7 @@ const std::map<unsigned int, Entity*>& Scene::GetEntityList() const
 
 const unsigned int Scene::GetBoidCount() const
 {
-	return m_uiNumberOfBoids;
+	return m_uiEntityCount;
 }
 
 #endif // !SCENE_H.

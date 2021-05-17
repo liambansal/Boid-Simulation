@@ -45,6 +45,9 @@
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>Resource Files\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="source\Application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Scene.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.h">
       <Filter>Resource Files\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Application.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

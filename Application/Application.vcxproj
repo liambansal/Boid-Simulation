@@ -158,6 +158,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="source\Application.cpp" />
     <ClCompile Include="source\BrainComponent.cpp" />
     <ClCompile Include="source\Component.cpp" />
     <ClCompile Include="source\Entity.cpp" />
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\BrainComponent.h" />
     <ClInclude Include="include\Component.h" />
     <ClInclude Include="include\Entity.h" />
