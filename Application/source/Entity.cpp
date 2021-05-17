@@ -14,10 +14,10 @@ typedef std::vector<Component*> ComponentList;
 unsigned int Entity::ms_uiEntityCount = 0;
 std::map<const unsigned int, Entity*> Entity::ms_EntityMap;
 
-Entity::Entity()
+// Assign and increment entity ID.
+Entity::Entity() : m_uiEntityID(ms_uiEntityCount++),
+	m_tag("")
 {
-	// Assign and increment entity ID.
-	m_uiEntityID = ms_uiEntityCount++;
 	// Add this entity to our list.
 	ms_EntityMap.insert(EntityPair(m_uiEntityID, this));
 }

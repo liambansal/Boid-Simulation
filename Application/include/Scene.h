@@ -8,6 +8,7 @@
 
 // Header includes.
 #include <map>
+#include <string>
 
 // Forward declarations.
 class Entity;
@@ -25,26 +26,36 @@ public:
 	// Draws all scene's entities.
 	void Draw(Framework* a_pRenderingFramework) const;
 	void AddEntity(Entity* a_pNewEntity);
+	void AddEntities(Entity a_newEntity, unsigned int a_spawnAmount);
+	void DestroyEntity(Entity* a_pEntityToDestroy);
+	void DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_destroyAmount);
 
 	// Returns a pointer to an entity using its unique identifier.
 	inline Entity* GetEntity(unsigned int a_uniqueID);
 	// Returns a reference to all entities in the scene.
 	inline const std::map<unsigned int, Entity*>& GetEntityList() const;
+	inline const unsigned int GetBoidCount() const;
+
 private:
 	unsigned int m_uiNumberOfBoids;
 	std::map<unsigned int, Entity*> m_sceneEntities;
 };
 
 // Returns a pointer to an entity using its unique identifier.
-inline Entity* Scene::GetEntity(unsigned int a_uniqueID)
+Entity* Scene::GetEntity(unsigned int a_uniqueID)
 {
 	return m_sceneEntities.empty() ? nullptr : m_sceneEntities[a_uniqueID];
 }
 
 // Returns a reference to all entities in the scene.
-inline const std::map<unsigned int, Entity*>& Scene::GetEntityList() const
+const std::map<unsigned int, Entity*>& Scene::GetEntityList() const
 {
 	return m_sceneEntities;
+}
+
+const unsigned int Scene::GetBoidCount() const
+{
+	return m_uiNumberOfBoids;
 }
 
 #endif // !SCENE_H.

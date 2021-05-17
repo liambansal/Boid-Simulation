@@ -15,6 +15,9 @@
 #include "TransformComponent.h"
 #include "Utilities.h"
 
+static int boidCount = 30;
+const unsigned int maximumBoidCount = 60;
+
 int main()
 {
 	Framework* pFramework = Framework::GetInstance();
@@ -33,7 +36,6 @@ int main()
 			height,
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		const unsigned int maximumBoidCount = 60;
 		// The absolute value for the maximum spawn distance.
 		const int maximumSpawnDistance = 5;
 
@@ -51,11 +53,13 @@ int main()
 			// create model
 			ModelComponent* pModel = new ModelComponent(pBoid);
 			pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
-			pModel->SetScale(glm::vec3(0.01f, 0.01f, 0.01f));
+			const float scaleScalar = 0.01f;
+			pModel->SetScale(glm::vec3(scaleScalar));
 			pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 			// create brain i.e. AI controller
 			BrainComponent* pBrain = new BrainComponent(pBoid);
 			pBoid->AddComponent(COMPONENT_TYPE_AI, static_cast<Component*>(pBrain));
+			pBoid->SetTag("Boid");
 			scene.AddEntity(pBoid);
 		}
 
@@ -83,8 +87,36 @@ int main()
 			if (ImGui::Begin("Slider Menu"))
 			{
 				io.MouseDrawCursor = true;
-				int boidCount = 30;
 				ImGui::SliderInt("Boid Count", &boidCount, 0, 60);
+
+				if (boidCount > scene.GetBoidCount())
+				{
+					// Create a new boid.
+					Entity* pBoid = new Entity();
+					// Create transform
+					TransformComponent* pTransform = new TransformComponent(pBoid);
+					pTransform->SetMatrixRow(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR,
+						glm::vec3(Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
+							Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
+							Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance)));
+					pBoid->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
+					// create model
+					ModelComponent* pModel = new ModelComponent(pBoid);
+					pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
+					const float scaleScalar = 0.01f;
+					pModel->SetScale(glm::vec3(scaleScalar));
+					pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+					// create brain i.e. AI controller
+					BrainComponent* pBrain = new BrainComponent(pBoid);
+					pBoid->AddComponent(COMPONENT_TYPE_AI, static_cast<Component*>(pBrain));
+					std::string boidTag = "Boid";
+					pBoid->SetTag(boidTag);
+					scene.AddEntities(*pBoid, boidCount - scene.GetBoidCount());
+				}
+				else if (boidCount < scene.GetBoidCount())
+				{
+					scene.DestroyEntitiesWithTag("Boid", scene.GetBoidCount() - boidCount);
+				}
 			}
 
 			ImGui::End();
