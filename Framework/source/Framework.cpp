@@ -175,6 +175,21 @@ void Framework::ProcessInput(GLFWwindow* window)
 	{
 		m_pCamera->ProcessKeyboard(RIGHT, m_fDeltaTime);
 	}
+
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	{
+		m_pCamera->ProcessKeyboard(UP, m_fDeltaTime);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		m_pCamera->ProcessKeyboard(DOWN, m_fDeltaTime);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+	{
+		m_pCamera->ProcessKeyboard(MOVE_FASTER, m_fDeltaTime);
+	}
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback function executes
@@ -208,7 +223,8 @@ void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	pFramework->m_fLastX = xpos;
 	pFramework->m_fLastY = ypos;
 
-	if (pFramework->m_pCamera)
+	// Check left mouse button is being pressed.
+	if (pFramework->m_pCamera && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
 	{
 		pFramework->m_pCamera->ProcessMouseMovement(xoffset, yoffset);
 	}
