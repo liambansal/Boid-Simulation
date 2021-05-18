@@ -34,7 +34,7 @@ public:
 	inline Entity* GetEntity(unsigned int a_uniqueID);
 	// Returns a reference to all entities in the scene.
 	inline const std::map<unsigned int, Entity*>& GetEntityList() const;
-	inline const unsigned int GetBoidCount() const;
+	inline const unsigned int GetEntityCount() const;
 
 private:
 	unsigned int m_uiEntityCount;
@@ -53,7 +53,7 @@ const std::map<unsigned int, Entity*>& Scene::GetEntityList() const
 	return m_sceneEntities;
 }
 
-const unsigned int Scene::GetBoidCount() const
+const unsigned int Scene::GetEntityCount() const
 {
 	return m_uiEntityCount;
 }

@@ -14,13 +14,15 @@
 #include "imgui.h"
 #include "ModelComponent.h"
 #include "TransformComponent.h"
+#include "UserInterface.h"
 #include "Utilities.h"
 
 Application::Application() : m_uiBoidCount(60),
 	mc_uiMaximumBoidCount(60),
+	m_scene(),
 	m_bFrameworkInitialised(false),
 	m_pFramework(Framework::GetInstance()),
-	m_scene()
+	m_userInterface(this)
 {
 	if (m_pFramework)
 	{
@@ -57,6 +59,16 @@ void Application::Run()
 void Application::Update()
 {
 	m_pFramework->Update();
+
+	if (m_uiBoidCount > m_scene.GetEntityCount())
+	{
+		m_scene.AddEntities(CreateBoid(), m_uiBoidCount - m_scene.GetEntityCount());
+	}
+	else if (m_uiBoidCount < m_scene.GetEntityCount())
+	{
+		m_scene.DestroyEntitiesWithTag("Boid", m_scene.GetEntityCount() - m_uiBoidCount);
+	}
+
 	m_scene.Update(m_pFramework->GetDeltaTime());
 }
 
@@ -64,40 +76,10 @@ void Application::Draw()
 {
 	glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	// Draw scene entities.
 	m_scene.Draw(m_pFramework);
-
-#pragma region UI Setup
-	// Start the Dear ImGui frame
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplGlfw_NewFrame();
-	ImGui::NewFrame();
-	ImGuiIO& io = ImGui::GetIO();
-	const ImVec2 windowPosition = ImVec2(1.0f, io.DisplaySize.y * 0.75f);
-	ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
-
-	// Setup sliders
-	if (ImGui::Begin("Slider Menu"))
-	{
-		io.MouseDrawCursor = true;
-		ImGui::SliderInt("Boid Count", &m_uiBoidCount, 0, 60);
-
-		if (m_uiBoidCount > m_scene.GetBoidCount())
-		{
-			m_scene.AddEntities(CreateBoid(), m_uiBoidCount - m_scene.GetBoidCount());
-		}
-		else if (m_uiBoidCount < m_scene.GetBoidCount())
-		{
-			m_scene.DestroyEntitiesWithTag("Boid", m_scene.GetBoidCount() - m_uiBoidCount);
-		}
-	}
-
-	ImGui::End();
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-#pragma endregion
-
+	// Draw UI overlay.
+	m_userInterface.Draw();
 	glfwSwapBuffers(m_pFramework->GetWindow());
 	glfwPollEvents();
 }

@@ -171,6 +171,7 @@
     <ClCompile Include="source\ModelComponent.cpp" />
     <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\TransformComponent.cpp" />
+    <ClCompile Include="source\UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.h" />
@@ -182,6 +183,7 @@
     <ClInclude Include="include\ModelComponent.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\TransformComponent.h" />
+    <ClInclude Include="include\UserInterface.h" />
     <ClInclude Include="include\Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

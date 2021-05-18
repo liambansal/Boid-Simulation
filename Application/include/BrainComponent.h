@@ -28,7 +28,16 @@ public:
 	virtual void Draw(Framework* a_pRenderingFramework)
 	{}
 
+	static inline void SetSeparationForce(float a_force);
+	static inline void SetAlignmentForce(float a_force);
+	static inline void SetCohesionForce(float a_force);
+	static inline void SetWanderForce(float a_force);
+
 	inline glm::vec3 GetVelocity() const;
+	static inline float GetSeparationForce();
+	static inline float GetAlignmentForce();
+	static inline float GetCohesionForce();
+	static inline float GetWanderForce();
 
 private:
 	// Steering behaviours
@@ -65,9 +74,49 @@ private:
 	Scene* m_pScene;
 };
 
+void BrainComponent::SetSeparationForce(float a_force)
+{
+	ms_fSeparationForce = a_force;
+}
+
+void BrainComponent::SetAlignmentForce(float a_force)
+{
+	ms_fAlignmentForce = a_force;
+}
+
+void BrainComponent::SetCohesionForce(float a_force)
+{
+	ms_fCohesionForce = a_force;
+}
+
+void BrainComponent::SetWanderForce(float a_force)
+{
+	ms_fWanderForce = a_force;
+}
+
 glm::vec3 BrainComponent::GetVelocity() const
 {
 	return m_velocity;
+}
+
+float BrainComponent::GetSeparationForce()
+{
+	return ms_fSeparationForce;
+}
+
+float BrainComponent::GetAlignmentForce()
+{
+	return ms_fAlignmentForce;
+}
+
+float BrainComponent::GetCohesionForce()
+{
+	return ms_fCohesionForce;
+}
+
+float BrainComponent::GetWanderForce()
+{
+	return ms_fWanderForce;
 }
 
 #endif // !BRAIN_COMPONENT_H
