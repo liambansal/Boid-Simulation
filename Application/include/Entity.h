@@ -14,11 +14,14 @@
 
 // Forward declarations.
 class Framework;
+class Scene;
 
 class Entity
 {
 public:
 	Entity();
+	Entity(Entity& a_rEntityCopy,
+		Scene* a_pScene);
 	~Entity();
 
 	// Update entity's components one by one.
@@ -32,14 +35,11 @@ public:
 	inline Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;
 	inline const unsigned int GetID() const;
 	inline const std::string GetTag() const;
-	inline static const std::map<const unsigned int, Entity*> GetEntityMap();
 
 private:
 	static unsigned int ms_uiEntityCount;
 	unsigned int m_uiEntityID;
 	std::string m_tag;
-
-	static std::map<const unsigned int, Entity*> ms_EntityMap;
 	std::map<COMPONENT_TYPE, Component*> m_components;
 };
 
@@ -55,7 +55,12 @@ void Entity::SetTag(std::string a_newTag)
 
 Component* Entity::GetComponentOfType(COMPONENT_TYPE a_componentType) const
 {
-	return m_components.find(a_componentType)->second;
+	if (m_components.count(a_componentType) > 0)
+	{
+		return m_components.find(a_componentType)->second;
+	}
+
+	return nullptr;
 }
 
 const unsigned int Entity::GetID() const
@@ -66,11 +71,6 @@ const unsigned int Entity::GetID() const
 const std::string Entity::GetTag() const
 {
 	return m_tag;
-}
-
-const std::map<const unsigned int, Entity*> Entity::GetEntityMap()
-{
-	return ms_EntityMap;
 }
 
 #endif // !ENTITY_H.

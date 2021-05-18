@@ -25,11 +25,13 @@ ModelComponent::ModelComponent(Entity* a_owner) : Parent(a_owner),
 	m_componentType = COMPONENT_TYPE_MODEL;
 }
 
-ModelComponent::~ModelComponent()
-{}
-
-void ModelComponent::Update(float a_deltaTime)
-{}
+ModelComponent::ModelComponent(Entity* a_owner,
+	ModelComponent& a_rModelToCopy) : Parent(a_owner),
+	m_scaleMatrix(a_rModelToCopy.m_scaleMatrix),
+	m_pModel(a_rModelToCopy.m_pModel)
+{
+	m_componentType = a_rModelToCopy.m_componentType;
+}
 
 void ModelComponent::Draw(Framework* a_pRenderingFramework)
 {

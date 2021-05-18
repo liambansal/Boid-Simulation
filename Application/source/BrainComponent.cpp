@@ -7,6 +7,7 @@
 #include "BrainComponent.h"
 #include "Entity.h"
 #include "LearnOpenGL/shader.h"
+#include "Scene.h"
 #include "TransformComponent.h"
 
 float BrainComponent::ms_fSeparationForce = 0.4f;
@@ -14,15 +15,31 @@ float BrainComponent::ms_fAlignmentForce = 0.2f;
 float BrainComponent::ms_fCohesionForce = 0.6f;
 float BrainComponent::ms_fWanderForce = 0.5f;
 
-BrainComponent::BrainComponent(Entity* a_pOwner) : Component(a_pOwner),
+BrainComponent::BrainComponent(Entity* a_pOwner,
+	Scene* a_pScene) : Component(a_pOwner),
 	m_uiNeighbourCount(0),
 	mc_fSpeed(1.0f),
 	mc_fMaximumVelocity(2.0f),
 	m_fLastUpdate(0.0f),
 	m_velocity(0.0f),
-	m_wanderPoint(0.0f)
+	m_wanderPoint(0.0f),
+	m_pScene(a_pScene)
 {
-	m_componentType = COMPONENT_TYPE_AI;
+	m_componentType = COMPONENT_TYPE_BRAIN;
+}
+
+BrainComponent::BrainComponent(Entity* a_pOwner,
+	BrainComponent& a_rBrainToCopy,
+	Scene* a_pScene) : Component(a_pOwner),
+	mc_fSpeed(1.0f),
+	mc_fMaximumVelocity(2.0f),
+	m_uiNeighbourCount(a_rBrainToCopy.m_uiNeighbourCount),
+	m_fLastUpdate(a_rBrainToCopy.m_fLastUpdate),
+	m_velocity(a_rBrainToCopy.m_velocity),
+	m_wanderPoint(a_rBrainToCopy.m_wanderPoint),
+	m_pScene(a_pScene)
+{
+	m_componentType = a_rBrainToCopy.m_componentType;
 }
 
 void BrainComponent::Update(float a_deltaTime)
@@ -54,7 +71,9 @@ void BrainComponent::Update(float a_deltaTime)
 		glm::vec3 seperationVelocity(0.0f);
 		glm::vec3 alignmentVelocity(0.0f);
 		glm::vec3 cohesionVelocity(0.0f);
-		CalculateBehaviouralVelocities(seperationVelocity, alignmentVelocity, cohesionVelocity);
+		CalculateBehaviouralVelocities(seperationVelocity,
+			alignmentVelocity,
+			cohesionVelocity);
 		seperationVelocity *= ms_fSeparationForce;
 		alignmentVelocity *= ms_fAlignmentForce;
 		cohesionVelocity *= ms_fCohesionForce;
@@ -95,9 +114,6 @@ void BrainComponent::Update(float a_deltaTime)
 	pOwnerTransform->SetMatrixRow(MATRIX_ROW_FORWARD_VECTOR, forwardDirection);
 	pOwnerTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR, currentPosition);
 }
-
-void BrainComponent::Draw(Framework* a_pRenderingFramework)
-{}
 
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
 	const glm::vec3& a_rCurrentPosition) const
@@ -230,11 +246,11 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	// Get entity position.
 	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 	// Get the scene's entities.
-	const std::map<const unsigned int, Entity*>& rEntityMap = Entity::GetEntityMap();
+	const std::map<unsigned int, Entity*>& rSceneEntities = m_pScene->GetEntityList();
 	m_uiNeighbourCount = 0;
 
 	// Loop over all entities in scene.
-	for (std::map<const unsigned int, Entity*>::const_iterator iterator = rEntityMap.begin(); iterator != rEntityMap.end(); ++iterator)
+	for (std::map<const unsigned int, Entity*>::const_iterator iterator = rSceneEntities.begin(); iterator != rSceneEntities.end(); ++iterator)
 	{
 		const Entity* pTargetEntity = iterator->second;
 
@@ -247,7 +263,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 		if (pTargetEntity->GetID() != pOwnerEntity->GetID())
 		{
 			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_AI));
+			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_BRAIN));
 
 			if (!ptargetTransform || !pTargetBrain)
 			{

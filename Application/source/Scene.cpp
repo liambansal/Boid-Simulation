@@ -69,25 +69,31 @@ void Scene::Draw(Framework* a_pRenderingFramework) const
 	}
 }
 
-void Scene::AddEntity(Entity* a_pNewEntity)
+bool Scene::AddEntity(Entity* a_pNewEntity)
 {
 	if (m_sceneEntities.count(a_pNewEntity->GetID()) > 0)
 	{
 		// Entity is already in the scene, return.
-		return;
+		return false;
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
 	++m_uiEntityCount;
+	return true;
 }
 
-void Scene::AddEntities(Entity a_EntityToCopy, unsigned int a_spawnAmount)
+void Scene::AddEntities(Entity* a_pEntityToCopy, unsigned int a_spawnAmount)
 {
+	// Try adding entity in case it isn't already in the scene.
+	if (AddEntity(a_pEntityToCopy))
+	{
+		--a_spawnAmount;
+	}
+
 	for (unsigned int i = 0; i < a_spawnAmount; ++i)
 	{
-		Entity* pNewEntity = new Entity(a_EntityToCopy);
+		Entity* pNewEntity = new Entity(*a_pEntityToCopy, this);
 		AddEntity(pNewEntity);
-		++m_uiEntityCount;
 	}
 }
 

@@ -20,9 +20,13 @@ class ModelComponent : public Component
 {
 public:
 	ModelComponent(Entity* a_owner);
-	~ModelComponent();
+	ModelComponent(Entity* a_owner,
+		ModelComponent& a_rModelToCopy);
+	~ModelComponent()
+	{}
 
-	virtual void Update(float a_deltaTime);
+	virtual void Update(float a_deltaTime)
+	{}
 	virtual void Draw(Framework* a_pRenderingFramework);
 	void LoadModel(const char* a_pFilepath);
 

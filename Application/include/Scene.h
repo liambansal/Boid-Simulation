@@ -25,8 +25,8 @@ public:
 	void Update(float a_deltaTime);
 	// Draws all scene's entities.
 	void Draw(Framework* a_pRenderingFramework) const;
-	void AddEntity(Entity* a_pNewEntity);
-	void AddEntities(Entity a_newEntity, unsigned int a_spawnAmount);
+	bool AddEntity(Entity* a_pNewEntity);
+	void AddEntities(Entity* a_pNewEntity, unsigned int a_spawnAmount);
 	void DestroyEntity(Entity* a_pEntityToDestroy);
 	void DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_destroyAmount);
 

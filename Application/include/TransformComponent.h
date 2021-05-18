@@ -25,10 +25,15 @@ class TransformComponent : public Component
 {
 public:
 	TransformComponent(Entity* a_pOwner);
-	~TransformComponent();
+	TransformComponent(Entity* a_pOwner,
+		TransformComponent& a_rTransformToCopy);
+	~TransformComponent()
+	{}
 
-	virtual void Update(float a_deltaTime);
-	virtual void Draw(Framework* a_pRenderingFramework);
+	virtual void Update(float a_deltaTime)
+	{}
+	virtual void Draw(Framework* a_pRenderingFramework)
+	{}
 
 	void SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
 	inline const glm::mat4& GetMatrix() const;

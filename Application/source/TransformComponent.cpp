@@ -16,14 +16,12 @@ TransformComponent::TransformComponent(Entity* a_pOwner) : Parent(a_pOwner),
 	m_componentType = COMPONENT_TYPE_TRANSFORM;
 }
 
-TransformComponent::~TransformComponent()
-{}
-
-void TransformComponent::Update(float a_deltaTime)
-{}
-
-void TransformComponent::Draw(Framework* a_pRenderingFramework)
-{}
+TransformComponent::TransformComponent(Entity* a_pOwner,
+	TransformComponent& a_rTransformToCopy) : Parent(a_pOwner),
+	m_matrix(a_rTransformToCopy.m_matrix)
+{
+	m_componentType = a_rTransformToCopy.m_componentType;
+}
 
 void TransformComponent::SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector)
 {

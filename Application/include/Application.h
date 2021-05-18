@@ -20,6 +20,7 @@ public:
 	void Run();
 	void Update();
 	void Draw();
+	Entity* CreateBoid();
 
 private:
 	int m_uiBoidCount;

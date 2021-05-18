@@ -11,14 +11,22 @@
 
 class Entity;
 class Framework;
+class Scene;
 
 class BrainComponent : public Component
 {
 public:
-	BrainComponent(Entity* a_pOwner);
+	BrainComponent(Entity* a_pOwner,
+		Scene* a_pScene);
+	BrainComponent(Entity* a_pOwner,
+		BrainComponent& a_rBrainToCopy,
+		Scene* a_pScene);
+	~BrainComponent()
+	{}
 
 	virtual void Update(float a_deltaTime);
-	virtual void Draw(Framework* a_pRenderingFramework);
+	virtual void Draw(Framework* a_pRenderingFramework)
+	{}
 
 	inline glm::vec3 GetVelocity() const;
 
@@ -54,6 +62,7 @@ private:
 	float m_fLastUpdate;
 	glm::vec3 m_velocity;
 	glm::vec3 m_wanderPoint;
+	Scene* m_pScene;
 };
 
 glm::vec3 BrainComponent::GetVelocity() const
