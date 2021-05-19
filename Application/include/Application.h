@@ -10,6 +10,7 @@
 #include "UserInterface.h"
 
 // Forward declarations.
+class Entity;
 class Framework;
 
 class Application
@@ -28,15 +29,18 @@ public:
 	inline int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
 
-protected:
+private:
 	int m_uiBoidCount;
 	const unsigned int mc_uiMaximumBoidCount;
-	Scene m_scene;
-
-private:
+	float m_fMarkerZOffset;
+	const float mc_fMimimumMarkerZOffset;
+	const float mc_fMaximumMarkerZOffset;
 	bool m_bFrameworkInitialised;
 	Framework* m_pFramework;
+	Scene m_scene;
 	UserInterface m_userInterface;
+	// A 3D cursor existing in world space.
+	Entity* m_pWorldCursor;
 };
 
 void Application::SetBoidCount(unsigned int a_boidCount)

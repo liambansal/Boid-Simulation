@@ -6,7 +6,6 @@
 // File's header.
 #include "Scene.h"
 #include "BrainComponent.h"
-#include "Entity.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "LearnOpenGL/camera.h"
@@ -42,7 +41,7 @@ Scene::~Scene()
 // Calls update on all the scene's entities.
 void Scene::Update(float a_deltaTime)
 {
-	EntityMap entities = GetEntityList();
+	EntityMap entities = GetEntityMap();
 
 	for (EntityMap::const_iterator iterator = entities.cbegin(); iterator != entities.cend(); ++iterator)
 	{

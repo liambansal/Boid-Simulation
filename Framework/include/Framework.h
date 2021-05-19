@@ -6,6 +6,7 @@
 #ifndef FRAMEWORK_H
 #define FRAMEWORK_H
 
+// Forward declarations.
 struct GLFWwindow;
 class Camera;
 class Model;
@@ -34,6 +35,8 @@ public:
 	inline Camera* GetCamera() const;
 	inline const float GetDeltaTime() const;
 	inline const Shader* GetShader() const;
+	inline const unsigned int GetScreenWidth() const;
+	inline const unsigned int GetScreenHeight() const;
 
 private:
 	Framework();
@@ -72,6 +75,16 @@ const float Framework::GetDeltaTime() const
 const Shader* Framework::GetShader() const
 {
 	return m_pShader;
+}
+
+const unsigned int Framework::GetScreenWidth() const
+{
+	return mc_uiScreenWidth;
+}
+
+const unsigned int Framework::GetScreenHeight() const
+{
+	return mc_uiScreenHeight;
 }
 
 #endif // FRAMEWORK_H.

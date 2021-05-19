@@ -7,11 +7,11 @@
 #define SCENE_H
 
 // Header includes.
+#include "Entity.h"
 #include <map>
 #include <string>
 
 // Forward declarations.
-class Entity;
 class Shader;
 class Framework;
 
@@ -32,9 +32,12 @@ public:
 
 	// Returns a pointer to an entity using its unique identifier.
 	inline Entity* GetEntity(unsigned int a_uniqueID);
-	// Returns a reference to all entities in the scene.
-	inline const std::map<unsigned int, Entity*>& GetEntityList() const;
+	// Returns a reference to a map containing all the scene's entities.
+	inline const std::map<unsigned int, Entity*>& GetEntityMap() const;
+	// Gets the total number of entities in the scene.
 	inline const unsigned int GetEntityCount() const;
+	// Gets the number of entities in the scene with a matching tag.
+	inline const unsigned int GetEntityCount(std::string a_tag) const;
 
 private:
 	unsigned int m_uiEntityCount;
@@ -47,15 +50,33 @@ Entity* Scene::GetEntity(unsigned int a_uniqueID)
 	return m_sceneEntities.empty() ? nullptr : m_sceneEntities[a_uniqueID];
 }
 
-// Returns a reference to all entities in the scene.
-const std::map<unsigned int, Entity*>& Scene::GetEntityList() const
+// Returns a reference to a map containing all the scene's entities.
+const std::map<unsigned int, Entity*>& Scene::GetEntityMap() const
 {
 	return m_sceneEntities;
 }
 
+// Gets the total number of entities in the scene.
 const unsigned int Scene::GetEntityCount() const
 {
 	return m_uiEntityCount;
+}
+
+// Gets the number of entities in the scene with a matching tag.
+const unsigned int Scene::GetEntityCount(std::string a_tag) const
+{
+	// Entities in the scene with a matching tag.
+	unsigned int matchingEntities = 0;
+
+	for (std::pair<unsigned int, Entity*> entity : m_sceneEntities)
+	{
+		if (entity.second->GetTag() == a_tag)
+		{
+			++matchingEntities;
+		}
+	}
+
+	return matchingEntities;
 }
 
 #endif // !SCENE_H.

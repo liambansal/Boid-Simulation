@@ -246,7 +246,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	// Get entity position.
 	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
 	// Get the scene's entities.
-	const std::map<unsigned int, Entity*>& rSceneEntities = m_pScene->GetEntityList();
+	const std::map<unsigned int, Entity*>& rSceneEntities = m_pScene->GetEntityMap();
 	m_uiNeighbourCount = 0;
 
 	// Loop over all entities in scene.

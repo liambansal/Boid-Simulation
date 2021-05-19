@@ -5,11 +5,12 @@
 
 // File's header.
 #include "Application.h"
-#include "Framework.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "BrainComponent.h"
 #include "Entity.h"
+#include "LearnOpenGL/camera.h"
+#include "Framework.h"
 #include "GLFW/glfw3.h"
 #include "imgui.h"
 #include "ModelComponent.h"
@@ -18,25 +19,38 @@
 #include "Utilities.h"
 
 Application::Application() : m_uiBoidCount(60),
-	mc_uiMaximumBoidCount(60),
-	m_scene(),
+	mc_uiMaximumBoidCount(200),
+	m_fMarkerZOffset(10.0f),
+	mc_fMimimumMarkerZOffset(1.0f),
+	mc_fMaximumMarkerZOffset(50.0f),
 	m_bFrameworkInitialised(false),
 	m_pFramework(Framework::GetInstance()),
-	m_userInterface(this)
+	m_scene(),
+	m_userInterface(this),
+	m_pWorldCursor(new Entity())
 {
 	if (m_pFramework)
 	{
 		// Seed rand number generator.
 		srand(time(nullptr));
-		const int width = 1080;
-		const int height = 720;
 		const char* name = "Boids Simulation";
 		m_bFrameworkInitialised = m_pFramework->Initialize(name,
-			width,
-			height,
+			m_pFramework->GetScreenWidth(),
+			m_pFramework->GetScreenHeight(),
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
-		m_scene.AddEntities(CreateBoid(), mc_uiMaximumBoidCount);
+		TransformComponent* pTransform = new TransformComponent(m_pWorldCursor);
+		pTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR,
+			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
+		m_pWorldCursor->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
+		ModelComponent* pModel = new ModelComponent(m_pWorldCursor);
+		pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
+		const float scaleScalar = 0.01f;
+		pModel->SetScale(glm::vec3(scaleScalar));
+		m_pWorldCursor->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+		m_pWorldCursor->SetTag("Marker");
+		m_scene.AddEntity(m_pWorldCursor);
+		m_scene.AddEntities(CreateBoid(), m_uiBoidCount);
 	}
 }
 
@@ -59,14 +73,58 @@ void Application::Run()
 void Application::Update()
 {
 	m_pFramework->Update();
+	std::string boidTag = "Boid";
 
-	if (m_uiBoidCount > m_scene.GetEntityCount())
+	if (m_uiBoidCount > m_scene.GetEntityCount(boidTag))
 	{
-		m_scene.AddEntities(CreateBoid(), m_uiBoidCount - m_scene.GetEntityCount());
+		m_scene.AddEntities(CreateBoid(), m_uiBoidCount - m_scene.GetEntityCount(boidTag));
 	}
-	else if (m_uiBoidCount < m_scene.GetEntityCount())
+	else if (m_uiBoidCount < m_scene.GetEntityCount(boidTag))
 	{
-		m_scene.DestroyEntitiesWithTag("Boid", m_scene.GetEntityCount() - m_uiBoidCount);
+		m_scene.DestroyEntitiesWithTag(boidTag, m_scene.GetEntityCount(boidTag) - m_uiBoidCount);
+	}
+
+	TransformComponent* markerTransform = static_cast<TransformComponent*>(m_pWorldCursor->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+	if (markerTransform)
+	{
+		// Update the marker's position each frame.
+		markerTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR,
+			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
+
+		if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
+		{
+			Entity* pObstacle = new Entity();
+			// add a new transform component.
+			pObstacle->AddComponent(COMPONENT_TYPE_TRANSFORM,
+				static_cast<Component*>(new TransformComponent(pObstacle, *markerTransform)));
+			// create a model to visualise the obstacle.
+			ModelComponent* pModel = new ModelComponent(pObstacle);
+			pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
+			const float scaleScalar = 0.01f;
+			pModel->SetScale(glm::vec3(scaleScalar));
+			pObstacle->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+			pObstacle->SetTag("Obstacle");
+			m_scene.AddEntity(pObstacle);
+		}
+
+		if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_1) == GLFW_PRESS)
+		{
+			--m_fMarkerZOffset;
+		}
+		else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_2) == GLFW_PRESS)
+		{
+			++m_fMarkerZOffset;
+		}
+
+		if (m_fMarkerZOffset > mc_fMaximumMarkerZOffset)
+		{
+			m_fMarkerZOffset = mc_fMaximumMarkerZOffset;
+		}
+		else if (m_fMarkerZOffset < mc_fMimimumMarkerZOffset)
+		{
+			m_fMarkerZOffset = mc_fMimimumMarkerZOffset;
+		}
 	}
 
 	m_scene.Update(m_pFramework->GetDeltaTime());
@@ -74,7 +132,12 @@ void Application::Update()
 
 void Application::Draw()
 {
-	glClearColor(0.5f, 0.5f, 0.5f, 0.1f);
+	const GLfloat rgbColourValues = 0.5f;
+	const GLfloat alphaColourValue = 0.1f;
+	glClearColor(rgbColourValues,
+		rgbColourValues,
+		rgbColourValues,
+		alphaColourValue);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Draw scene entities.
 	m_scene.Draw(m_pFramework);
