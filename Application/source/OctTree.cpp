@@ -15,24 +15,25 @@ OctTree::OctTree(unsigned int a_capacity,
 	m_entities()
 {}
 
-void OctTree::InsertObject(Entity* a_pEntity)
+bool OctTree::InsertObject(Entity* a_pEntity)
 {
 	TransformComponent* entityTransform = static_cast<TransformComponent*>(a_pEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
 	if (!entityTransform)
 	{
-		return;
+		return false;
 	}
 
 	// Check that the entities position is within the boundary.
 	if (!m_boundary.Contains(entityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR]))
 	{
-		return;
+		return false;
 	}
 
 	if (m_entities.size() < m_uiCapacity)
 	{
 		m_entities.push_back(a_pEntity);
+		return true;
 	}
 	else
 	{
@@ -41,7 +42,39 @@ void OctTree::InsertObject(Entity* a_pEntity)
 			SubDivide();
 		}
 
-		// TODO: Add point to children.
+		// Try adding entity to one of the sub trees.
+		if (m_subTrees[SUB_TREE_POSITIONS_000]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_001]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_101]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_100]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_010]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_011]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_111]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
+		else if (m_subTrees[SUB_TREE_POSITIONS_110]->InsertObject(a_pEntity))
+		{
+			return true;
+		}
 	}
 }
 

@@ -21,7 +21,7 @@
 Application::Application() : m_uiBoidCount(60),
 	mc_uiMaximumBoidCount(200),
 	m_fMarkerZOffset(10.0f),
-	mc_fMimimumMarkerZOffset(1.0f),
+	mc_fMimimumMarkerZOffset(0.5f),
 	mc_fMaximumMarkerZOffset(50.0f),
 	m_bFrameworkInitialised(false),
 	m_pFramework(Framework::GetInstance()),

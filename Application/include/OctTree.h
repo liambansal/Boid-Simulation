@@ -35,7 +35,7 @@ public:
 	~OctTree()
 	{}
 
-	void InsertObject(Entity* a_pEntity);
+	bool InsertObject(Entity* a_pEntity);
 	void SubDivide();
 
 private:

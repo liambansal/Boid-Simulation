@@ -23,7 +23,7 @@ Scene::Scene() : m_uiEntityCount(0),
 	m_sceneEntities(),
 	m_octTree(4,
 		Boundary(glm::vec3(0.0f),
-			glm::vec3(50.0f)))
+			glm::vec3(25.0f)))
 {}
 
 Scene::~Scene()
