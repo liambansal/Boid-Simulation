@@ -24,7 +24,7 @@ void UserInterface::Draw()
 	if (ImGui::Begin("Slider Menu"))
 	{
 		io.MouseDrawCursor = true;
-		int boidCount = m_pApplication->GetBoidCount();
+		int boidCount = (int)m_pApplication->GetBoidCount();
 		ImGui::SliderInt("Boid Count", &boidCount, 0, m_pApplication->GetMaximumBoidCount());
 		m_pApplication->SetBoidCount(boidCount);
 		float separationForce = BrainComponent::GetSeparationForce();

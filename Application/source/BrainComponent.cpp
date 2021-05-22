@@ -62,8 +62,8 @@ void BrainComponent::Update(float a_deltaTime)
 		return;
 	}
 
-	glm::vec3 forwardDirection = pOwnerTransform->GetMatrix()[MATRIX_ROW_FORWARD_VECTOR];
-	glm::vec3 currentPosition = pOwnerTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	glm::vec3 forwardDirection = pOwnerTransform->GetMatrixRow(MATRIX_ROW_FORWARD_VECTOR);
+	glm::vec3 currentPosition = pOwnerTransform->GetMatrixRow(MATRIX_ROW_POSITION_VECTOR);
 
 	if (m_fLastUpdate >= updateStep)
 	{
@@ -93,7 +93,7 @@ void BrainComponent::Update(float a_deltaTime)
 		forwardDirection = glm::normalize(forwardDirection);
 	}
 
-	glm::vec3 upDirection = pOwnerTransform->GetMatrix()[MATRIX_ROW_UP_VECTOR];
+	glm::vec3 upDirection = pOwnerTransform->GetMatrixRow(MATRIX_ROW_UP_VECTOR);
 	upDirection -= forwardDirection * glm::dot(forwardDirection, upDirection);
 	
 	if (glm::length(upDirection) > 0.0f)
@@ -244,7 +244,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	}
 
 	// Get entity position.
-	const glm::vec3 localPosition = pEntityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	const glm::vec3 localPosition = pEntityTransform->GetMatrixRow(MATRIX_ROW_POSITION_VECTOR);
 	// Get the scene's entities.
 	const std::map<unsigned int, Entity*>& rSceneEntities = m_pScene->GetEntityMap();
 	m_uiNeighbourCount = 0;
@@ -271,7 +271,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 			}
 
 			// Find distance to iterator entity
-			const glm::vec3 targetPosition = ptargetTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+			const glm::vec3 targetPosition = ptargetTransform->GetMatrixRow(MATRIX_ROW_POSITION_VECTOR);
 			const float distance = glm::length(targetPosition - localPosition);
 			// Check distance is within our neighbourhood.
 			const float neighbourhoodRadius = 10.0f;

@@ -26,11 +26,11 @@ public:
 
 	inline void SetBoidCount(unsigned int a_boidCount);
 
-	inline int GetBoidCount() const;
+	inline unsigned int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
 
 private:
-	int m_uiBoidCount;
+	unsigned int m_uiBoidCount;
 	const unsigned int mc_uiMaximumBoidCount;
 	float m_fMarkerZOffset;
 	const float mc_fMimimumMarkerZOffset;
@@ -45,10 +45,10 @@ private:
 
 void Application::SetBoidCount(unsigned int a_boidCount)
 {
-	m_uiBoidCount = (int)a_boidCount;
+	m_uiBoidCount = a_boidCount;
 }
 
-int Application::GetBoidCount() const
+unsigned int Application::GetBoidCount() const
 {
 	return m_uiBoidCount;
 }

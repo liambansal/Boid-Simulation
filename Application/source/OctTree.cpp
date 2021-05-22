@@ -5,34 +5,34 @@
 
 // File's header.
 #include "OctTree.h"
-#include "Entity.h"
-#include "TransformComponent.h"
 
-OctTree::OctTree(unsigned int a_capacity,
+template <typename T>
+OctTree<T>::OctTree(unsigned int a_capacity,
 	Boundary a_boundary) : m_uiCapacity(a_capacity),
 	m_bSubdivided(false),
 	m_boundary(a_boundary),
-	m_entities()
+	m_objects(),
+	m_subTrees()
 {}
 
-bool OctTree::InsertObject(Entity* a_pEntity)
+template <typename T>
+bool OctTree<T>::InsertObject(T* a_pObject,
+	const glm::vec3* a_pPosition)
 {
-	TransformComponent* entityTransform = static_cast<TransformComponent*>(a_pEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-
-	if (!entityTransform)
+	if (!a_pObject || !a_pPosition)
 	{
 		return false;
 	}
 
 	// Check that the entities position is within the boundary.
-	if (!m_boundary.Contains(entityTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR]))
+	if (!m_boundary.Contains(*a_pPosition))
 	{
 		return false;
 	}
 
-	if (m_entities.size() < m_uiCapacity)
+	if (m_objects.size() < m_uiCapacity)
 	{
-		m_entities.push_back(a_pEntity);
+		m_objects.push_back(std::pair<T*, glm::vec3*>(a_pObject, a_pPosition));
 		return true;
 	}
 	else
@@ -43,42 +43,43 @@ bool OctTree::InsertObject(Entity* a_pEntity)
 		}
 
 		// Try adding entity to one of the sub trees.
-		if (m_subTrees[SUB_TREE_POSITIONS_000]->InsertObject(a_pEntity))
+		if (m_subTrees[SUB_TREE_POSITIONS_000]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_001]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_001]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_101]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_101]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_100]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_100]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_010]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_010]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_011]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_011]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_111]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_111]->InsertObject(a_pObject))
 		{
 			return true;
 		}
-		else if (m_subTrees[SUB_TREE_POSITIONS_110]->InsertObject(a_pEntity))
+		else if (m_subTrees[SUB_TREE_POSITIONS_110]->InsertObject(a_pObject))
 		{
 			return true;
 		}
 	}
 }
 
-void OctTree::SubDivide()
+template <typename T>
+void OctTree<T>::SubDivide()
 {
 	// Bottom left back.
 	glm::vec3 subTreePosition000(m_boundary.GetPosition().x - m_boundary.GetDimensions().x / 2,
@@ -146,4 +147,33 @@ void OctTree::SubDivide()
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_subTrees[SUB_TREE_POSITIONS_110] = subTree110;
 	m_bSubdivided = true;
+}
+
+template <typename T>
+std::vector<T*> OctTree<T>::Query(Boundary a_queryVolume)
+{
+	// Objects within the query volume and its surrounding oct tree sub divisions.
+	std::vector<T*> containedObjects;
+
+	if (!m_boundary.Intersects(a_queryVolume))
+	{
+		return containedObjects;
+	}
+	else
+	{
+		for (std::pair<T*, glm::vec3*> object : m_objects)
+		{
+			if (a_queryVolume.Contains(object->second))
+			{
+				containedObjects.push_back(object->first);
+			}
+		}
+
+		if (m_bSubdivided)
+		{
+			// TODO: add objects from subdivision boundaries
+		}
+
+		return containedObjects;
+	}
 }

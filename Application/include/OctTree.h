@@ -8,11 +8,11 @@
 
 // Header includes.
 #include "Boundary.h"
+#include "glm/glm.hpp"
+#include <map>
 #include <vector>
 
-// Forward declarations.
-class Entity;
-
+template <typename T>
 class OctTree
 {
 public:
@@ -35,8 +35,10 @@ public:
 	~OctTree()
 	{}
 
-	bool InsertObject(Entity* a_pEntity);
+	bool InsertObject(T* a_pObject,
+		const glm::vec3* a_pPosition);
 	void SubDivide();
+	std::vector<T*> Query(Boundary a_queryVolume);
 
 private:
 	// Number of objects held within a boundary before it subdivided.
@@ -44,7 +46,7 @@ private:
 	bool m_bSubdivided;
 	// Measured width, height and depth.
 	Boundary m_boundary;
-	std::vector<Entity*> m_entities;
+	std::map<T*, glm::vec3*> m_objects;
 	OctTree* m_subTrees[8];
 };
 

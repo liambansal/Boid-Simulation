@@ -66,7 +66,7 @@ void Scene::Draw(Framework* a_pRenderingFramework) const
 		return;
 	}
 
-	for (std::map<unsigned int, Entity*>::const_iterator iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
+	for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
 	{
 		iterator->second->Draw(a_pRenderingFramework);
 	}
@@ -81,7 +81,14 @@ bool Scene::AddEntity(Entity* a_pNewEntity)
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
-	m_octTree.InsertObject(a_pNewEntity);
+	/*TransformComponent* pTransform = static_cast<TransformComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+	const glm::vec3& pEntityPosition = pTransform->GetMatrixRow(MATRIX_ROW_POSITION_VECTOR);
+
+	if (pTransform)
+	{
+		m_octTree.InsertObject(a_pNewEntity, &pEntityPosition);
+	}*/
+
 	++m_uiEntityCount;
 	return true;
 }
@@ -118,7 +125,7 @@ void Scene::DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_destr
 
 	for (unsigned int i = 0; i < a_destroyAmount; ++i)
 	{
-		for (std::map<unsigned int, Entity*>::const_iterator iterator = m_sceneEntities.cbegin();
+		for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin();
 			iterator != m_sceneEntities.cend();
 			++iterator)
 		{
