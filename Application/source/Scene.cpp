@@ -19,7 +19,11 @@
 typedef std::pair<unsigned int, Entity*> EntityPair;
 typedef std::map<unsigned int, Entity*> EntityMap;
 
-Scene::Scene() : m_uiEntityCount(0)
+Scene::Scene() : m_uiEntityCount(0),
+	m_sceneEntities(),
+	m_octTree(4,
+		Boundary(glm::vec3(0.0f),
+			glm::vec3(50.0f)))
 {}
 
 Scene::~Scene()
@@ -77,6 +81,7 @@ bool Scene::AddEntity(Entity* a_pNewEntity)
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
+	m_octTree.InsertObject(a_pNewEntity);
 	++m_uiEntityCount;
 	return true;
 }

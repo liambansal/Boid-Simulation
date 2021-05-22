@@ -159,6 +159,7 @@
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="source\Application.cpp" />
+    <ClCompile Include="source\Boundary.cpp" />
     <ClCompile Include="source\BrainComponent.cpp" />
     <ClCompile Include="source\Component.cpp" />
     <ClCompile Include="source\Entity.cpp" />
@@ -169,6 +170,7 @@
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\ModelComponent.cpp" />
+    <ClCompile Include="source\OctTree.cpp" />
     <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\TransformComponent.cpp" />
     <ClCompile Include="source\UserInterface.cpp" />
@@ -177,10 +179,12 @@
     <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.h" />
     <ClInclude Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.h" />
     <ClInclude Include="include\Application.h" />
+    <ClInclude Include="include\Boundary.h" />
     <ClInclude Include="include\BrainComponent.h" />
     <ClInclude Include="include\Component.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\ModelComponent.h" />
+    <ClInclude Include="include\OctTree.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\TransformComponent.h" />
     <ClInclude Include="include\UserInterface.h" />

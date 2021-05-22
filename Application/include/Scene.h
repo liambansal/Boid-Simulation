@@ -9,6 +9,7 @@
 // Header includes.
 #include "Entity.h"
 #include <map>
+#include "OctTree.h"
 #include <string>
 
 // Forward declarations.
@@ -42,6 +43,7 @@ public:
 private:
 	unsigned int m_uiEntityCount;
 	std::map<unsigned int, Entity*> m_sceneEntities;
+	OctTree m_octTree;
 };
 
 // Returns a pointer to an entity using its unique identifier.
