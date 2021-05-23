@@ -45,7 +45,7 @@ void ModelComponent::Draw(Framework* a_pRenderingFramework)
 	}
 
 	// Update the scale transform's position row.
-	m_scaleMatrix[MATRIX_ROW_POSITION_VECTOR] = pTransform->GetMatrix()[MATRIX_ROW_POSITION_VECTOR];
+	m_scaleMatrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR] = pTransform->GetMatrix()[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
 	a_pRenderingFramework->GetShader()->setMat4("model", m_scaleMatrix);
 	// Render the loaded model.
 	a_pRenderingFramework->Draw(m_pModel);

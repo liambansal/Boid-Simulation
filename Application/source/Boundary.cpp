@@ -12,7 +12,7 @@ Boundary::Boundary(glm::vec3 a_newPosition,
 {}
 
 // Is a 3D position within the boundary's dimensions?
-bool Boundary::Contains(glm::vec3 a_position) const
+bool Boundary::Contains(const glm::vec3& a_position) const
 {
 	return (a_position.x >= m_position.x - m_dimensions.x &&
 		a_position.x <= m_position.x + m_dimensions.x &&

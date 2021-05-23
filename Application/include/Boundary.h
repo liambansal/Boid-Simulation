@@ -17,7 +17,7 @@ public:
 	~Boundary()
 	{}
 
-	bool Contains(glm::vec3 a_position) const;
+	bool Contains(const glm::vec3& a_position) const;
 	bool Intersects(Boundary a_otherBoundary) const;
 
 	inline void SetPosition(glm::vec3 a_newPosition);

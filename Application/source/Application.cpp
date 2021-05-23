@@ -40,7 +40,7 @@ Application::Application() : m_uiBoidCount(60),
 			"Resources/Shaders/model_loading.vs",
 			"Resources/Shaders/model_loading.fs");
 		TransformComponent* pTransform = new TransformComponent(m_pWorldCursor);
-		pTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR,
+		pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
 		m_pWorldCursor->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
 		ModelComponent* pModel = new ModelComponent(m_pWorldCursor);
@@ -89,7 +89,7 @@ void Application::Update()
 	if (markerTransform)
 	{
 		// Update the marker's position each frame.
-		markerTransform->SetMatrixRow(MATRIX_ROW_POSITION_VECTOR,
+		markerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
 
 		if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
@@ -155,7 +155,7 @@ Entity* Application::CreateBoid()
 	TransformComponent* pTransform = new TransformComponent(pBoid);
 	// The absolute value for the maximum spawn distance.
 	const int maximumSpawnDistance = 5;
-	pTransform->SetMatrixRow(MATRIX_ROW::MATRIX_ROW_POSITION_VECTOR,
+	pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 		glm::vec3(Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
 			Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
 			Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance)));

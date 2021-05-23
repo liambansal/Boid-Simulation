@@ -12,18 +12,18 @@
 
 class Framework;
 
-enum MATRIX_ROW
-{
-	MATRIX_ROW_RIGHT_VECTOR,
-	MATRIX_ROW_UP_VECTOR,
-	MATRIX_ROW_FORWARD_VECTOR,
-	MATRIX_ROW_POSITION_VECTOR,
-	MATRIX_ROW_COUNT
-};
-
 class TransformComponent : public Component
 {
 public:
+	enum MATRIX_ROW
+	{
+		MATRIX_ROW_RIGHT_VECTOR,
+		MATRIX_ROW_UP_VECTOR,
+		MATRIX_ROW_FORWARD_VECTOR,
+		MATRIX_ROW_POSITION_VECTOR,
+		MATRIX_ROW_COUNT
+	};
+
 	TransformComponent(Entity* a_pOwner);
 	TransformComponent(Entity* a_pOwner,
 		TransformComponent& a_rTransformToCopy);
@@ -38,7 +38,7 @@ public:
 	void SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
 
 	inline const glm::mat4& GetMatrix() const;
-	inline const glm::vec3& GetMatrixRow(MATRIX_ROW a_row) const;
+	inline const glm::vec4& GetMatrixRow(MATRIX_ROW a_row) const;
 
 private:
 	glm::mat4 m_matrix;
@@ -49,7 +49,7 @@ const glm::mat4& TransformComponent::GetMatrix() const
 	return m_matrix;
 }
 
-const glm::vec3& TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
+const glm::vec4& TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
 {
 	return m_matrix[a_row];
 }

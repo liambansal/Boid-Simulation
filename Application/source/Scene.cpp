@@ -81,13 +81,13 @@ bool Scene::AddEntity(Entity* a_pNewEntity)
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
-	/*TransformComponent* pTransform = static_cast<TransformComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	const glm::vec3& pEntityPosition = pTransform->GetMatrixRow(MATRIX_ROW_POSITION_VECTOR);
+	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+	const glm::vec3& pEntityPosition = (const glm::vec3)pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
 
 	if (pTransform)
 	{
-		m_octTree.InsertObject(a_pNewEntity, &pEntityPosition);
-	}*/
+		m_octTree.InsertObject(a_pNewEntity, pEntityPosition);
+	}
 
 	++m_uiEntityCount;
 	return true;

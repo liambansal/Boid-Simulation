@@ -170,7 +170,6 @@
       </ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="source\ModelComponent.cpp" />
-    <ClCompile Include="source\OctTree.cpp" />
     <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\TransformComponent.cpp" />
     <ClCompile Include="source\UserInterface.cpp" />
