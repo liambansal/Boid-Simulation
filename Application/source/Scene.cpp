@@ -45,12 +45,6 @@ Scene::~Scene()
 // Calls update on all the scene's entities.
 void Scene::Update(float a_deltaTime)
 {
-	//std::vector<Entity*> nearbyEntities;
-	//// TODO: re-factor code and use in the brain component when finding nearby entities.
-	//m_octTree.Query(Boundary(glm::vec3(0.0f),
-	//	glm::vec3(5.0f)),
-	//	nearbyEntities);
-
 	EntityMap entities = GetEntityMap();
 
 	for (EntityMap::const_iterator iterator = entities.cbegin(); iterator != entities.cend(); ++iterator)

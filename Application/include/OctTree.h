@@ -38,7 +38,7 @@ public:
 		const TPosition& a_rPosition);
 	void SubDivide();
 	void Query(Boundary a_queryVolume,
-		std::vector<TObject*>& a_rContainedEntities);
+		std::vector<TObject*>& a_rContainedEntities) const;
 
 private:
 	// Number of objects held within a boundary before it subdivided.
@@ -197,7 +197,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 
 template <typename TObject, typename TPosition>
 void OctTree<TObject, TPosition>::Query(Boundary a_queryVolume,
-	std::vector<TObject*>& a_rContainedEntities)
+	std::vector<TObject*>& a_rContainedEntities) const
 {
 	// Check the space being queried for objects actually intersects this oct tree.
 	if (!m_boundary.Overlaps(a_queryVolume))

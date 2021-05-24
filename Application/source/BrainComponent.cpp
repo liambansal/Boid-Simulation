@@ -7,8 +7,11 @@
 #include "BrainComponent.h"
 #include "Entity.h"
 #include "LearnOpenGL/shader.h"
+#include "OctTree.h"
 #include "Scene.h"
 #include "TransformComponent.h"
+
+typedef std::vector<Entity*> pEntityVector;
 
 float BrainComponent::ms_fSeparationForce = 0.4f;
 float BrainComponent::ms_fAlignmentForce = 0.2f;
@@ -20,6 +23,7 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_uiNeighbourCount(0),
 	mc_fSpeed(1.0f),
 	mc_fMaximumVelocity(2.0f),
+	mc_fMaximumNeighbourDistance(1.5f),
 	m_fLastUpdate(0.0f),
 	m_velocity(0.0f),
 	m_wanderPoint(0.0f),
@@ -31,8 +35,9 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 BrainComponent::BrainComponent(Entity* a_pOwner,
 	BrainComponent& a_rBrainToCopy,
 	Scene* a_pScene) : Component(a_pOwner),
-	mc_fSpeed(1.0f),
-	mc_fMaximumVelocity(2.0f),
+	mc_fSpeed(a_rBrainToCopy.mc_fSpeed),
+	mc_fMaximumVelocity(a_rBrainToCopy.mc_fMaximumVelocity),
+	mc_fMaximumNeighbourDistance(a_rBrainToCopy.mc_fMaximumNeighbourDistance),
 	m_uiNeighbourCount(a_rBrainToCopy.m_uiNeighbourCount),
 	m_fLastUpdate(a_rBrainToCopy.m_fLastUpdate),
 	m_velocity(a_rBrainToCopy.m_velocity),
@@ -245,22 +250,26 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 
 	// Get entity position.
 	const glm::vec3 localPosition = (const glm::vec3)pEntityTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
-	// Get the scene's entities.
-	const std::map<unsigned int, Entity*>& rSceneEntities = m_pScene->GetEntityMap();
 	m_uiNeighbourCount = 0;
+	pEntityVector nearbyEntities;
+	// Get all nearby entities.
+	m_pScene->GetOctTree().Query(Boundary(localPosition,
+		glm::vec3(mc_fMaximumNeighbourDistance)),
+		nearbyEntities);
+	m_uiNeighbourCount = nearbyEntities.size();
 
 	// Loop over all entities in scene.
-	for (std::map<const unsigned int, Entity*>::const_iterator iterator = rSceneEntities.begin(); iterator != rSceneEntities.end(); ++iterator)
+	for (pEntityVector::const_iterator iterator = nearbyEntities.begin(); iterator != nearbyEntities.end(); ++iterator)
 	{
-		const Entity* pTargetEntity = iterator->second;
+		const Entity* pTargetEntity = *iterator;
 
 		if (!pTargetEntity)
 		{
 			continue;
 		}
 
-		// make sure we haven't found this entity.
-		if (pTargetEntity->GetID() != pOwnerEntity->GetID())
+		// Make sure we haven't found this entity and it's a boid.
+		if (pTargetEntity->GetID() != pOwnerEntity->GetID() && pTargetEntity->GetTag() == "Boid")
 		{
 			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(pTargetEntity->GetComponentOfType(COMPONENT_TYPE_BRAIN));
@@ -272,17 +281,9 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 
 			// Find distance to iterator entity
 			const glm::vec3 targetPosition = (const glm::vec3)ptargetTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
-			const float distance = glm::length(targetPosition - localPosition);
-			// Check distance is within our neighbourhood.
-			const float neighbourhoodRadius = 10.0f;
-
-			if (distance < neighbourhoodRadius)
-			{
-				++m_uiNeighbourCount;
-				a_rSeparationVelocity = CalculateSeparationVelocity(a_rSeparationVelocity, localPosition - targetPosition);
-				a_rAlignmentVelocity = CalculateAlignmentVelocity(a_rAlignmentVelocity, pTargetBrain->GetVelocity());
-				a_rCohesionVelocity = CalculateCohesionVelocity(a_rCohesionVelocity, targetPosition, localPosition);
-			}
+			a_rSeparationVelocity = CalculateSeparationVelocity(a_rSeparationVelocity, localPosition - targetPosition);
+			a_rAlignmentVelocity = CalculateAlignmentVelocity(a_rAlignmentVelocity, pTargetBrain->GetVelocity());
+			a_rCohesionVelocity = CalculateCohesionVelocity(a_rCohesionVelocity, targetPosition, localPosition);
 		}
 	}
 }

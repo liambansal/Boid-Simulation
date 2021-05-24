@@ -68,6 +68,7 @@ private:
 	unsigned int m_uiNeighbourCount;
 	const float mc_fSpeed;
 	const float mc_fMaximumVelocity;
+	const float mc_fMaximumNeighbourDistance;
 	float m_fLastUpdate;
 	glm::vec3 m_velocity;
 	glm::vec3 m_wanderPoint;

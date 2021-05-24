@@ -39,6 +39,7 @@ public:
 	inline const unsigned int GetEntityCount() const;
 	// Gets the number of entities in the scene with a matching tag.
 	inline const unsigned int GetEntityCount(std::string a_tag) const;
+	inline const OctTree<Entity, glm::vec4>& GetOctTree() const;
 
 private:
 	unsigned int m_uiEntityCount;
@@ -79,6 +80,11 @@ const unsigned int Scene::GetEntityCount(std::string a_tag) const
 	}
 
 	return matchingEntities;
+}
+
+const OctTree<Entity, glm::vec4>& Scene::GetOctTree() const
+{
+	return m_octTree;
 }
 
 #endif // !SCENE_H.
