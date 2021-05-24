@@ -12,16 +12,30 @@
 class Utilities
 {
 public:
-	// Returns an almost random numerical value between two ranges.
+	// Returns a semi-random number between two ranges.
 	template<typename T>
-	static inline T RandomRange(T a_lowerRange, T a_upperRange);
+	static inline T RandomRange(T a_lowerRange,
+		T a_upperRange);
 };
 
-// Returns an almost random numerical value between two ranges.
+// Returns a semi-random number between two ranges.
 template<typename T>
-T Utilities::RandomRange(T a_lowerRange, T a_upperRange)
+T Utilities::RandomRange(T a_lowerRange,
+	T a_upperRange)
 {
-	return rand() % (glm::abs(a_lowerRange - a_upperRange)) + a_lowerRange;
+	if (a_lowerRange == 0 && a_upperRange == 0)
+	{
+		return 0;
+	}
+
+	T wholeNumber = rand() % glm::abs((glm::int32)a_lowerRange - (glm::int32)a_upperRange) + a_lowerRange;
+	// 1000 produces decent random values.
+	unsigned int maxDecimalValue = 1000;
+	// Produce the decimal part of the semi-random number.
+	T decimals = rand() % maxDecimalValue;
+	unsigned int significantFigures = log10(decimals) + 1;
+	decimals *= 1 / pow(10, significantFigures);
+	return wholeNumber += decimals;
 }
 
 #endif // !UTILITIES_H

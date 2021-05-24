@@ -27,7 +27,7 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 	m_fLastFrame(0.0f),
 	m_bFirstMouse(true),
 	m_pWindow(nullptr),
-	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, 20.0f))),
+	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, -20.0f))),
 	m_pShader(nullptr)
 {}
 

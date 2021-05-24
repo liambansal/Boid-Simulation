@@ -17,8 +17,10 @@ public:
 	~Boundary()
 	{}
 
+	// Returns true if a point is located within a boundary.
 	bool Contains(const glm::vec3& a_position) const;
-	bool Intersects(Boundary a_otherBoundary) const;
+	// Returns true if two boundaries share the same volume of space.
+	bool Overlaps(Boundary a_otherBoundary) const;
 
 	inline void SetPosition(glm::vec3 a_newPosition);
 	inline void SetDimensions(glm::vec3 a_newDimensions);

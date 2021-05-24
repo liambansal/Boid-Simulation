@@ -43,7 +43,7 @@ public:
 private:
 	unsigned int m_uiEntityCount;
 	std::map<unsigned int, Entity*> m_sceneEntities;
-	OctTree<Entity> m_octTree;
+	OctTree<Entity, glm::vec4> m_octTree;
 };
 
 // Returns a pointer to an entity using its unique identifier.

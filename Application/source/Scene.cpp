@@ -23,7 +23,7 @@ Scene::Scene() : m_uiEntityCount(0),
 	m_sceneEntities(),
 	m_octTree(4,
 		Boundary(glm::vec3(0.0f),
-			glm::vec3(25.0f)))
+			glm::vec3(5.0f)))
 {}
 
 Scene::~Scene()
@@ -45,6 +45,12 @@ Scene::~Scene()
 // Calls update on all the scene's entities.
 void Scene::Update(float a_deltaTime)
 {
+	//std::vector<Entity*> nearbyEntities;
+	//// TODO: re-factor code and use in the brain component when finding nearby entities.
+	//m_octTree.Query(Boundary(glm::vec3(0.0f),
+	//	glm::vec3(5.0f)),
+	//	nearbyEntities);
+
 	EntityMap entities = GetEntityMap();
 
 	for (EntityMap::const_iterator iterator = entities.cbegin(); iterator != entities.cend(); ++iterator)
@@ -82,7 +88,7 @@ bool Scene::AddEntity(Entity* a_pNewEntity)
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	const glm::vec3& pEntityPosition = (const glm::vec3)pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
+	const glm::vec4& pEntityPosition = pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
 
 	if (pTransform)
 	{
