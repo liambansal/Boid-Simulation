@@ -8,6 +8,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "BrainComponent.h"
+#include "ColliderComponent.h"
 #include "Entity.h"
 #include "LearnOpenGL/camera.h"
 #include "Framework.h"
@@ -168,6 +169,10 @@ Entity* Application::CreateBoid()
 	const float scaleScalar = 0.01f;
 	pModel->SetScale(glm::vec3(scaleScalar));
 	pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+	// Create a collider for collisions.
+	ColliderComponent* pCollider = new ColliderComponent(pBoid,
+		&m_scene.GetOctTree());
+	pBoid->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 	// create brain i.e. AI controller
 	BrainComponent* pBrain = new BrainComponent(pBoid, &m_scene);
 	pBoid->AddComponent(COMPONENT_TYPE_BRAIN, static_cast<Component*>(pBrain));

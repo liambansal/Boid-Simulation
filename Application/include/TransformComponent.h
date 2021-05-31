@@ -39,6 +39,7 @@ public:
 
 	inline const glm::mat4& GetMatrix() const;
 	inline const glm::vec4& GetMatrixRow(MATRIX_ROW a_row) const;
+	inline glm::vec3* GetPosition() const;
 
 private:
 	glm::mat4 m_matrix;
@@ -52,6 +53,12 @@ const glm::mat4& TransformComponent::GetMatrix() const
 const glm::vec4& TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
 {
 	return m_matrix[a_row];
+}
+
+glm::vec3* TransformComponent::GetPosition() const
+{
+	glm::vec3& position = (glm::vec3&)m_matrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
+	return &position;
 }
 
 #endif // !TRANSFORM_COMPONENT_H.

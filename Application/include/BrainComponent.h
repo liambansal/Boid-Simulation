@@ -6,9 +6,12 @@
 #ifndef BRAIN_COMPONENT_H
 #define BRAIN_COMPONENT_H
 
+// Header dependencies.
 #include "Component.h"
 #include "glm/glm.hpp"
 
+// Forward declarations
+class ColliderComponent;
 class Entity;
 class Framework;
 class Scene;
@@ -73,6 +76,7 @@ private:
 	glm::vec3 m_velocity;
 	glm::vec3 m_wanderPoint;
 	Scene* m_pScene;
+	ColliderComponent* m_pEntityCollider;
 };
 
 void BrainComponent::SetSeparationForce(float a_force)

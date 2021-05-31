@@ -8,6 +8,8 @@
 #include "BrainComponent.h"
 #include "ColliderComponent.h"
 #include "ModelComponent.h"
+#include "OctTree.h"
+#include "Scene.h"
 #include "TransformComponent.h"
 
 // Typedefs.
@@ -57,6 +59,7 @@ Entity::Entity(Entity& a_rEntityCopy,
 		else if (componentType == COMPONENT_TYPE_COLLIDER)
 		{
 			ColliderComponent* pColliderComponent = new ColliderComponent(this,
+				&a_pScene->GetOctTree(),
 				*static_cast<ColliderComponent*>(a_rEntityCopy.GetComponentOfType(componentType)));
 			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(componentType,
 				static_cast<Component*>(pColliderComponent)));

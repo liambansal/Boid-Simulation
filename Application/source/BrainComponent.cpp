@@ -5,6 +5,7 @@
 
 // File's header.
 #include "BrainComponent.h"
+#include "ColliderComponent.h"
 #include "Entity.h"
 #include "LearnOpenGL/shader.h"
 #include "OctTree.h"
@@ -27,7 +28,8 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_fLastUpdate(0.0f),
 	m_velocity(0.0f),
 	m_wanderPoint(0.0f),
-	m_pScene(a_pScene)
+	m_pScene(a_pScene),
+	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER)))
 {
 	m_componentType = COMPONENT_TYPE_BRAIN;
 }
@@ -42,7 +44,8 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_fLastUpdate(a_rBrainToCopy.m_fLastUpdate),
 	m_velocity(a_rBrainToCopy.m_velocity),
 	m_wanderPoint(a_rBrainToCopy.m_wanderPoint),
-	m_pScene(a_pScene)
+	m_pScene(a_pScene),
+	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER)))
 {
 	m_componentType = a_rBrainToCopy.m_componentType;
 }
@@ -90,6 +93,13 @@ void BrainComponent::Update(float a_deltaTime)
 	m_velocity = glm::clamp(m_velocity,
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
+
+	// Check for any collisions before moving.
+	if (m_pEntityCollider && m_pEntityCollider->IsColliding())
+	{
+		// TODO: respond to collisions here.
+	}
+
 	currentPosition += m_velocity * a_deltaTime;
 	forwardDirection = m_velocity;
 
@@ -249,11 +259,12 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	}
 
 	// Get entity position.
-	const glm::vec3 localPosition = (const glm::vec3)pEntityTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
+	glm::vec3& localPosition = (glm::vec3&)pEntityTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
+
 	m_uiNeighbourCount = 0;
 	pEntityVector nearbyEntities;
 	// Get all nearby entities.
-	m_pScene->GetOctTree().Query(Boundary(localPosition,
+	m_pScene->GetOctTree().Query(Boundary(&localPosition,
 		glm::vec3(mc_fMaximumNeighbourDistance)),
 		nearbyEntities);
 	m_uiNeighbourCount = nearbyEntities.size();

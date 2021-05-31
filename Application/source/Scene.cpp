@@ -22,7 +22,7 @@ typedef std::map<unsigned int, Entity*> EntityMap;
 Scene::Scene() : m_uiEntityCount(0),
 	m_sceneEntities(),
 	m_octTree(4,
-		Boundary(glm::vec3(0.0f),
+		Boundary(new glm::vec3(0.0f),
 			glm::vec3(5.0f)))
 {}
 
