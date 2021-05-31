@@ -40,6 +40,8 @@ public:
 	void Query(Boundary a_queryVolume,
 		std::vector<TObject*>& a_rContainedEntities) const;
 
+	inline const Boundary& GetBoundary() const;
+
 private:
 	// Number of objects held within a boundary before it subdivided.
 	unsigned int m_uiCapacity;
@@ -228,6 +230,12 @@ void OctTree<TObject, TPosition>::Query(Boundary a_queryVolume,
 			m_pSubTrees[SUB_TREE_POSITIONS_110]->Query(a_queryVolume, a_rContainedEntities);
 		}
 	}
+}
+
+template<typename TObject, typename TPosition>
+const Boundary& OctTree<TObject, TPosition>::GetBoundary() const
+{
+	return m_boundary;
 }
 
 #endif // !OCT_TREE_H

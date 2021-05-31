@@ -6,6 +6,7 @@
 // File's header.
 #include "Entity.h"
 #include "BrainComponent.h"
+#include "ColliderComponent.h"
 #include "ModelComponent.h"
 #include "TransformComponent.h"
 
@@ -29,27 +30,36 @@ Entity::Entity(Entity& a_rEntityCopy,
 
 	for (auto iterator = a_rEntityCopy.m_components.begin(); iterator != a_rEntityCopy.m_components.end(); ++iterator)
 	{
-		if (iterator->second->GetComponentType() == COMPONENT_TYPE_TRANSFORM)
+		COMPONENT_TYPE componentType = iterator->second->GetComponentType();
+
+		if (componentType == COMPONENT_TYPE_TRANSFORM)
 		{
 			TransformComponent* pTransformComponent = new TransformComponent(this,
-				*static_cast<TransformComponent*>(a_rEntityCopy.GetComponentOfType(COMPONENT_TYPE_TRANSFORM)));
-			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(COMPONENT_TYPE_TRANSFORM,
+				*static_cast<TransformComponent*>(a_rEntityCopy.GetComponentOfType(componentType)));
+			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(componentType,
 				static_cast<Component*>(pTransformComponent)));
 		}
-		else if (iterator->second->GetComponentType() == COMPONENT_TYPE_MODEL)
+		else if (componentType == COMPONENT_TYPE_MODEL)
 		{
 			ModelComponent* pModelComponent = new ModelComponent(this,
-				*static_cast<ModelComponent*>(a_rEntityCopy.GetComponentOfType(COMPONENT_TYPE_MODEL)));
-			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(COMPONENT_TYPE_MODEL,
+				*static_cast<ModelComponent*>(a_rEntityCopy.GetComponentOfType(componentType)));
+			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(componentType,
 				static_cast<Component*>(pModelComponent)));
 		}
-		else if (iterator->second->GetComponentType() == COMPONENT_TYPE_BRAIN)
+		else if (componentType == COMPONENT_TYPE_BRAIN)
 		{
 			BrainComponent* pBrainComponent = new BrainComponent(this,
-				*static_cast<BrainComponent*>(a_rEntityCopy.GetComponentOfType(COMPONENT_TYPE_BRAIN)),
+				*static_cast<BrainComponent*>(a_rEntityCopy.GetComponentOfType(componentType)),
 				a_pScene);
-			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(COMPONENT_TYPE_BRAIN,
+			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(componentType,
 				static_cast<Component*>(pBrainComponent)));
+		}
+		else if (componentType == COMPONENT_TYPE_COLLIDER)
+		{
+			ColliderComponent* pColliderComponent = new ColliderComponent(this,
+				*static_cast<ColliderComponent*>(a_rEntityCopy.GetComponentOfType(componentType)));
+			m_components.insert(std::pair<COMPONENT_TYPE, Component*>(componentType,
+				static_cast<Component*>(pColliderComponent)));
 		}
 	}
 }

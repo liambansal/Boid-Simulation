@@ -154,11 +154,13 @@ Entity* Application::CreateBoid()
 	// Create transform
 	TransformComponent* pTransform = new TransformComponent(pBoid);
 	// The absolute value for the maximum spawn distance.
-	const int maximumSpawnDistance = 5;
+	const int absoluteXDistance = m_scene.GetOctTree().GetBoundary().GetDimensions().x;
+	const int absoluteYDistance = m_scene.GetOctTree().GetBoundary().GetDimensions().y;
+	const int absoluteZDistance = m_scene.GetOctTree().GetBoundary().GetDimensions().z;
 	pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
-		glm::vec3(Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
-			Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance),
-			Utilities::RandomRange(-maximumSpawnDistance, maximumSpawnDistance)));
+		glm::vec3(Utilities::RandomRange(-absoluteXDistance, absoluteXDistance),
+			Utilities::RandomRange(-absoluteYDistance, absoluteYDistance),
+			Utilities::RandomRange(-absoluteZDistance, absoluteZDistance)));
 	pBoid->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
 	// create model
 	ModelComponent* pModel = new ModelComponent(pBoid);

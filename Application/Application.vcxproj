@@ -161,6 +161,7 @@
     <ClCompile Include="source\Application.cpp" />
     <ClCompile Include="source\Boundary.cpp" />
     <ClCompile Include="source\BrainComponent.cpp" />
+    <ClCompile Include="source\ColliderComponent.cpp" />
     <ClCompile Include="source\Component.cpp" />
     <ClCompile Include="source\Entity.cpp" />
     <ClCompile Include="source\Main.cpp">
@@ -180,6 +181,7 @@
     <ClInclude Include="include\Application.h" />
     <ClInclude Include="include\Boundary.h" />
     <ClInclude Include="include\BrainComponent.h" />
+    <ClInclude Include="include\ColliderComponent.h" />
     <ClInclude Include="include\Component.h" />
     <ClInclude Include="include\Entity.h" />
     <ClInclude Include="include\ModelComponent.h" />
