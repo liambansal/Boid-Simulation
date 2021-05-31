@@ -110,6 +110,13 @@ void BrainComponent::Update(float a_deltaTime)
 		m_currentVelocity = m_behavioralVelocity;
 	}
 
+	// TODO: null check pointers.
+	// Make sure boids stay within the oct tree's bounds.
+	if (!m_pScene->GetOctTree().GetBoundary().Contains(currentPosition))
+	{
+		m_currentVelocity = *m_pScene->GetOctTree().GetBoundary().GetPosition() - currentPosition;
+	}
+
 	m_currentVelocity = glm::clamp(m_currentVelocity,
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
