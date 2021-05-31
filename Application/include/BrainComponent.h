@@ -53,7 +53,8 @@ private:
 
 	// Flocking behaviours
 	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
-		glm::vec3 a_targetVector);
+		glm::vec3 a_targetVector,
+		unsigned int a_uiNeighbourCount);
 	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
 		glm::vec3 a_targetVector);
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,

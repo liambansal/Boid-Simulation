@@ -32,6 +32,8 @@ public:
 
 	inline const bool IsColliding() const;
 	
+	inline void SetDimensions(glm::vec3 a_newDimensions);
+
 	inline const Boundary* GetBoundary() const;
 	inline const std::vector<ColliderComponent*>& GetCollisions() const;
 
@@ -51,6 +53,11 @@ private:
 const bool ColliderComponent::IsColliding() const
 {
 	return m_bIsColliding;
+}
+
+void ColliderComponent::SetDimensions(glm::vec3 a_newDimensions)
+{
+	m_boundary.SetDimensions(a_newDimensions);
 }
 
 const Boundary* ColliderComponent::GetBoundary() const

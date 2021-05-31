@@ -1,14 +1,2 @@
-﻿  Framework.cpp
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\include\learnopengl\mesh.h(88,1): warning C4267: 'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(117,21): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(129,54): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(129,36): warning C4244: 'argument': conversion from 'const unsigned int' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(216,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(217,26): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(221,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(222,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(223,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(224,25): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\source\Framework.cpp(244,44): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+﻿assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
   Framework.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\lib\x64\Debug\Framework.lib

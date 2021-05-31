@@ -210,15 +210,16 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDir
 }
 
 glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
-	glm::vec3 a_targetVector)
+	glm::vec3 a_targetVector,
+	unsigned int a_uiNeighbourCount)
 {
 	a_separationVelocity += a_targetVector;
 
 	if (glm::length(a_separationVelocity) > 0.0f &&
-		m_uiNeighbourCount > 0)
+		a_uiNeighbourCount > 0)
 	{
 		// Average the separation force
-		a_separationVelocity /= m_uiNeighbourCount;
+		a_separationVelocity /= a_uiNeighbourCount;
 		// Only normalise vector with length greater than zero
 		a_separationVelocity = glm::normalize(a_separationVelocity);
 	}
@@ -302,7 +303,8 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 			const glm::vec3 targetPosition = (const glm::vec3)ptargetTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
 			a_rSeparationVelocity = CalculateSeparationVelocity(a_rSeparationVelocity,
 				// Don't want positions to have the same value.
-				a_entityPosition == targetPosition ? GetRandomNearbyPoint(a_entityPosition) - a_entityPosition : a_entityPosition - targetPosition);
+				a_entityPosition == targetPosition ? GetRandomNearbyPoint(a_entityPosition) - a_entityPosition : a_entityPosition - targetPosition,
+				m_uiNeighbourCount);
 			a_rAlignmentVelocity = CalculateAlignmentVelocity(a_rAlignmentVelocity,
 				pTargetBrain->GetVelocity());
 			a_rCohesionVelocity = CalculateCohesionVelocity(a_rCohesionVelocity,
@@ -332,23 +334,13 @@ void BrainComponent::Collide(const glm::vec3 a_entityPosition)
 			return;
 		}
 
-		if (a_entityPosition == *pCollidingEntityTransform->GetPosition())
-		{
-			m_collisionSeparationVelocity += GetRandomNearbyPoint(a_entityPosition) - a_entityPosition;
-		}
-		else
-		{
-			// Moves entities away from each other.
-			m_collisionSeparationVelocity += a_entityPosition - *pCollidingEntityTransform->GetPosition();
-		}
-
-		if (glm::length(m_collisionSeparationVelocity) > 0.0f)
-		{
-			// Average the separation force
-			m_collisionSeparationVelocity /= m_pEntityCollider->GetCollisions().size();
-			// Only normalise vector with length greater than zero
-			m_collisionSeparationVelocity = glm::normalize(m_collisionSeparationVelocity);
-		}
+		glm::vec3 targetVector = (a_entityPosition == *pCollidingEntityTransform->GetPosition()) ?
+			GetRandomNearbyPoint(a_entityPosition) - a_entityPosition :
+			a_entityPosition - *pCollidingEntityTransform->GetPosition();
+		// Calculate where to move towards.
+		m_collisionSeparationVelocity = CalculateSeparationVelocity(m_collisionSeparationVelocity,
+			targetVector,
+			m_pEntityCollider->GetCollisions().size());
 	}
 
 	m_currentVelocity = m_collisionSeparationVelocity;

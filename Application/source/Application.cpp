@@ -105,6 +105,10 @@ void Application::Update()
 			const float scaleScalar = 0.01f;
 			pModel->SetScale(glm::vec3(scaleScalar));
 			pObstacle->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+			ColliderComponent* pCollider = new ColliderComponent(pObstacle,
+				&m_scene.GetOctTree());
+			pCollider->SetDimensions(glm::vec3(2.0f));
+			pObstacle->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 			pObstacle->SetTag("Obstacle");
 			m_scene.AddEntity(pObstacle);
 		}

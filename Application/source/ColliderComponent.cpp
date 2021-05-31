@@ -45,7 +45,7 @@ void ColliderComponent::Update(float a_fDeltaTime)
 {
 	static int frames = 0;
 	m_fLastUpdate += a_fDeltaTime;
-	const float updateStep = 5.0f;
+	const float updateStep = 2.0f;
 
 	if (m_fLastUpdate >= updateStep)
 	{
@@ -87,6 +87,7 @@ void ColliderComponent::RegisterCollisions()
 		glm::vec3(queryRange));
 	// References to entities within the query zone.
 	std::vector<Entity*> containedEntities;
+	// TODO: fix to find colliders overlapping the zone.
 	// Search the query zone for entities.
 	mc_pOctTree->Query(queryZone, containedEntities);
 
