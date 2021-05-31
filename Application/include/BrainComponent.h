@@ -61,7 +61,12 @@ private:
 		glm::vec3 a_localPosition);
 	void CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelocity,
 		glm::vec3& a_rAlignmentVelocity,
-		glm::vec3& a_rCohesionVelocity);
+		glm::vec3& a_rCohesionVelocity,
+		glm::vec3& a_entityPosition);
+
+	void Collide(const glm::vec3 a_entityPosition);
+	// Gets a semi-random position, based around the argument position.
+	glm::vec3 GetRandomNearbyPoint(glm::vec3 a_originPosition) const;
 
 	static float ms_fSeparationForce;
 	static float ms_fAlignmentForce;
@@ -73,7 +78,11 @@ private:
 	const float mc_fMaximumVelocity;
 	const float mc_fMaximumNeighbourDistance;
 	float m_fLastUpdate;
-	glm::vec3 m_velocity;
+	glm::vec3 m_currentVelocity;
+	// Velocity calculated by behavioral forces.
+	glm::vec3 m_behavioralVelocity;
+	// separation velocity calculated based collisions.
+	glm::vec3 m_collisionSeparationVelocity;
 	glm::vec3 m_wanderPoint;
 	Scene* m_pScene;
 	ColliderComponent* m_pEntityCollider;
@@ -101,7 +110,7 @@ void BrainComponent::SetWanderForce(float a_force)
 
 glm::vec3 BrainComponent::GetVelocity() const
 {
-	return m_velocity;
+	return m_currentVelocity;
 }
 
 float BrainComponent::GetSeparationForce()

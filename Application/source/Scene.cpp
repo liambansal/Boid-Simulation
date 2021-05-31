@@ -45,16 +45,9 @@ Scene::~Scene()
 // Calls update on all the scene's entities.
 void Scene::Update(float a_deltaTime)
 {
-	EntityMap entities = GetEntityMap();
-
-	for (EntityMap::const_iterator iterator = entities.cbegin(); iterator != entities.cend(); ++iterator)
+	for (EntityPair entity : GetEntityMap())
 	{
-		Entity* entity = iterator->second;
-
-		if (entity)
-		{
-			entity->Update(a_deltaTime);
-		}
+		entity.second->Update(a_deltaTime);
 	}
 }
 
@@ -66,9 +59,9 @@ void Scene::Draw(Framework* a_pRenderingFramework) const
 		return;
 	}
 
-	for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin(); iterator != m_sceneEntities.cend(); ++iterator)
+	for (EntityPair entity : m_sceneEntities)
 	{
-		iterator->second->Draw(a_pRenderingFramework);
+		entity.second->Draw(a_pRenderingFramework);
 	}
 }
 

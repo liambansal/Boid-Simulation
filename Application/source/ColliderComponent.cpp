@@ -18,7 +18,7 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	mc_pOctTree(a_pOctTree)
 {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	const float colliderRange = 1.0f;
+	const float colliderRange = 0.4f;
 	m_boundary = Boundary(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
 		glm::vec3(colliderRange));
 	m_componentType = COMPONENT_TYPE_COLLIDER;
@@ -38,33 +38,53 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
 
+ColliderComponent::~ColliderComponent()
+{}
+
 void ColliderComponent::Update(float a_fDeltaTime)
 {
+	static int frames = 0;
 	m_fLastUpdate += a_fDeltaTime;
 	const float updateStep = 5.0f;
 
-	//if (m_fLastUpdate >= updateStep)
-	//{
+	if (m_fLastUpdate >= updateStep)
+	{
 		m_fLastUpdate = 0.0f;
 		RegisterCollisions();
-	//}
+	}
+
+	UnregisterCollisions();
 }
+
+void ColliderComponent::Draw(Framework* a_pRenderingFramework)
+{}
 
 void ColliderComponent::RegisterCollisions()
 {
-	// Clear all collider references before each update.
-	m_collisionColldiers.clear();
-	m_bIsColliding = false;
-
 	if (!mc_pOctTree)
 	{
 		return;
 	}
 
+	Entity* pOwnerEntity = GetEntity();
+
+	if (!pOwnerEntity)
+	{
+		return;
+	}
+
+	TransformComponent* pOwnerEntityTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+
+	if (!pOwnerEntityTransform)
+	{
+		return;
+	}
+
 	// TODO: null check pointers.
+	const float queryRange = 1.0f;
 	// Volume of space to search through for nearby entities.
-	Boundary queryZone(static_cast<TransformComponent*>(GetEntity()->GetComponentOfType(COMPONENT_TYPE_TRANSFORM))->GetPosition(),
-		glm::vec3(1.25f));
+	Boundary queryZone(pOwnerEntityTransform->GetPosition(),
+		glm::vec3(queryRange));
 	// References to entities within the query zone.
 	std::vector<Entity*> containedEntities;
 	// Search the query zone for entities.
@@ -93,5 +113,42 @@ void ColliderComponent::RegisterCollisions()
 				m_bIsColliding = true;
 			}
 		}
+	}
+}
+
+void ColliderComponent::UnregisterCollisions()
+{
+	for (std::vector<ColliderComponent*>::const_iterator iterator = m_collisionColldiers.cbegin();
+		iterator != m_collisionColldiers.cend();)
+	{
+		const Entity* pOtherEntity = (*iterator)->GetEntity();
+
+		if (!pOtherEntity)
+		{
+			continue;
+		}
+
+		const ColliderComponent* otherEntityCollider = static_cast<ColliderComponent*>(pOtherEntity->GetComponentOfType(COMPONENT_TYPE_COLLIDER));
+
+		if (!otherEntityCollider)
+		{
+			continue;
+		}
+
+		// Find out when the collision has ended.
+		if (!m_boundary.Overlaps(otherEntityCollider->m_boundary))
+		{
+			// Erase returns the element that's after the one being removed.
+			iterator = m_collisionColldiers.erase(iterator);
+		}
+		else
+		{
+			++iterator;
+		}
+	}
+
+	if (m_collisionColldiers.size() == 0)
+	{
+		m_bIsColliding = false;
 	}
 }
