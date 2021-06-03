@@ -46,7 +46,7 @@ void ColliderComponent::Update(float a_fDeltaTime)
 {
 	static int frames = 0;
 	m_fLastUpdate += a_fDeltaTime;
-	const float updateStep = 0.5f;
+	const float updateStep = 0.15f;
 
 	if (m_fLastUpdate >= updateStep)
 	{

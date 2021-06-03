@@ -15,6 +15,7 @@ class ColliderComponent;
 class Entity;
 class Framework;
 class Scene;
+class TransformComponent;
 
 class BrainComponent : public Component
 {
@@ -60,12 +61,13 @@ private:
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 		glm::vec3 a_targetPosition,
 		glm::vec3 a_localPosition);
-	void CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelocity,
-		glm::vec3& a_rAlignmentVelocity,
-		glm::vec3& a_rCohesionVelocity,
-		glm::vec3& a_entityPosition);
+	void CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
+		glm::vec3& a_rEntityForward);
 
 	void CalculateCollisionVelocity(const glm::vec3 a_entityPosition);
+	void UpdateMatrix(TransformComponent* a_pTransform,
+		glm::vec3* a_pPosition,
+		glm::vec3* a_pForward);
 	// Gets a semi-random position, based around the argument position.
 	glm::vec3 GetRandomNearbyPoint(glm::vec3 a_originPosition) const;
 

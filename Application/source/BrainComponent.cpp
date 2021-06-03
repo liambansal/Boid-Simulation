@@ -75,25 +75,15 @@ void BrainComponent::Update(float a_deltaTime)
 		return;
 	}
 
-	glm::vec3 forwardDirection = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR);
 	glm::vec3 currentPosition = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
+	glm::vec3 forwardDirection = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR);
 
 	if (m_fLastUpdate >= updateStep)
 	{
 		m_fLastUpdate = 0.0f;
-		glm::vec3 seperationVelocity(0.0f);
-		glm::vec3 alignmentVelocity(0.0f);
-		glm::vec3 cohesionVelocity(0.0f);
-		CalculateBehaviouralVelocities(seperationVelocity,
-			alignmentVelocity,
-			cohesionVelocity,
-			currentPosition);
-		seperationVelocity *= ms_fSeparationForce;
-		alignmentVelocity *= ms_fAlignmentForce;
-		cohesionVelocity *= ms_fCohesionForce;
-		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * ms_fWanderForce;
-		glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
-		m_behavioralVelocity += newForce;
+		// Calculate our boid's behaviour.
+		CalculateBehaviouralVelocity(currentPosition,
+			forwardDirection);
 	}
 
 	// Check for any collisions.
@@ -114,39 +104,18 @@ void BrainComponent::Update(float a_deltaTime)
 	{
 		// Make sure boids stay within the oct tree's bounds.
 		m_currentVelocity = *m_pScene->GetOctTree().GetBoundary().GetPosition() - currentPosition;
+		// Reset behaviour after reaching scene bounds.
+		m_behavioralVelocity = glm::vec3(0.0f);
 	}
 
 	m_currentVelocity = glm::clamp(m_currentVelocity,
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
 	currentPosition += m_currentVelocity * a_deltaTime;
-	forwardDirection = m_currentVelocity;
-
-	if (glm::length(forwardDirection) > 0.0f)
-	{
-		forwardDirection = glm::normalize(forwardDirection);
-	}
-
-	glm::vec3 upDirection = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_UP_VECTOR);
-	upDirection -= forwardDirection * glm::dot(forwardDirection, upDirection);
-	
-	if (glm::length(upDirection) > 0.0f)
-	{
-		glm::normalize(upDirection);
-	}
-
-	glm::vec3 rightDirection = glm::cross(upDirection, forwardDirection);
-	
-	if (glm::length(rightDirection) > 0.0f)
-	{
-		glm::normalize(rightDirection);
-	}
-	
-	// Update transform matrix.
-	pOwnerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_UP_VECTOR, upDirection);
-	pOwnerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_RIGHT_VECTOR, rightDirection);
-	pOwnerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR, forwardDirection);
-	pOwnerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR, currentPosition);
+	// Update the entity's transform matrix.
+	UpdateMatrix(pOwnerTransform,
+		&currentPosition,
+		&m_currentVelocity);
 }
 
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
@@ -258,10 +227,8 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	return a_cohesionVelocity;
 }
 
-void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelocity,
-	glm::vec3& a_rAlignmentVelocity,
-	glm::vec3& a_rCohesionVelocity,
-	glm::vec3& a_entityPosition)
+void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
+	glm::vec3& a_rEntityForward)
 {
 	// Get the component's owner entity.
 	const Entity* pOwnerEntity = GetEntity();
@@ -274,10 +241,14 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	m_uiNeighbourCount = 0;
 	pEntityVector nearbyEntities;
 	// Get all nearby entities.
-	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_entityPosition,
+	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_rEntityPosition,
 		glm::vec3(mc_fMaximumNeighbourDistance)),
 		nearbyEntities);
 	m_uiNeighbourCount = nearbyEntities.size();
+	// Behavioural forces.
+	glm::vec3 seperationVelocity(0.0f);
+	glm::vec3 alignmentVelocity(0.0f);
+	glm::vec3 cohesionVelocity(0.0f);
 
 	// Loop over all entities in scene.
 	for (const Entity* entity : nearbyEntities)
@@ -300,17 +271,24 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 
 			// Find distance to iterator entity
 			const glm::vec3 targetPosition = (const glm::vec3)ptargetTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
-			a_rSeparationVelocity = CalculateSeparationVelocity(a_rSeparationVelocity,
+			seperationVelocity = CalculateSeparationVelocity(seperationVelocity,
 				// Don't want positions to have the same value.
-				a_entityPosition == targetPosition ? GetRandomNearbyPoint(a_entityPosition) - a_entityPosition : a_entityPosition - targetPosition,
+				a_rEntityPosition == targetPosition ? GetRandomNearbyPoint(a_rEntityPosition) - a_rEntityPosition : a_rEntityPosition - targetPosition,
 				m_uiNeighbourCount);
-			a_rAlignmentVelocity = CalculateAlignmentVelocity(a_rAlignmentVelocity,
+			alignmentVelocity = CalculateAlignmentVelocity(alignmentVelocity,
 				pTargetBrain->GetVelocity());
-			a_rCohesionVelocity = CalculateCohesionVelocity(a_rCohesionVelocity,
+			cohesionVelocity = CalculateCohesionVelocity(cohesionVelocity,
 				targetPosition,
-				a_entityPosition);
+				a_rEntityPosition);
 		}
 	}
+
+	seperationVelocity *= ms_fSeparationForce;
+	alignmentVelocity *= ms_fAlignmentForce;
+	cohesionVelocity *= ms_fCohesionForce;
+	glm::vec3 wanderVelocity = CalculateWanderVelocity(a_rEntityForward, a_rEntityPosition) * ms_fWanderForce;
+	glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
+	m_behavioralVelocity += newForce;
 }
 
 void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)
@@ -343,6 +321,42 @@ void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition
 			targetVector,
 			m_pEntityCollider->GetCollisions().size());
 	}
+}
+
+void BrainComponent::UpdateMatrix(TransformComponent* a_pTransform,
+	glm::vec3* a_pPosition,
+	glm::vec3* a_pForward)
+{
+	if (!a_pTransform || !a_pPosition || !a_pForward)
+	{
+		return;
+	}
+
+	if (glm::length(*a_pForward) > 0.0f)
+	{
+		*a_pForward = glm::normalize(*a_pForward);
+	}
+
+	glm::vec3 upDirection = (glm::vec3)a_pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_UP_VECTOR);
+	upDirection -= *a_pForward * glm::dot(*a_pForward, upDirection);
+
+	if (glm::length(upDirection) > 0.0f)
+	{
+		glm::normalize(upDirection);
+	}
+
+	glm::vec3 rightDirection = glm::cross(upDirection, *a_pForward);
+
+	if (glm::length(rightDirection) > 0.0f)
+	{
+		glm::normalize(rightDirection);
+	}
+
+	// Update transform matrix.
+	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_UP_VECTOR, upDirection);
+	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_RIGHT_VECTOR, rightDirection);
+	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR, *a_pForward);
+	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR, *a_pPosition);
 }
 
 // Gets a semi-random position, based around the argument position.
