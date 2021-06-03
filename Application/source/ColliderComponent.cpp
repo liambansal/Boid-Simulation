@@ -11,25 +11,25 @@
 #include <vector>
 
 ColliderComponent::ColliderComponent(Entity* a_pOwner,
-	const OctTree<Entity, glm::vec4, glm::vec3>* a_pOctTree) : Component(a_pOwner),
+	const OctTree<Entity, glm::vec3>* a_pOctTree) : Component(a_pOwner),
 	m_bIsColliding(false),
 	m_fLastUpdate(0.0f),
-	mc_fColliderRange(0.5f),
+	m_fColliderRange(0.5f),
 	m_collisionColldiers(),
 	mc_pOctTree(a_pOctTree)
 {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 	m_boundary = Boundary<glm::vec3> (pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
-		glm::vec3(mc_fColliderRange));
+		glm::vec3(m_fColliderRange));
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
 
 ColliderComponent::ColliderComponent(Entity* a_pOwner,
-	const OctTree<Entity, glm::vec4, glm::vec3>* a_pOctTree,
+	const OctTree<Entity, glm::vec3>* a_pOctTree,
 	ColliderComponent& a_rColliderToCopy) : Component(a_pOwner),
 	m_bIsColliding(false),
 	m_fLastUpdate(0.0f),
-	mc_fColliderRange(a_rColliderToCopy.mc_fColliderRange),
+	m_fColliderRange(a_rColliderToCopy.m_fColliderRange),
 	m_collisionColldiers(),
 	mc_pOctTree(a_pOctTree)
 {
@@ -83,7 +83,7 @@ void ColliderComponent::RegisterCollisions()
 
 	// Volume of space to search through for possible collisions.
 	Boundary<glm::vec3> queryZone(pOwnerEntityTransform->GetPosition(),
-		glm::vec3(mc_fColliderRange));
+		glm::vec3(m_fColliderRange));
 	// References to entities within the query zone.
 	std::vector<Entity*> containedEntities;
 	// Search the query zone for entities.

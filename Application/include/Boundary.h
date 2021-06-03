@@ -60,6 +60,11 @@ template <typename TVector>
 // Is a 3D position within the boundary's dimensions?
 bool Boundary<TVector>::Contains(const TVector& a_position) const
 {
+	if (!m_pPosition)
+	{
+		return false;
+	}
+
 	return (a_position.x >= m_pPosition->x - m_dimensions.x &&
 		a_position.x <= m_pPosition->x + m_dimensions.x &&
 		a_position.y >= m_pPosition->y - m_dimensions.y &&
@@ -73,9 +78,9 @@ template <typename TVector>
 bool Boundary<TVector>::Overlaps(Boundary a_otherBoundary) const
 {
 	return (a_otherBoundary.GetPosition()->x - a_otherBoundary.GetDimensions().x <= m_pPosition->x + m_dimensions.x &&
-		a_otherBoundary.GetPosition()->x + a_otherBoundary.GetDimensions().x >= m_pPosition->x - m_dimensions.x ||
+		a_otherBoundary.GetPosition()->x + a_otherBoundary.GetDimensions().x >= m_pPosition->x - m_dimensions.x &&
 		a_otherBoundary.GetPosition()->y - a_otherBoundary.GetDimensions().y <= m_pPosition->y + m_dimensions.y &&
-		a_otherBoundary.GetPosition()->y + a_otherBoundary.GetDimensions().y >= m_pPosition->y - m_dimensions.y ||
+		a_otherBoundary.GetPosition()->y + a_otherBoundary.GetDimensions().y >= m_pPosition->y - m_dimensions.y &&
 		a_otherBoundary.GetPosition()->z - a_otherBoundary.GetDimensions().z <= m_pPosition->z + m_dimensions.z &&
 		a_otherBoundary.GetPosition()->z + a_otherBoundary.GetDimensions().z >= m_pPosition->z - m_dimensions.z);
 }

@@ -20,7 +20,7 @@
 #include "Utilities.h"
 
 Application::Application() : m_uiBoidCount(50),
-	mc_uiMaximumBoidCount(500),
+	mc_uiMaximumBoidCount(3000),
 	m_fMarkerZOffset(10.0f),
 	mc_fMimimumMarkerZOffset(0.5f),
 	mc_fMaximumMarkerZOffset(50.0f),
@@ -108,8 +108,8 @@ void Application::Update()
 			pObstacle->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 			ColliderComponent* pCollider = new ColliderComponent(pObstacle,
 				&m_scene.GetOctTree());
-			const float dimensionsScale = 0.1f;
-			pCollider->SetDimensions(glm::vec3(dimensionsScale));
+			const float dimensionsScale = 2.0f;
+			pCollider->SetDimensions(dimensionsScale);
 			pObstacle->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 			pObstacle->SetTag("Obstacle");
 			m_scene.AddEntity(pObstacle);

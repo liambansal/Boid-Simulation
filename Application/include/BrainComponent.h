@@ -65,7 +65,7 @@ private:
 		glm::vec3& a_rCohesionVelocity,
 		glm::vec3& a_entityPosition);
 
-	void Collide(const glm::vec3 a_entityPosition);
+	void CalculateCollisionVelocity(const glm::vec3 a_entityPosition);
 	// Gets a semi-random position, based around the argument position.
 	glm::vec3 GetRandomNearbyPoint(glm::vec3 a_originPosition) const;
 

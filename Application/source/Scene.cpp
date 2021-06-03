@@ -13,7 +13,7 @@
 #include "LearnOpenGL/shader.h"
 #include "ModelComponent.h"
 #include "Framework.h"
-#include "TransformComponent.h"
+#include "ColliderComponent.h"
 #include "Utilities.h"
 
 // Typedefs.
@@ -75,12 +75,11 @@ bool Scene::AddEntity(Entity* a_pNewEntity)
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
-	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	const glm::vec4& pEntityPosition = pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
+	ColliderComponent* pCollider = static_cast<ColliderComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_COLLIDER));
 
-	if (pTransform)
+	if (pCollider)
 	{
-		m_octTree.InsertObject(a_pNewEntity, pEntityPosition);
+		m_octTree.InsertObject(a_pNewEntity, *pCollider->GetBoundary());
 	}
 
 	++m_uiEntityCount;

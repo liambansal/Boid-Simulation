@@ -24,7 +24,7 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	Scene* a_pScene) : Component(a_pOwner),
 	m_uiNeighbourCount(0),
 	mc_fSpeed(1.0f),
-	mc_fMaximumVelocity(2.0f),
+	mc_fMaximumVelocity(1.5f),
 	mc_fMaximumNeighbourDistance(4.0f),
 	m_fLastUpdate(0.0f),
 	m_currentVelocity(0.0f),
@@ -96,18 +96,20 @@ void BrainComponent::Update(float a_deltaTime)
 		m_behavioralVelocity += newForce;
 	}
 
-	// Check for any collisions after moving.
+	// Check for any collisions.
 	if (m_pEntityCollider && m_pEntityCollider->IsColliding())
 	{
-		Collide(currentPosition);
+		CalculateCollisionVelocity(currentPosition);
+		m_currentVelocity = m_collisionSeparationVelocity;
 	}
 	else
 	{
-		// Reset collision separation velocity now that the collisions are over.
+		// Reset collision separation velocity now that all collisions are over.
 		m_collisionSeparationVelocity = glm::vec3(0.0f);
 		m_currentVelocity = m_behavioralVelocity;
 	}
 
+	// Check if entity is out of scene bounds.
 	if (m_pScene && !m_pScene->GetOctTree().GetBoundary().Contains(currentPosition))
 	{
 		// Make sure boids stay within the oct tree's bounds.
@@ -311,7 +313,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	}
 }
 
-void BrainComponent::Collide(const glm::vec3 a_entityPosition)
+void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)
 {
 	for (std::vector<ColliderComponent*>::const_iterator iterator = m_pEntityCollider->GetCollisions().begin();
 		iterator != m_pEntityCollider->GetCollisions().end();
@@ -341,8 +343,6 @@ void BrainComponent::Collide(const glm::vec3 a_entityPosition)
 			targetVector,
 			m_pEntityCollider->GetCollisions().size());
 	}
-
-	m_currentVelocity = m_collisionSeparationVelocity;
 }
 
 // Gets a semi-random position, based around the argument position.

@@ -14,16 +14,16 @@
 
 // Forward declarations.
 class Entity;
-template <typename TObject, typename TOctTreeVector, typename TBoundaryVector>
+template <typename TObject, typename TVector>
 class OctTree;
 
 class ColliderComponent : public Component
 {
 public:
 	ColliderComponent(Entity* a_pOwner,
-		const OctTree<Entity, glm::vec4, glm::vec3>* a_pOctTree);
+		const OctTree<Entity, glm::vec3>* a_pOctTree);
 	ColliderComponent(Entity* a_pOwner,
-		const OctTree<Entity, glm::vec4, glm::vec3>* a_pOctTree,
+		const OctTree<Entity, glm::vec3>* a_pOctTree,
 		ColliderComponent& a_rColliderToCopy);
 	~ColliderComponent();
 
@@ -32,9 +32,9 @@ public:
 
 	inline const bool IsColliding() const;
 	
-	inline void SetDimensions(glm::vec3 a_newDimensions);
+	inline void SetDimensions(float a_dimensionScalar);
 
-	inline const Boundary<glm::vec3>* GetBoundary() const;
+	inline Boundary<glm::vec3>* GetBoundary();
 	inline const std::vector<ColliderComponent*>& GetCollisions() const;
 
 private:
@@ -43,12 +43,12 @@ private:
 
 	bool m_bIsColliding;
 	float m_fLastUpdate;
-	const float mc_fColliderRange;
+	float m_fColliderRange;
 	// Position and dimensions of the collider's bounds.
 	Boundary<glm::vec3> m_boundary;
 	// All the colliders that this is colliding with.
 	std::vector<ColliderComponent*> m_collisionColldiers;
-	const OctTree<Entity, glm::vec4, glm::vec3>* mc_pOctTree;
+	const OctTree<Entity, glm::vec3>* mc_pOctTree;
 };
 
 const bool ColliderComponent::IsColliding() const
@@ -56,12 +56,13 @@ const bool ColliderComponent::IsColliding() const
 	return m_bIsColliding;
 }
 
-void ColliderComponent::SetDimensions(glm::vec3 a_newDimensions)
+void ColliderComponent::SetDimensions(float a_dimensionScalar)
 {
-	m_boundary.SetDimensions(a_newDimensions);
+	m_fColliderRange = a_dimensionScalar;
+	m_boundary.SetDimensions(glm::vec3(m_fColliderRange));
 }
 
-const Boundary<glm::vec3>* ColliderComponent::GetBoundary() const
+Boundary<glm::vec3>* ColliderComponent::GetBoundary()
 {
 	return &m_boundary;
 }
