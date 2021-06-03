@@ -11,7 +11,7 @@
 #include <vector>
 
 ColliderComponent::ColliderComponent(Entity* a_pOwner,
-	const OctTree<Entity, glm::vec4>* a_pOctTree) : Component(a_pOwner),
+	const OctTree<Entity, glm::vec4, glm::vec3>* a_pOctTree) : Component(a_pOwner),
 	m_bIsColliding(false),
 	m_fLastUpdate(0.0f),
 	mc_fColliderRange(0.5f),
@@ -19,13 +19,13 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	mc_pOctTree(a_pOctTree)
 {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	m_boundary = Boundary(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
+	m_boundary = Boundary<glm::vec3> (pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
 		glm::vec3(mc_fColliderRange));
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
 
 ColliderComponent::ColliderComponent(Entity* a_pOwner,
-	const OctTree<Entity, glm::vec4>* a_pOctTree,
+	const OctTree<Entity, glm::vec4, glm::vec3>* a_pOctTree,
 	ColliderComponent& a_rColliderToCopy) : Component(a_pOwner),
 	m_bIsColliding(false),
 	m_fLastUpdate(0.0f),
@@ -34,7 +34,7 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	mc_pOctTree(a_pOctTree)
 {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	m_boundary = Boundary(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
+	m_boundary = Boundary<glm::vec3>(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
 		a_rColliderToCopy.GetBoundary()->GetDimensions());
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
@@ -82,7 +82,7 @@ void ColliderComponent::RegisterCollisions()
 	}
 
 	// Volume of space to search through for possible collisions.
-	Boundary queryZone(pOwnerEntityTransform->GetPosition(),
+	Boundary<glm::vec3> queryZone(pOwnerEntityTransform->GetPosition(),
 		glm::vec3(mc_fColliderRange));
 	// References to entities within the query zone.
 	std::vector<Entity*> containedEntities;
@@ -94,7 +94,7 @@ void ColliderComponent::RegisterCollisions()
 		for (Entity* pEntity : containedEntities)
 		{
 			// Make sure we're not examining this entity.
-			if (GetEntity() == pEntity || pEntity->GetTag() == "Marker")
+			if (GetEntity() == pEntity || pEntity->GetTag() == "Boid" || pEntity->GetTag() == "Marker")
 			{
 				continue;
 			}

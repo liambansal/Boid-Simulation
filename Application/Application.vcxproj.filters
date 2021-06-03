@@ -51,9 +51,6 @@
     <ClCompile Include="source\UserInterface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="source\Boundary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="source\ColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

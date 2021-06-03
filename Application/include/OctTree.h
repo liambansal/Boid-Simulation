@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 
-template <typename TObject, typename TPosition>
+template <typename TObject, typename TOctTreeVector, typename TBoundaryVector>
 class OctTree
 {
 public:
@@ -30,40 +30,40 @@ public:
 	};
 
 	OctTree(unsigned int a_capacity,
-		Boundary a_boundary);
+		Boundary<TBoundaryVector> a_boundary);
 	~OctTree()
 	{}
 
 	bool InsertObject(TObject* a_pObject,
-		const TPosition& a_rPosition);
+		const TOctTreeVector& a_rPosition);
 	void SubDivide();
-	void Query(Boundary a_queryVolume,
+	void Query(Boundary<TBoundaryVector> a_queryVolume,
 		std::vector<TObject*>& a_rContainedEntities) const;
 
-	inline const Boundary& GetBoundary() const;
+	inline const Boundary<TBoundaryVector>& GetBoundary() const;
 
 private:
 	// Number of objects held within a boundary before it subdivided.
 	unsigned int m_uiCapacity;
 	bool m_bSubdivided;
 	// Measured width, height and depth.
-	Boundary m_boundary;
-	std::map<TObject*, const TPosition*> m_objects;
+	Boundary<TBoundaryVector> m_boundary;
+	std::map<TObject*, const TOctTreeVector*> m_objects;
 	OctTree* m_pSubTrees[8];
 };
 
-template <typename TObject, typename TPosition>
-OctTree<TObject, TPosition>::OctTree(unsigned int a_capacity,
-	Boundary a_boundary) : m_uiCapacity(a_capacity),
+template <typename TObject, typename TOctTreeVector, typename TBoundaryVector>
+OctTree<TObject, TOctTreeVector, TBoundaryVector>::OctTree(unsigned int a_capacity,
+	Boundary<TBoundaryVector> a_boundary) : m_uiCapacity(a_capacity),
 	m_bSubdivided(false),
 	m_boundary(a_boundary),
 	m_objects(),
 	m_pSubTrees()
 {}
 
-template <typename TObject, typename TPosition>
-bool OctTree<TObject, TPosition>::InsertObject(TObject* a_pObject,
-	const TPosition& a_rPosition)
+template <typename TObject, typename TOctTreeVector, typename TBoundaryVector>
+bool OctTree<TObject, TOctTreeVector, TBoundaryVector>::InsertObject(TObject* a_pObject,
+	const TOctTreeVector& a_rPosition)
 {
 	if (!a_pObject)
 	{
@@ -126,15 +126,15 @@ bool OctTree<TObject, TPosition>::InsertObject(TObject* a_pObject,
 	return false;
 }
 
-template <typename TObject, typename TPosition>
-void OctTree<TObject, TPosition>::SubDivide()
+template <typename TObject, typename TOctTreeVector, typename TBoundaryVector>
+void OctTree<TObject, TOctTreeVector, TBoundaryVector>::SubDivide()
 {
 	// Bottom left back.
 	glm::vec3 subTreePosition000(m_boundary.GetPosition()->x - m_boundary.GetDimensions().x / 2,
 		m_boundary.GetPosition()->y - m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z - m_boundary.GetDimensions().z / 2);
 	OctTree* subTree000 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition000,
+		Boundary<TBoundaryVector>(subTreePosition000,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_000] = subTree000;
 	// Bottom left forward.
@@ -142,7 +142,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y - m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z + m_boundary.GetDimensions().z / 2);
 	OctTree* subTree001 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition001,
+		Boundary<TBoundaryVector>(subTreePosition001,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_001] = subTree001;
 	// Bottom right forward.
@@ -150,7 +150,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y - m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z + m_boundary.GetDimensions().z / 2);
 	OctTree* subTree101 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition101,
+		Boundary<TBoundaryVector>(subTreePosition101,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_101] = subTree101;
 	// Bottom right back.
@@ -158,7 +158,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y - m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z - m_boundary.GetDimensions().z / 2);
 	OctTree* subTree100 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition100,
+		Boundary<TBoundaryVector>(subTreePosition100,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_100] = subTree100;
 
@@ -167,7 +167,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y + m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z - m_boundary.GetDimensions().z / 2);
 	OctTree* subTree010 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition010,
+		Boundary<TBoundaryVector>(subTreePosition010,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_010] = subTree010;
 	// Top left forward.
@@ -175,7 +175,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y + m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z + m_boundary.GetDimensions().z / 2);
 	OctTree* subTree011 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition011,
+		Boundary<TBoundaryVector>(subTreePosition011,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_011] = subTree011;
 	// Top right forward.
@@ -183,7 +183,7 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y + m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z + m_boundary.GetDimensions().z / 2);
 	OctTree* subTree111 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition111,
+		Boundary<TBoundaryVector>(subTreePosition111,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_111] = subTree111;
 	// Top right back.
@@ -191,14 +191,14 @@ void OctTree<TObject, TPosition>::SubDivide()
 		m_boundary.GetPosition()->y + m_boundary.GetDimensions().y / 2,
 		m_boundary.GetPosition()->z - m_boundary.GetDimensions().z / 2);
 	OctTree* subTree110 = new OctTree(m_uiCapacity,
-		Boundary(subTreePosition110,
+		Boundary<TBoundaryVector>(subTreePosition110,
 			glm::vec3(m_boundary.GetDimensions() * 0.5f)));
 	m_pSubTrees[SUB_TREE_POSITIONS_110] = subTree110;
 	m_bSubdivided = true;
 }
 
-template <typename TObject, typename TPosition>
-void OctTree<TObject, TPosition>::Query(Boundary a_queryVolume,
+template <typename TObject, typename TOctTreeVector, typename TBoundaryVector>
+void OctTree<TObject, TOctTreeVector, TBoundaryVector>::Query(Boundary<TBoundaryVector> a_queryVolume,
 	std::vector<TObject*>& a_rContainedEntities) const
 {
 	// Check the space being queried for objects actually intersects this oct tree.
@@ -208,7 +208,7 @@ void OctTree<TObject, TPosition>::Query(Boundary a_queryVolume,
 	}
 	else
 	{
-		for (std::pair<TObject*, const TPosition*> object : m_objects)
+		for (std::pair<TObject*, const TOctTreeVector*> object : m_objects)
 		{
 			// Make sure the oct tree's objects are inside space being queried.
 			if (a_queryVolume.Contains(*object.second))
@@ -232,8 +232,8 @@ void OctTree<TObject, TPosition>::Query(Boundary a_queryVolume,
 	}
 }
 
-template<typename TObject, typename TPosition>
-const Boundary& OctTree<TObject, TPosition>::GetBoundary() const
+template<typename TObject, typename TOctTreeVector, typename TBoundaryVector>
+const Boundary<TBoundaryVector>& OctTree<TObject, TOctTreeVector, TBoundaryVector>::GetBoundary() const
 {
 	return m_boundary;
 }

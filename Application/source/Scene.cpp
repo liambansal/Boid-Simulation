@@ -6,6 +6,7 @@
 // File's header.
 #include "Scene.h"
 #include "BrainComponent.h"
+#include "Boundary.h"
 #include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "LearnOpenGL/camera.h"
@@ -22,7 +23,7 @@ typedef std::map<unsigned int, Entity*> EntityMap;
 Scene::Scene() : m_uiEntityCount(0),
 	m_sceneEntities(),
 	m_octTree(4,
-		Boundary(new glm::vec3(0.0f),
+		Boundary<glm::vec3>(new glm::vec3(0.0f),
 			glm::vec3(10.0f)))
 {}
 

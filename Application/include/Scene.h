@@ -8,6 +8,7 @@
 
 // Header includes.
 #include "Entity.h"
+#include "glm/glm.hpp"
 #include <map>
 #include "OctTree.h"
 #include <string>
@@ -39,12 +40,12 @@ public:
 	inline const unsigned int GetEntityCount() const;
 	// Gets the number of entities in the scene with a matching tag.
 	inline const unsigned int GetEntityCount(std::string a_tag) const;
-	inline const OctTree<Entity, glm::vec4>& GetOctTree() const;
+	inline const OctTree<Entity, glm::vec4, glm::vec3>& GetOctTree() const;
 
 private:
 	unsigned int m_uiEntityCount;
 	std::map<unsigned int, Entity*> m_sceneEntities;
-	OctTree<Entity, glm::vec4> m_octTree;
+	OctTree<Entity, glm::vec4, glm::vec3> m_octTree;
 };
 
 // Returns a pointer to an entity using its unique identifier.
@@ -82,7 +83,7 @@ const unsigned int Scene::GetEntityCount(std::string a_tag) const
 	return matchingEntities;
 }
 
-const OctTree<Entity, glm::vec4>& Scene::GetOctTree() const
+const OctTree<Entity, glm::vec4, glm::vec3>& Scene::GetOctTree() const
 {
 	return m_octTree;
 }

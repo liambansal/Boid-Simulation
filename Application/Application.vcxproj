@@ -159,7 +159,6 @@
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="..\..\..\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp" />
     <ClCompile Include="source\Application.cpp" />
-    <ClCompile Include="source\Boundary.cpp" />
     <ClCompile Include="source\BrainComponent.cpp" />
     <ClCompile Include="source\ColliderComponent.cpp" />
     <ClCompile Include="source\Component.cpp" />

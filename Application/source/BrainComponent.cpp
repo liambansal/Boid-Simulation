@@ -272,7 +272,7 @@ void BrainComponent::CalculateBehaviouralVelocities(glm::vec3& a_rSeparationVelo
 	m_uiNeighbourCount = 0;
 	pEntityVector nearbyEntities;
 	// Get all nearby entities.
-	m_pScene->GetOctTree().Query(Boundary(a_entityPosition,
+	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_entityPosition,
 		glm::vec3(mc_fMaximumNeighbourDistance)),
 		nearbyEntities);
 	m_uiNeighbourCount = nearbyEntities.size();
