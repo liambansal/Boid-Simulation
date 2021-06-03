@@ -208,7 +208,7 @@ void OctTree<TObject, TPosition>::Query(Boundary a_queryVolume,
 	}
 	else
 	{
-		for (std::pair<TObject*, const glm::vec4*> object : m_objects)
+		for (std::pair<TObject*, const TPosition*> object : m_objects)
 		{
 			// Make sure the oct tree's objects are inside space being queried.
 			if (a_queryVolume.Contains(*object.second))

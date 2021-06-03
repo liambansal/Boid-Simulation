@@ -15,17 +15,17 @@
 
 typedef std::vector<Entity*> pEntityVector;
 
-float BrainComponent::ms_fSeparationForce = 0.0f;
-float BrainComponent::ms_fAlignmentForce = 0.0f;
-float BrainComponent::ms_fCohesionForce = 0.9f;
-float BrainComponent::ms_fWanderForce = 0.0f;
+float BrainComponent::ms_fSeparationForce = 0.1f;
+float BrainComponent::ms_fAlignmentForce = 0.05f;
+float BrainComponent::ms_fCohesionForce = 1.0f;
+float BrainComponent::ms_fWanderForce = 0.1f;
 
 BrainComponent::BrainComponent(Entity* a_pOwner,
 	Scene* a_pScene) : Component(a_pOwner),
 	m_uiNeighbourCount(0),
 	mc_fSpeed(1.0f),
 	mc_fMaximumVelocity(2.0f),
-	mc_fMaximumNeighbourDistance(2.5f),
+	mc_fMaximumNeighbourDistance(4.0f),
 	m_fLastUpdate(0.0f),
 	m_currentVelocity(0.0f),
 	m_behavioralVelocity(0.0f),
@@ -78,15 +78,8 @@ void BrainComponent::Update(float a_deltaTime)
 	glm::vec3 forwardDirection = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR);
 	glm::vec3 currentPosition = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
 
-	// Check for any collisions before moving.
-	if (m_pEntityCollider && m_pEntityCollider->IsColliding())
+	if (m_fLastUpdate >= updateStep)
 	{
-		Collide(currentPosition);
-	}
-	else if (m_fLastUpdate >= updateStep)
-	{
-		// Reset collision separation velocity now that the collisions are over.
-		m_collisionSeparationVelocity = glm::vec3(0.0f);
 		m_fLastUpdate = 0.0f;
 		glm::vec3 seperationVelocity(0.0f);
 		glm::vec3 alignmentVelocity(0.0f);
@@ -101,19 +94,23 @@ void BrainComponent::Update(float a_deltaTime)
 		glm::vec3 wanderVelocity = CalculateWanderVelocity(forwardDirection, currentPosition) * ms_fWanderForce;
 		glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
 		m_behavioralVelocity += newForce;
-		m_currentVelocity = m_behavioralVelocity;
 	}
-	// If all else fails...
+
+	// Check for any collisions after moving.
+	if (m_pEntityCollider && m_pEntityCollider->IsColliding())
+	{
+		Collide(currentPosition);
+	}
 	else
 	{
-		// ...set velocity to last calculated behavioral velocity.
+		// Reset collision separation velocity now that the collisions are over.
+		m_collisionSeparationVelocity = glm::vec3(0.0f);
 		m_currentVelocity = m_behavioralVelocity;
 	}
 
-	// TODO: null check pointers.
-	// Make sure boids stay within the oct tree's bounds.
-	if (!m_pScene->GetOctTree().GetBoundary().Contains(currentPosition))
+	if (m_pScene && !m_pScene->GetOctTree().GetBoundary().Contains(currentPosition))
 	{
+		// Make sure boids stay within the oct tree's bounds.
 		m_currentVelocity = *m_pScene->GetOctTree().GetBoundary().GetPosition() - currentPosition;
 	}
 
@@ -335,7 +332,9 @@ void BrainComponent::Collide(const glm::vec3 a_entityPosition)
 		}
 
 		glm::vec3 targetVector = (a_entityPosition == *pCollidingEntityTransform->GetPosition()) ?
+			// Get nearby point encase entities spawn on top of each other.
 			GetRandomNearbyPoint(a_entityPosition) - a_entityPosition :
+			// Normal collision avoidance behaviour.
 			a_entityPosition - *pCollidingEntityTransform->GetPosition();
 		// Calculate where to move towards.
 		m_collisionSeparationVelocity = CalculateSeparationVelocity(m_collisionSeparationVelocity,

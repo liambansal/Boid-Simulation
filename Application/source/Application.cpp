@@ -25,6 +25,7 @@ Application::Application() : m_uiBoidCount(50),
 	mc_fMimimumMarkerZOffset(0.5f),
 	mc_fMaximumMarkerZOffset(50.0f),
 	m_bFrameworkInitialised(false),
+	m_bSpawnedObstacle(false),
 	m_pFramework(Framework::GetInstance()),
 	m_scene(),
 	m_userInterface(this),
@@ -93,7 +94,7 @@ void Application::Update()
 		markerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
 
-		if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
+		if (!m_bSpawnedObstacle && glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
 		{
 			Entity* pObstacle = new Entity();
 			// add a new transform component.
@@ -107,10 +108,16 @@ void Application::Update()
 			pObstacle->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 			ColliderComponent* pCollider = new ColliderComponent(pObstacle,
 				&m_scene.GetOctTree());
-			pCollider->SetDimensions(glm::vec3(2.0f));
+			const float dimensionsScale = 0.1f;
+			pCollider->SetDimensions(glm::vec3(dimensionsScale));
 			pObstacle->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 			pObstacle->SetTag("Obstacle");
 			m_scene.AddEntity(pObstacle);
+			m_bSpawnedObstacle = true;
+		}
+		else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_RELEASE)
+		{
+			m_bSpawnedObstacle = false;
 		}
 
 		if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_1) == GLFW_PRESS)

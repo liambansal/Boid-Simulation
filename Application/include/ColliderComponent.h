@@ -43,6 +43,7 @@ private:
 
 	bool m_bIsColliding;
 	float m_fLastUpdate;
+	const float mc_fColliderRange;
 	// Position and dimensions of the collider's bounds.
 	Boundary m_boundary;
 	// All the colliders that this is colliding with.

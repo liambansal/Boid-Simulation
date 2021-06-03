@@ -36,6 +36,7 @@ private:
 	const float mc_fMimimumMarkerZOffset;
 	const float mc_fMaximumMarkerZOffset;
 	bool m_bFrameworkInitialised;
+	bool m_bSpawnedObstacle;
 	Framework* m_pFramework;
 	Scene m_scene;
 	UserInterface m_userInterface;

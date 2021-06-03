@@ -14,13 +14,13 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	const OctTree<Entity, glm::vec4>* a_pOctTree) : Component(a_pOwner),
 	m_bIsColliding(false),
 	m_fLastUpdate(0.0f),
+	mc_fColliderRange(0.5f),
 	m_collisionColldiers(),
 	mc_pOctTree(a_pOctTree)
 {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-	const float colliderRange = 0.4f;
 	m_boundary = Boundary(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
-		glm::vec3(colliderRange));
+		glm::vec3(mc_fColliderRange));
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
 
@@ -29,6 +29,7 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	ColliderComponent& a_rColliderToCopy) : Component(a_pOwner),
 	m_bIsColliding(false),
 	m_fLastUpdate(0.0f),
+	mc_fColliderRange(a_rColliderToCopy.mc_fColliderRange),
 	m_collisionColldiers(),
 	mc_pOctTree(a_pOctTree)
 {
@@ -45,7 +46,7 @@ void ColliderComponent::Update(float a_fDeltaTime)
 {
 	static int frames = 0;
 	m_fLastUpdate += a_fDeltaTime;
-	const float updateStep = 2.0f;
+	const float updateStep = 0.5f;
 
 	if (m_fLastUpdate >= updateStep)
 	{
@@ -80,14 +81,11 @@ void ColliderComponent::RegisterCollisions()
 		return;
 	}
 
-	// TODO: null check pointers.
-	const float queryRange = 1.0f;
-	// Volume of space to search through for nearby entities.
+	// Volume of space to search through for possible collisions.
 	Boundary queryZone(pOwnerEntityTransform->GetPosition(),
-		glm::vec3(queryRange));
+		glm::vec3(mc_fColliderRange));
 	// References to entities within the query zone.
 	std::vector<Entity*> containedEntities;
-	// TODO: fix to find colliders overlapping the zone.
 	// Search the query zone for entities.
 	mc_pOctTree->Query(queryZone, containedEntities);
 
@@ -96,7 +94,7 @@ void ColliderComponent::RegisterCollisions()
 		for (Entity* pEntity : containedEntities)
 		{
 			// Make sure we're not examining this entity.
-			if (GetEntity() == pEntity)
+			if (GetEntity() == pEntity || pEntity->GetTag() == "Marker")
 			{
 				continue;
 			}
@@ -104,6 +102,23 @@ void ColliderComponent::RegisterCollisions()
 			ColliderComponent* otherEntityCollider = static_cast<ColliderComponent*>(pEntity->GetComponentOfType(COMPONENT_TYPE_COLLIDER));
 
 			if (!otherEntityCollider)
+			{
+				continue;
+			}
+
+			bool collisionRegistered = false;
+
+			for (ColliderComponent* registeredCollider : m_collisionColldiers)
+			{
+				if (registeredCollider == otherEntityCollider)
+				{
+					// Don't register a collision more than once.
+					collisionRegistered = true;
+					break;
+				}
+			}
+
+			if (collisionRegistered)
 			{
 				continue;
 			}
