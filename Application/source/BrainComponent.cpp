@@ -15,10 +15,10 @@
 
 typedef std::vector<Entity*> pEntityVector;
 
-float BrainComponent::ms_fSeparationForce = 0.1f;
-float BrainComponent::ms_fAlignmentForce = 0.05f;
-float BrainComponent::ms_fCohesionForce = 1.0f;
-float BrainComponent::ms_fWanderForce = 0.1f;
+float BrainComponent::ms_fSeparationForce = 0.4f;
+float BrainComponent::ms_fAlignmentForce = 0.2f;
+float BrainComponent::ms_fCohesionForce = 0.6f;
+float BrainComponent::ms_fWanderForce = 0.5f;
 
 BrainComponent::BrainComponent(Entity* a_pOwner,
 	Scene* a_pScene) : Component(a_pOwner),

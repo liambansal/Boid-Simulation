@@ -79,7 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)Framework\include;$(ProjectDir)include;$(Programming_Resources)\glfw\include\;$(Programming_Resources)\glm\;$(Programming_Resources)\glad\include\;$(Programming_Resources)\;$(Programming_Resources)\assimp\include\;$(Programming_Resources)\imgui;$(Programming_Resources)\imgui\backends;$(DEV)\glfw\include\;$(DEV)\glm\;$(DEV)\glad\include\;$(DEV)\;$(DEV)\assimp\include\;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Framework\lib\$(Platform)\$(Configuration);$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\code\debug;$(Programming_Resources)\imgui\lib\$(Configuration);$(DEV)glfw\libs\$(Configuration);$(DEV)glm\libs\$(Configuration);$(DEV)assimp\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
@@ -87,7 +87,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)obj\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)Framework\include;$(ProjectDir)include;$(Programming_Resources)\glfw\include\;$(Programming_Resources)\glm\;$(Programming_Resources)\glad\include\;$(Programming_Resources)\;$(Programming_Resources)\assimp\include\;$(Programming_Resources)\imgui;$(Programming_Resources)\imgui\backends;$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Framework\lib\$(Platform)\$(Configuration);$(Programming_Resources)\glfw\build\libs;$(Programming_Resources)\glm\lib;$(Programming_Resources)\assimp\build\code\debug;$(Programming_Resources)\imgui\lib\$(Configuration);$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
     <SourcePath>$(SourcePath)</SourcePath>
