@@ -45,3 +45,13 @@ Place Obstacle = 3
 Rotate Camera = RMB (Hold)
 Zoom In/Out = Mouse Scroll Wheel
 Interact With UI = LMB
+
+---------------------------------------------------------------------------------------------------------------
+||||| DEPENDENCIES |||||
+
+This project uses the following libraries:
+1. Assimp: https://github.com/assimp/assimp
+2. GLAD: https://glad.dav1d.de/
+3. GLFW: https://www.glfw.org/
+4. GLM: https://github.com/g-truc/glm
+5. Imgui: https://github.com/ocornut/imgui
