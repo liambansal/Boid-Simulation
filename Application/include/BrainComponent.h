@@ -17,6 +17,7 @@ class Framework;
 class Scene;
 class TransformComponent;
 
+// Provides the default behaviour for a boid entity.
 class BrainComponent : public Component
 {
 public:
@@ -28,7 +29,7 @@ public:
 	~BrainComponent()
 	{}
 
-	virtual void Update(float a_deltaTime);
+	virtual void Update(float a_fDeltaTime);
 	virtual void Draw(Framework* a_pRenderingFramework)
 	{}
 
@@ -44,26 +45,32 @@ public:
 	static inline float GetWanderForce();
 
 private:
-	// Steering behaviours
+	// Calculates a point to move towards.
 	glm::vec3 CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
 		const glm::vec3& a_rCurrentPosition) const;
+	// Calculates a point to move away from.
 	glm::vec3 CalculateFleeVelocity(const glm::vec3& a_rTargetPosition,
 		const glm::vec3& a_rCurrentPosition) const;
+	// Calculates a semi-random point to move towards.
 	glm::vec3 CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
 		const glm::vec3& a_rCurrentPosition);
 
-	// Flocking behaviours
+	// Calculate velocity to move boids away from each other.
 	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 		glm::vec3 a_targetVector,
 		unsigned int a_uiNeighbourCount);
+	// Calculate velocity to move boids alongside each other.
 	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
 		glm::vec3 a_targetVector);
+	// Calculate velocity to move boids towards each other.
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 		glm::vec3 a_targetPosition,
 		glm::vec3 a_localPosition);
+	// Calculates the boids flocking behaviours.
 	void CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 		glm::vec3& a_rEntityForward);
 
+	// Calculates the separation velocity produced by collisions.
 	void CalculateCollisionVelocity(const glm::vec3 a_entityPosition);
 	void UpdateMatrix(TransformComponent* a_pTransform,
 		glm::vec3* a_pPosition,

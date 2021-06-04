@@ -16,6 +16,7 @@ class Entity;
 class Framework;
 class Model;
 
+// Loads and displays a 3D model using Assimp.
 class ModelComponent : public Component
 {
 public:
@@ -25,7 +26,7 @@ public:
 	~ModelComponent()
 	{}
 
-	virtual void Update(float a_deltaTime)
+	virtual void Update(float a_fDeltaTime)
 	{}
 	virtual void Draw(Framework* a_pRenderingFramework);
 	void LoadModel(const char* a_pFilepath);

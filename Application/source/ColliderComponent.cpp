@@ -60,6 +60,7 @@ void ColliderComponent::Update(float a_fDeltaTime)
 void ColliderComponent::Draw(Framework* a_pRenderingFramework)
 {}
 
+// Registres collisions with colliders we're overlapping.
 void ColliderComponent::RegisterCollisions()
 {
 	if (!mc_pOctTree)
@@ -106,25 +107,26 @@ void ColliderComponent::RegisterCollisions()
 				continue;
 			}
 
-			bool collisionRegistered = false;
-
-			for (ColliderComponent* registeredCollider : m_collisionColldiers)
-			{
-				if (registeredCollider == otherEntityCollider)
-				{
-					// Don't register a collision more than once.
-					collisionRegistered = true;
-					break;
-				}
-			}
-
-			if (collisionRegistered)
-			{
-				continue;
-			}
-
 			if (m_boundary.Overlaps(otherEntityCollider->m_boundary))
 			{
+				// Has a collision already been registered with the overlapping collider?
+				bool collisionRegistered = false;
+
+				for (ColliderComponent* registeredCollider : m_collisionColldiers)
+				{
+					if (registeredCollider == otherEntityCollider)
+					{
+						collisionRegistered = true;
+						break;
+					}
+				}
+
+				if (collisionRegistered)
+				{
+					// Don't register a collision more than once.
+					continue;
+				}
+
 				m_collisionColldiers.push_back(otherEntityCollider);
 				m_bIsColliding = true;
 			}
@@ -132,6 +134,7 @@ void ColliderComponent::RegisterCollisions()
 	}
 }
 
+// Unregisters collisions with colliders we're no longer overlapping.
 void ColliderComponent::UnregisterCollisions()
 {
 	for (std::vector<ColliderComponent*>::const_iterator iterator = m_collisionColldiers.cbegin();
@@ -151,9 +154,10 @@ void ColliderComponent::UnregisterCollisions()
 			continue;
 		}
 
-		// Find out when the collision has ended.
+		// Find out if the collision has ended.
 		if (!m_boundary.Overlaps(otherEntityCollider->m_boundary))
 		{
+			// Erase to remove the collider as a registered collision.
 			// Erase returns the element that's after the one being removed.
 			iterator = m_collisionColldiers.erase(iterator);
 		}

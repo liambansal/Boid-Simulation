@@ -17,7 +17,9 @@ void UserInterface::Draw()
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	ImGuiIO& io = ImGui::GetIO();
-	const ImVec2 windowPosition = ImVec2(1.0f, io.DisplaySize.y * 0.75f);
+	const float xPosition = 1.0f;
+	const float heightScale = 0.75;
+	const ImVec2 windowPosition = ImVec2(xPosition, io.DisplaySize.y * heightScale);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
 
 	// Setup sliders
@@ -27,17 +29,18 @@ void UserInterface::Draw()
 		int boidCount = (int)m_pApplication->GetBoidCount();
 		ImGui::SliderInt("Boid Count", &boidCount, 0, m_pApplication->GetMaximumBoidCount());
 		m_pApplication->SetBoidCount(boidCount);
+		const float maximumForceMultiplier = 1.0f;
 		float separationForce = BrainComponent::GetSeparationForce();
-		ImGui::SliderFloat("Separation Force", &separationForce, 0.0f, 1.0f);
+		ImGui::SliderFloat("Separation Force", &separationForce, 0.0f, maximumForceMultiplier);
 		BrainComponent::SetSeparationForce(separationForce);
 		float alignmentForce = BrainComponent::GetAlignmentForce();
-		ImGui::SliderFloat("Alignment Force", &alignmentForce, 0.0f, 1.0f);
+		ImGui::SliderFloat("Alignment Force", &alignmentForce, 0.0f, maximumForceMultiplier);
 		BrainComponent::SetAlignmentForce(alignmentForce);
 		float cohesionForce = BrainComponent::GetCohesionForce();
-		ImGui::SliderFloat("Cohesion Force", &cohesionForce, 0.0f, 1.0f);
+		ImGui::SliderFloat("Cohesion Force", &cohesionForce, 0.0f, maximumForceMultiplier);
 		BrainComponent::SetCohesionForce(cohesionForce);
 		float wanderForce = BrainComponent::GetWanderForce();
-		ImGui::SliderFloat("Wander Force", &wanderForce, 0.0f, 1.0f);
+		ImGui::SliderFloat("Wander Force", &wanderForce, 0.0f, maximumForceMultiplier);
 		BrainComponent::SetWanderForce(wanderForce);
 	}
 

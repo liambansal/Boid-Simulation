@@ -14,6 +14,7 @@
 
 // Typedefs.
 typedef std::pair<const unsigned int, Entity*> EntityPair;
+typedef std::pair<COMPONENT_TYPE, Component*> ComponentPair;
 typedef std::vector<Component*> ComponentList;
 
 // Static variables.
@@ -24,16 +25,19 @@ Entity::Entity() : m_uiEntityID(ms_uiEntityCount++),
 	m_tag("")
 {}
 
+// Copy constructs a new entity the same values.
 Entity::Entity(Entity& a_rEntityCopy,
 	Scene* a_pScene)
 {
 	m_uiEntityID = ms_uiEntityCount++;
 	m_tag = a_rEntityCopy.m_tag;
 
-	for (auto iterator = a_rEntityCopy.m_components.begin(); iterator != a_rEntityCopy.m_components.end(); ++iterator)
+	// Go through each component.
+	for (ComponentPair component : a_rEntityCopy.m_components)
 	{
-		COMPONENT_TYPE componentType = iterator->second->GetComponentType();
+		COMPONENT_TYPE componentType = component.second->GetComponentType();
 
+		// Find the component type.
 		if (componentType == COMPONENT_TYPE_TRANSFORM)
 		{
 			TransformComponent* pTransformComponent = new TransformComponent(this,
@@ -73,7 +77,7 @@ Entity::~Entity()
 }
 
 // Update entity's components one by one.
-void Entity::Update(float a_deltaTime)
+void Entity::Update(float a_fDeltaTime)
 {
 	std::map<COMPONENT_TYPE, Component*>::iterator componentIterator;
 
@@ -85,7 +89,7 @@ void Entity::Update(float a_deltaTime)
 
 		if (pComponent)
 		{
-			pComponent->Update(a_deltaTime);
+			pComponent->Update(a_fDeltaTime);
 		}
 	}
 }

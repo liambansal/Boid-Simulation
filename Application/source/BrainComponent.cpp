@@ -55,9 +55,9 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_componentType = a_rBrainToCopy.m_componentType;
 }
 
-void BrainComponent::Update(float a_deltaTime)
+void BrainComponent::Update(float a_fDeltaTime)
 {
-	m_fLastUpdate += a_deltaTime;
+	m_fLastUpdate += a_fDeltaTime;
 	const float updateStep = 0.15f;
 
 	// Get this components owner entity.
@@ -111,13 +111,14 @@ void BrainComponent::Update(float a_deltaTime)
 	m_currentVelocity = glm::clamp(m_currentVelocity,
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
-	currentPosition += m_currentVelocity * a_deltaTime;
+	currentPosition += m_currentVelocity * a_fDeltaTime;
 	// Update the entity's transform matrix.
 	UpdateMatrix(pOwnerTransform,
 		&currentPosition,
 		&m_currentVelocity);
 }
 
+// Calculates a point to move towards.
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
 	const glm::vec3& a_rCurrentPosition) const
 {
@@ -133,6 +134,7 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPositi
 	return seekVelocity;
 }
 
+// Calculates a point to move away from.
 glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_rTargetPosition,
 	const glm::vec3& a_rCurrentPosition) const
 {
@@ -148,6 +150,7 @@ glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_rTargetPositi
 	return fleeVelocity;
 }
 
+// Calculates a semi-random point to move towards.
 glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
 	const glm::vec3& a_rCurrentPosition)
 {
@@ -177,6 +180,7 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDir
 	return CalculateSeekVelocity(m_wanderPoint, a_rCurrentPosition);
 }
 
+// Calculate velocity to move boids away from each other.
 glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 	glm::vec3 a_targetVector,
 	unsigned int a_uiNeighbourCount)
@@ -195,6 +199,7 @@ glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelo
 	return a_separationVelocity;
 }
 
+// Calculate velocity to move boids alongside each other.
 glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
 	glm::vec3 a_targetVector)
 {
@@ -211,6 +216,7 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 	return a_alignmentVelocity;
 }
 
+// Calculate velocity to move boids towards each other.
 glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 	glm::vec3 a_targetPosition,
 	glm::vec3 a_localPosition)
@@ -227,6 +233,7 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	return a_cohesionVelocity;
 }
 
+// Calculates the boids flocking behaviours.
 void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 	glm::vec3& a_rEntityForward)
 {
@@ -291,6 +298,7 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 	m_behavioralVelocity += newForce;
 }
 
+// Calculates the separation velocity produced by collisions.
 void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)
 {
 	for (std::vector<ColliderComponent*>::const_iterator iterator = m_pEntityCollider->GetCollisions().begin();
@@ -338,7 +346,7 @@ void BrainComponent::UpdateMatrix(TransformComponent* a_pTransform,
 	}
 
 	glm::vec3 upDirection = (glm::vec3)a_pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_UP_VECTOR);
-	upDirection -= *a_pForward * glm::dot(*a_pForward, upDirection);
+	upDirection -= (*a_pForward) * glm::dot(*a_pForward, upDirection);
 
 	if (glm::length(upDirection) > 0.0f)
 	{

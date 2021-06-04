@@ -11,7 +11,7 @@
 #include <map>
 #include <vector>
 
-
+// Divides a 3D space in smaller (more manageable) volumes.
 template <typename TObject, typename TVector>
 class OctTree
 {

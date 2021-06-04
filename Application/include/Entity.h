@@ -16,10 +16,12 @@
 class Framework;
 class Scene;
 
+// Generic class for creating 'game objects' within a scene.
 class Entity
 {
 public:
 	Entity();
+	// Copy constructs a new entity the same values.
 	Entity(Entity& a_rEntityCopy,
 		Scene* a_pScene);
 	~Entity();

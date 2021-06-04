@@ -8,6 +8,7 @@
 
 class Application;
 
+// For creating an interactive user interface using Imgui.
 class UserInterface
 {
 public:
@@ -19,6 +20,7 @@ public:
 	void Draw();
 
 private:
+	// Application for the UI to appear on top of.
 	Application* m_pApplication;
 };
 

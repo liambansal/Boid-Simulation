@@ -20,6 +20,8 @@ enum COMPONENT_TYPE
 	COMPONENT_TYPE_COUNT
 };
 
+// Generic class for inheriting only.
+// Provides a base default functionality for all components.
 class Component
 {
 public:

@@ -10,8 +10,10 @@
 #include "Component.h"
 #include "glm/ext.hpp"
 
+// Forward declarations.
 class Framework;
 
+// Component to store position/rotation data about an entity.
 class TransformComponent : public Component
 {
 public:
@@ -30,7 +32,7 @@ public:
 	~TransformComponent()
 	{}
 
-	virtual void Update(float a_deltaTime)
+	virtual void Update(float a_fDeltaTime)
 	{}
 	virtual void Draw(Framework* a_pRenderingFramework)
 	{}

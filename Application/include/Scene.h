@@ -17,6 +17,7 @@
 class Shader;
 class Framework;
 
+// Manages entities within an application.
 class Scene
 {
 public:

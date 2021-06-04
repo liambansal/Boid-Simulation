@@ -44,11 +44,11 @@ Scene::~Scene()
 }
 
 // Calls update on all the scene's entities.
-void Scene::Update(float a_deltaTime)
+void Scene::Update(float a_fDeltaTime)
 {
 	for (EntityPair entity : GetEntityMap())
 	{
-		entity.second->Update(a_deltaTime);
+		entity.second->Update(a_fDeltaTime);
 	}
 }
 
@@ -111,12 +111,12 @@ void Scene::DestroyEntity(Entity* a_pEntityToDestroy)
 	}
 }
 
-void Scene::DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_destroyAmount)
+void Scene::DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_uiDestroyAmount)
 {
 	// Test whether or not a type of entity exists in the scene.
 	bool entityTypeCleared = true;
 
-	for (unsigned int i = 0; i < a_destroyAmount; ++i)
+	for (unsigned int i = 0; i < a_uiDestroyAmount; ++i)
 	{
 		for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin();
 			iterator != m_sceneEntities.cend();
