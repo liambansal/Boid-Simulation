@@ -2,13 +2,13 @@
 
 The "camera.h", "mesh.h", model.h" and "shader.h" code header files (© 2015 by Joey de Vries. SOME RIGHTS RESERVED) were
 not created by myself but were obtained from learnopengl.com and made available through a Creative Commons licence.
-I have made some modifications to the source code and previous versions and be seen through the project’s GitHub repository.
+I have made some modifications to the source code and previous versions can be seen through the project’s GitHub repository.
 
 The code files can be found in the folder directory:
-...\assessment---3d-boids-ecs-liambansal\Framework\include\LearnOpenGL
+.../Boid-Simuation/Framework/include/LearnOpenGL
 
 Resources Online Link:
-https://github.com/JoeyDeVries/LearnOpenGL/tree/master/includes/learnopengl
+https://github.com/JoeyDeVries/LearnOpenGL/tree/master/includes/LearnOpenGL/
 
 Liscense Link:
 https://creativecommons.org/licenses/by-nc/4.0/legalcode
@@ -22,10 +22,20 @@ The "Low_poly_UFO" 3D model work (© 2016 by JonLundy3D. SOME RIGHTS RESERVED) w
 from TurboSquid.com and made available through TurboSuid's Standard 3D Model Liscense.
 
 Resources found at the following folder directory:
-...\assessment---3d-boids-ecs-liambansal\Application\resources\models\Low_poly_UFO\
+.../Boid-Simuation/Application/resources/models/Low_poly_UFO/
 
 Online Link:
 https://www.turbosquid.com/3d-models/free-3ds-model-flying-saucer/1081073
+
+---------------------------------------------------------------------------------------------------------------
+||||| DEPENDENCIES |||||
+
+This project uses the following libraries:
+1. Assimp: https://github.com/assimp/assimp
+2. GLAD: https://glad.dav1d.de/
+3. GLFW: https://www.glfw.org/
+4. GLM: https://github.com/g-truc/glm
+5. Imgui: https://github.com/ocornut/imgui
 
 ---------------------------------------------------------------------------------------------------------------
 ||||| CONTROLS ||||||
@@ -38,20 +48,9 @@ Up = E
 Down = Q
 Move Faster = Left Shift (Hold)
 
-Move Marker Forward = 1
-Move Marker Back = 2
+Move Obstacle Marker Forward = 1
+Move Obstacle Marker Back = 2
 Place Obstacle = 3
 
 Rotate Camera = RMB (Hold)
 Zoom In/Out = Mouse Scroll Wheel
-Interact With UI = LMB
-
----------------------------------------------------------------------------------------------------------------
-||||| DEPENDENCIES |||||
-
-This project uses the following libraries:
-1. Assimp: https://github.com/assimp/assimp
-2. GLAD: https://glad.dav1d.de/
-3. GLFW: https://www.glfw.org/
-4. GLM: https://github.com/g-truc/glm
-5. Imgui: https://github.com/ocornut/imgui
