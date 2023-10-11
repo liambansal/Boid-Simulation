@@ -1,2 +1,0 @@
-﻿assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
-  Framework.vcxproj -> G:\University - Active Projects\assessment---3d-boids-ecs-liambansal\Framework\lib\x64\Debug\Framework.lib

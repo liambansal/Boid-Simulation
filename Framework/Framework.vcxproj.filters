@@ -24,7 +24,7 @@
     <ClCompile Include="source\Framework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Programming Resources\glad\src\glad.c">
+    <ClCompile Include="..\..\..\Game Development\Programming Resources\glad\src\glad.c">
       <Filter>Resource Files\Glad</Filter>
     </ClCompile>
   </ItemGroup>
