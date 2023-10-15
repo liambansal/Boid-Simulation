@@ -16,6 +16,12 @@
     <Filter Include="Resource Files\Imgui">
       <UniqueIdentifier>{34abcebe-2118-4ba6-b55e-d05931e5efca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\UFO Model">
+      <UniqueIdentifier>{5541ddcf-6e5a-4d76-a3ed-69976ef84043}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Shaders">
+      <UniqueIdentifier>{e18f8bd7-6f47-41c0-9352-92273470b72f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\Main.cpp">
@@ -98,5 +104,42 @@
     <ClInclude Include="..\..\..\Game Development\Programming Resources\imgui\backends\imgui_impl_opengl3.h">
       <Filter>Resource Files\Imgui</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+	<None Include="Resources\Shaders\model_loading.fs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\model_loading.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Models\Low_poly_UFO\Low_poly_UFO.mtl">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\Low_poly_UFO.obj">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\Map__7_Normal_Bump.tga">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse.png">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse_glow.png">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse2.png">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse2_glow.png">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_normal.png">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_spec.png">
+      <Filter>Resource Files\UFO Model</Filter>
+    </None>
   </ItemGroup>
 </Project>
