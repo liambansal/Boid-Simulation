@@ -95,7 +95,7 @@ void ColliderComponent::RegisterCollisions()
 		for (Entity* pEntity : containedEntities)
 		{
 			// Make sure we're not examining this entity.
-			if (GetEntity() == pEntity || pEntity->GetTag() == "Boid" || pEntity->GetTag() == "Marker")
+			if (GetEntity() == pEntity || pEntity->GetTag() == "Marker")
 			{
 				continue;
 			}
