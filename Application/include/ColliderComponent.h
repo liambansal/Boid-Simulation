@@ -17,7 +17,9 @@ class Entity;
 template <typename TObject, typename TVector>
 class OctTree;
 
-// Creates collisions within a volume of space.
+/// <summary>
+/// Allows an entity to trigger collisions with other colliders.
+/// </summary>
 class ColliderComponent : public Component
 {
 public:
@@ -31,39 +33,67 @@ public:
 	virtual void Update(float a_fDeltaTime);
 	virtual void Draw(Framework* a_pRenderingFramework);
 
-	// Returns true if there is a registered collision.
+	/// <summary>
+	/// Checks if the entity is in contact with another collider.
+	/// </summary>
+	/// <returns> True if the entity is colliding with something. </returns>
 	inline const bool IsColliding() const;
 	
-	// Set dimensions for the volume of space the collider will occupy.
+	/// <summary>
+	/// Sets the collider's width, height, and depth.
+	/// </summary>
+	/// <param name="a_dimensionScalar"> The value to set for each dimension. </param>
 	inline void SetDimensions(float a_dimensionScalar);
 
 	inline Boundary<glm::vec3>* GetBoundary();
-	// Returns a vector of all the colliders that we've registered a collision with.
+	/// <summary>
+	/// Returns a collection of all the entities that are in contact with this entity.
+	/// </summary>
+	/// <returns> All the colliding entities. </returns>
 	inline const std::vector<ColliderComponent*>& GetCollisions() const;
 
 private:
-	// Registres collisions with colliders we're overlapping.
+	/// <summary>
+	/// Detects if any new collisions have started with another entity.
+	/// </summary>
 	void RegisterCollisions();
-	// Unregisters collisions with colliders we're no longer overlapping.
+	/// <summary>
+	/// Removes all references to entities that are no longer colliding with this entity.
+	/// </summary>
 	void UnregisterCollisions();
 
+	/// <summary>
+	/// True if there's a collision between this entity and at least one other entity.
+	/// </summary>
 	bool m_bIsColliding;
+	/// <summary>
+	/// The timestamp for when this component was last updated.
+	/// Always starts at zero when the entity is created.
+	/// </summary>
 	float m_fLastUpdate;
+	/// <summary>
+	/// The greatest distance between any two bounds of the collider.
+	/// </summary>
 	float m_fColliderRange;
-	// Position and dimensions of the collider's bounds.
+	/// <summary>
+	/// The position and dimensions of the collider's bounds.
+	/// </summary>
 	Boundary<glm::vec3> m_boundary;
-	// All the colliders that this is colliding with.
+	/// <summary>
+	/// A collection of all the colliders that are in contact with this entity.
+	/// </summary>
 	std::vector<ColliderComponent*> m_collisionColldiers;
+	/// <summary>
+	/// A pointer to the scenes oct-tree.
+	/// </summary>
 	const OctTree<Entity, glm::vec3>* mc_pOctTree;
 };
 
-// Returns true if there is a registered collision.
 const bool ColliderComponent::IsColliding() const
 {
 	return m_bIsColliding;
 }
 
-// Set dimensions for the volume of space the collider will occupy.
 void ColliderComponent::SetDimensions(float a_dimensionScalar)
 {
 	m_fColliderRange = a_dimensionScalar;
@@ -75,7 +105,6 @@ Boundary<glm::vec3>* ColliderComponent::GetBoundary()
 	return &m_boundary;
 }
 
-// Returns a vector of all the colliders that we've registered a collision with.
 const std::vector<ColliderComponent*>& ColliderComponent::GetCollisions() const
 {
 	return m_collisionColldiers;

@@ -118,7 +118,6 @@ void BrainComponent::Update(float a_fDeltaTime)
 		&m_currentVelocity);
 }
 
-// Calculates a point to move towards.
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
 	const glm::vec3& a_rCurrentPosition) const
 {
@@ -134,23 +133,6 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPositi
 	return seekVelocity;
 }
 
-// Calculates a point to move away from.
-glm::vec3 BrainComponent::CalculateFleeVelocity(const glm::vec3& a_rTargetPosition,
-	const glm::vec3& a_rCurrentPosition) const
-{
-	glm::vec3 targetDirection(a_rCurrentPosition - a_rTargetPosition);
-
-	if (glm::length(targetDirection) > 0.0f)
-	{
-		targetDirection = glm::normalize(targetDirection);
-	}
-
-	// Calculate new velocity.
-	glm::vec3 fleeVelocity = (targetDirection * mc_fSpeed) - m_currentVelocity;
-	return fleeVelocity;
-}
-
-// Calculates a semi-random point to move towards.
 glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
 	const glm::vec3& a_rCurrentPosition)
 {
@@ -180,7 +162,6 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDir
 	return CalculateSeekVelocity(m_wanderPoint, a_rCurrentPosition);
 }
 
-// Calculate velocity to move boids away from each other.
 glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 	glm::vec3 a_targetVector,
 	unsigned int a_uiNeighbourCount)
@@ -199,11 +180,9 @@ glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelo
 	return a_separationVelocity;
 }
 
-// Calculate velocity to move boids alongside each other.
 glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
 	glm::vec3 a_targetVector)
 {
-	// Add neighbours' velocities
 	a_alignmentVelocity += a_targetVector;
 
 	if (glm::length(a_alignmentVelocity) > 0.0f &&
@@ -216,7 +195,6 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 	return a_alignmentVelocity;
 }
 
-// Calculate velocity to move boids towards each other.
 glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 	glm::vec3 a_targetPosition,
 	glm::vec3 a_localPosition)
@@ -233,7 +211,6 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	return a_cohesionVelocity;
 }
 
-// Calculates the boids flocking behaviours.
 void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 	glm::vec3& a_rEntityForward)
 {
@@ -276,13 +253,13 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 				continue;
 			}
 
-			// Find distance to iterator entity
 			const glm::vec3 targetPosition = (const glm::vec3)ptargetTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
 			seperationVelocity = CalculateSeparationVelocity(seperationVelocity,
 				// Don't want positions to have the same value.
 				a_rEntityPosition == targetPosition ? GetRandomNearbyPoint(a_rEntityPosition) - a_rEntityPosition : a_rEntityPosition - targetPosition,
 				m_uiNeighbourCount);
 			alignmentVelocity = CalculateAlignmentVelocity(alignmentVelocity,
+				// Add the neighbouring boid's current velocity.
 				pTargetBrain->GetVelocity());
 			cohesionVelocity = CalculateCohesionVelocity(cohesionVelocity,
 				targetPosition,
@@ -298,7 +275,6 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 	m_behavioralVelocity += newForce;
 }
 
-// Calculates the separation velocity produced by collisions.
 void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)
 {
 	for (std::vector<ColliderComponent*>::const_iterator iterator = m_pEntityCollider->GetCollisions().begin();
@@ -367,7 +343,6 @@ void BrainComponent::UpdateMatrix(TransformComponent* a_pTransform,
 	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR, *a_pPosition);
 }
 
-// Gets a semi-random position, based around the argument position.
 glm::vec3 BrainComponent::GetRandomNearbyPoint(glm::vec3 a_originPosition) const
 {
 	const float absoluteRange = 1.0f;

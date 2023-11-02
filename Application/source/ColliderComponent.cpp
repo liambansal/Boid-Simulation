@@ -60,7 +60,6 @@ void ColliderComponent::Update(float a_fDeltaTime)
 void ColliderComponent::Draw(Framework* a_pRenderingFramework)
 {}
 
-// Registres collisions with colliders we're overlapping.
 void ColliderComponent::RegisterCollisions()
 {
 	if (!mc_pOctTree)
@@ -100,6 +99,7 @@ void ColliderComponent::RegisterCollisions()
 				continue;
 			}
 
+			// The collider of the entity that has triggered a collision with this.
 			ColliderComponent* otherEntityCollider = static_cast<ColliderComponent*>(pEntity->GetComponentOfType(COMPONENT_TYPE_COLLIDER));
 
 			if (!otherEntityCollider)

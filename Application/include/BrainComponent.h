@@ -17,7 +17,9 @@ class Framework;
 class Scene;
 class TransformComponent;
 
-// Provides the default behaviour for a boid entity.
+/// <summary>
+/// Allows a boid to automatically move itself around a scene.
+/// </summary>
 class BrainComponent : public Component
 {
 public:
@@ -45,55 +47,129 @@ public:
 	static inline float GetWanderForce();
 
 private:
-	// Calculates a point to move towards.
+	/// <summary>
+	/// Generates a new seek velocity for the boid.
+	/// </summary>
+	/// <param name="a_rTargetPosition"> The position to move towards. </param>
+	/// <param name="a_rCurrentPosition"> The boid's current position. </param>
+	/// <returns> The boid's new seek velocity. </returns>
 	glm::vec3 CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
 		const glm::vec3& a_rCurrentPosition) const;
-	// Calculates a point to move away from.
-	glm::vec3 CalculateFleeVelocity(const glm::vec3& a_rTargetPosition,
-		const glm::vec3& a_rCurrentPosition) const;
-	// Calculates a semi-random point to move towards.
+	/// <summary>
+	/// Generates a new wander velocity for the boid relative to its current forward direction.
+	/// </summary>
+	/// <param name="a_rForwardDirection"> The boid's forward direction. </param>
+	/// <param name="a_rCurrentPosition"> The boid's current position. </param>
+	/// <returns> The boid's new wander velocity. </returns>
 	glm::vec3 CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
 		const glm::vec3& a_rCurrentPosition);
-
-	// Calculate velocity to move boids away from each other.
+	/// <summary>
+	/// Generates a new separation velocity that moves the boid away from its neighbours.
+	/// </summary>
+	/// <param name="a_separationVelocity"> The boid's current separation velocity. </param>
+	/// <param name="a_targetVector"> The amount to increase the boid's separation velocity by. </param>
+	/// <param name="a_uiNeighbourCount"> The number of neighbouring boids. </param>
+	/// <returns> The boid's new separation velocity. </returns>
 	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 		glm::vec3 a_targetVector,
 		unsigned int a_uiNeighbourCount);
-	// Calculate velocity to move boids alongside each other.
+	/// <summary>
+	/// Generates a new alignment velocity that moves the boid along a similar direction to its neighbours.
+	/// </summary>
+	/// <param name="a_alignmentVelocity"> The boid's current alignment velocity. </param>
+	/// <param name="a_targetVector"> The amount to increase the boid's alignment velocity by. </param>
+	/// <returns> The boid's new alignment velocity. </returns>
 	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
 		glm::vec3 a_targetVector);
-	// Calculate velocity to move boids towards each other.
+	/// <summary>
+	/// Generates a new cohesion velocity that moves the boid towards its neighbours.
+	/// </summary>
+	/// <param name="a_cohesionVelocity"> The boid's current cohesion velocity. </param>
+	/// <param name="a_targetPosition"> The amount to increase the boid's cohesion velocity by. </param>
+	/// <param name="a_localPosition"> The boid's current position. </param>
+	/// <returns> The boid's new cohesion velocity. </returns>
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 		glm::vec3 a_targetPosition,
 		glm::vec3 a_localPosition);
-	// Calculates the boids flocking behaviours.
+	/// <summary>
+	/// Calculates the boid's overall movement.
+	/// </summary>
+	/// <param name="a_rEntityPosition"> The boid's current position. </param>
+	/// <param name="a_rEntityForward"> The boid's forward direction. </param>
 	void CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 		glm::vec3& a_rEntityForward);
-
-	// Calculates the separation velocity produced by collisions.
+	/// <summary>
+	/// Calculates a new velocity that moves the entity away from collisions.
+	/// </summary>
+	/// <param name="a_entityPosition"> The entity's current position. </param>
 	void CalculateCollisionVelocity(const glm::vec3 a_entityPosition);
+
+	/// <summary>
+	/// Updates the entity's transform matrix with the entity's current position and rotation data.
+	/// </summary>
+	/// <param name="a_pTransform"> The entity's transform component. </param>
+	/// <param name="a_pPosition"> The entity's position. </param>
+	/// <param name="a_pForward"> The entity's forward direction. </param>
 	void UpdateMatrix(TransformComponent* a_pTransform,
 		glm::vec3* a_pPosition,
 		glm::vec3* a_pForward);
-	// Gets a semi-random position, based around the argument position.
+	/// <summary>
+	/// Gets a semi-random position near to the specified position.
+	/// </summary>
+	/// <param name="a_originPosition"> The point in space where the semi-random position in centred around. </param>
+	/// <returns> A position. </returns>
 	glm::vec3 GetRandomNearbyPoint(glm::vec3 a_originPosition) const;
 
+	/// <summary>
+	/// The strength of the force that pulls two or more boids apart.
+	/// </summary>
 	static float ms_fSeparationForce;
+	/// <summary>
+	/// The strength of the force that causes a boid to move in the same direction as its neighbours.
+	/// </summary>
 	static float ms_fAlignmentForce;
+	/// <summary>
+	/// The strength of the force that brings two or more boids together.
+	/// </summary>
 	static float ms_fCohesionForce;
+	/// <summary>
+	/// The strength of the force that causes a boid to move to a random point in space.
+	/// </summary>
 	static float ms_fWanderForce;
-
+	/// <summary>
+	/// The number of nearby boids.
+	/// </summary>
 	unsigned int m_uiNeighbourCount;
 	const float mc_fSpeed;
+	/// <summary>
+	/// The limit for the boid's velocity components i.e. x, y, and z.
+	/// </summary>
 	const float mc_fMaximumVelocity;
+	/// <summary>
+	/// Any boid beyond this distance is not considered to be a neighbour.
+	/// </summary>
 	const float mc_fMaximumNeighbourDistance;
+	/// <summary>
+	/// The timestamp for when this component was last updated.
+	/// Always starts at zero when the entity is created.
+	/// </summary>
 	float m_fLastUpdate;
 	glm::vec3 m_currentVelocity;
-	// Velocity calculated by behavioral forces.
+	/// <summary>
+	/// The total sum of the boids movement velocity as calculated by its behavioral forces.
+	/// </summary>
 	glm::vec3 m_behavioralVelocity;
-	// separation velocity calculated based collisions.
+	/// <summary>
+	/// The separation velocity that's calculated based on collisions, to move a boid away from collisions.
+	/// </summary>
 	glm::vec3 m_collisionSeparationVelocity;
+	/// <summary>
+	/// The random point in space that the boid will move towards when wandering.
+	/// </summary>
 	glm::vec3 m_wanderPoint;
+	/// <summary>
+	/// The scene that the entity belongs to.
+	/// </summary>
 	Scene* m_pScene;
 	ColliderComponent* m_pEntityCollider;
 };

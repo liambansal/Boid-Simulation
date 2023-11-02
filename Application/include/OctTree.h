@@ -210,7 +210,7 @@ void OctTree<TObject, TVector>::Query(Boundary<TVector> a_queryVolume,
 		return;
 	}
 
-	// Check the space being queried for objects that actually intersect this oct tree.
+	// Ensure the volume of space being queried for objects intersects the oct-tree.
 	if (!m_boundary.Contains(*a_queryVolume.GetPosition()))
 	{
 		return;

@@ -13,7 +13,9 @@
 // Forward declarations.
 class Framework;
 
-// Component to store position/rotation data about an entity.
+/// <summary>
+/// Allows an entity to store position and rotation data.
+/// </summary>
 class TransformComponent : public Component
 {
 public:
@@ -37,9 +39,19 @@ public:
 	virtual void Draw(Framework* a_pRenderingFramework)
 	{}
 
+	/// <summary>
+	/// Sets a row within the transform component's position and rotation matrix.
+	/// </summary>
+	/// <param name="a_row"> The matrix row to change the value of. </param>
+	/// <param name="a_vector"> The new value to set. </param>
 	void SetMatrixRow(MATRIX_ROW a_row, glm::vec3 a_vector);
 
 	inline const glm::mat4& GetMatrix() const;
+	/// <summary>
+	/// Returns a single row from the transform component's position and rotation matrix.
+	/// </summary>
+	/// <param name="a_row"> The type of row to get. </param>
+	/// <returns> A matrix row. </returns>
 	inline const glm::vec4& GetMatrixRow(MATRIX_ROW a_row) const;
 	inline glm::vec3* GetPosition() const;
 

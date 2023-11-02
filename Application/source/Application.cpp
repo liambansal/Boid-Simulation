@@ -19,7 +19,7 @@
 #include "Utilities.h"
 
 Application::Application() : m_uiBoidCount(50),
-	mc_uiMaximumBoidCount(5000),
+	mc_uiMaximumBoidCount(500),
 	m_fMarkerZOffset(10.0f),
 	mc_fMimimumMarkerZOffset(0.5f),
 	mc_fMaximumMarkerZOffset(50.0f),
