@@ -17,57 +17,96 @@
 class Shader;
 class Framework;
 
-// Manages entities within an application.
+/// <summary>
+/// Acts as a virtual environment for creating and managing entities.
+/// </summary>
 class Scene
 {
 public:
 	Scene();
 	~Scene();
 
-	// Calls update on all the scene's entities.
+	/// <summary>
+	/// Updates all of the scene's entities.
+	/// Always call once per frame.
+	/// </summary>
+	/// <param name="a_deltaTime"> The amount of time (in seconds) that has passed since the last frame and current frame. </param>
 	void Update(float a_deltaTime);
-	// Draws all scene's entities.
+	/// <summary>
+	/// Draws all of the scene's elements on-screen.
+	/// </summary>
+	/// <param name="a_pRenderingFramework"> The program that handles drawing the scene's elements. </param>
 	void Draw(Framework* a_pRenderingFramework) const;
+	/// <summary>
+	/// Registers a single entity with the scene.
+	/// </summary>
+	/// <param name="a_pNewEntity"> The entity instance to associate with the scene. </param>
+	/// <returns> True if the entity was successfully added to the scene. </returns>
 	bool AddEntity(Entity* a_pNewEntity);
 	void AddEntities(Entity* a_pNewEntity, unsigned int a_spawnAmount);
 	void DestroyEntity(Entity* a_pEntityToDestroy);
+	/// <summary>
+	/// Destroys a number of entities within the scene that have a specific tag.
+	/// </summary>
+	/// <param name="a_entityTag"> Entities with this tag will be destroyed. </param>
+	/// <param name="a_destroyAmount"> The number of entities to destroy. </param>
 	void DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_destroyAmount);
 
-	// Returns a pointer to an entity using its unique identifier.
+	/// <summary>
+	/// Finds an entity by searching for its ID.
+	/// </summary>
+	/// <param name="a_uniqueID"> The ID that belongs to the entity to search for. </param>
+	/// <returns> A pointer to the entity that was searched for, if it exists. </returns>
 	inline Entity* GetEntity(unsigned int a_uniqueID);
-	// Returns a reference to a map containing all the scene's entities.
+	/// <summary>
+	/// Returns a collection reference of all the scene's entities.
+	/// </summary>
+	/// <returns> A collection that contains each entity within the scene. </returns>
 	inline const std::map<unsigned int, Entity*>& GetEntityMap() const;
-	// Gets the total number of entities in the scene.
+	/// <summary>
+	/// Returns the total number of entities in the scene.
+	/// </summary>
+	/// <returns> The number of entities within the scene. </returns>
 	inline const unsigned int GetEntityCount() const;
-	// Gets the number of entities in the scene with a matching tag.
+	/// <summary>
+	/// Returns the number of entities in the scene that have a specific tag.
+	/// </summary>
+	/// <param name="a_tag"> The function only counts entities with this tag. </param>
+	/// <returns> The number of matching entities within the scene. </returns>
 	inline const unsigned int GetEntityCount(std::string a_tag) const;
 	inline const OctTree<Entity, glm::vec3>& GetOctTree() const;
 
 private:
+	/// <summary>
+	/// The number of entities that exist within the scene.
+	/// </summary>
 	unsigned int m_uiEntityCount;
+	/// <summary>
+	/// A collection of all the scene's entities.
+	/// </summary>
 	std::map<unsigned int, Entity*> m_sceneEntities;
+	/// <summary>
+	/// The oct-tree helps the scene to track the positions of its entities and update them
+	/// (regarding collisions, queries, etc.) in a performant manner.
+	/// </summary>
 	OctTree<Entity, glm::vec3> m_octTree;
 };
 
-// Returns a pointer to an entity using its unique identifier.
 Entity* Scene::GetEntity(unsigned int a_uniqueID)
 {
 	return m_sceneEntities.empty() ? nullptr : m_sceneEntities[a_uniqueID];
 }
 
-// Returns a reference to a map containing all the scene's entities.
 const std::map<unsigned int, Entity*>& Scene::GetEntityMap() const
 {
 	return m_sceneEntities;
 }
 
-// Gets the total number of entities in the scene.
 const unsigned int Scene::GetEntityCount() const
 {
 	return m_uiEntityCount;
 }
 
-// Gets the number of entities in the scene with a matching tag.
 const unsigned int Scene::GetEntityCount(std::string a_tag) const
 {
 	// Entities in the scene with a matching tag.

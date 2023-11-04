@@ -43,7 +43,6 @@ Scene::~Scene()
 	}
 }
 
-// Calls update on all the scene's entities.
 void Scene::Update(float a_fDeltaTime)
 {
 	for (EntityPair entity : GetEntityMap())
@@ -52,7 +51,6 @@ void Scene::Update(float a_fDeltaTime)
 	}
 }
 
-// Draws all scene's entities.
 void Scene::Draw(Framework* a_pRenderingFramework) const
 {
 	if (m_sceneEntities.empty())
