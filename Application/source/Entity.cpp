@@ -20,12 +20,11 @@ typedef std::vector<Component*> ComponentList;
 // Static variables.
 unsigned int Entity::ms_uiEntityCount = 0;
 
-// Assign and increment entity ID.
+// Increment the entity count with each new instance.
 Entity::Entity() : m_uiEntityID(ms_uiEntityCount++),
 	m_tag("")
 {}
 
-// Copy constructs a new entity the same values.
 Entity::Entity(Entity& a_rEntityCopy,
 	Scene* a_pScene)
 {
@@ -76,7 +75,6 @@ Entity::~Entity()
 	m_components.clear();
 }
 
-// Update entity's components one by one.
 void Entity::Update(float a_fDeltaTime)
 {
 	std::map<COMPONENT_TYPE, Component*>::iterator componentIterator;
@@ -94,7 +92,6 @@ void Entity::Update(float a_fDeltaTime)
 	}
 }
 
-// Draw entity's components one by one.
 void Entity::Draw(Framework* a_pRenderingFramework)
 {
 	std::map<COMPONENT_TYPE, Component*>::iterator componentIterator;

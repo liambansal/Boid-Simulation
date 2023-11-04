@@ -16,20 +16,37 @@
 class Framework;
 class Scene;
 
-// Generic class for creating 'game objects' within a scene.
+/// <summary>
+/// The base class from which all entity types should derive from to support the creation of a 'game object'.
+/// </summary>
 class Entity
 {
 public:
 	Entity();
-	// Copy constructs a new entity the same values.
-	Entity(Entity& a_rEntityCopy,
-		Scene* a_pScene);
+	/// <summary>
+	/// Copy constructor for creating a new entity from an existing instance.
+	/// </summary>
+	/// <param name="a_rEntityCopy"> The entity instance to copy. </param>
+	/// <param name="a_pScene"> The scene in which the entity to copy is a part of. </param>
+	Entity(Entity& a_rEntityCopy, Scene* a_pScene);
 	~Entity();
 
-	// Update entity's components one by one.
+	/// <summary>
+	/// Updates the entity and its components.
+	/// Always and only call once per frame.
+	/// </summary>
+	/// <param name="a_deltaTime"></param>
 	virtual void Update(float a_deltaTime);
-	// Draw entity's components one by one.
+	/// <summary>
+	/// Draws the entity on-screen.
+	/// </summary>
+	/// <param name="a_pRenderingFramework"> The custom program that handles drawing the entity. </param>
 	virtual void Draw(Framework* a_pRenderingFramework);
+	/// <summary>
+	/// Attaches a new component to the entity.
+	/// </summary>
+	/// <param name="a_key"> The component's type. </param>
+	/// <param name="a_pComponent"> A pointer to the component instance to attach to the entity. </param>
 	inline void AddComponent(COMPONENT_TYPE a_key, Component* a_pComponent);
 
 	inline void SetTag(std::string a_newTag);
@@ -39,9 +56,21 @@ public:
 	inline const std::string GetTag() const;
 
 private:
+	/// <summary>
+	/// The number of entities that currently exist across all scenes.
+	/// </summary>
 	static unsigned int ms_uiEntityCount;
+	/// <summary>
+	/// A unique identifier for each entity.
+	/// </summary>
 	unsigned int m_uiEntityID;
+	/// <summary>
+	/// A string identifier that's usually used for finding an entity.
+	/// </summary>
 	std::string m_tag;
+	/// <summary>
+	/// A collection of all the components that are currently attached to the entity.
+	/// </summary>
 	std::map<COMPONENT_TYPE, Component*> m_components;
 };
 
