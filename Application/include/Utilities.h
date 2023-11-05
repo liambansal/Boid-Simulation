@@ -8,17 +8,24 @@
 
 #include "glm/glm.hpp"
 
-// Storage class for utility type functions that don't fit into other classes.
+/// <summary>
+/// Contains miscellaneous functions that have a general purpose.
+/// </summary>
 class Utilities
 {
 public:
-	// Returns a semi-random number between two ranges.
+	/// <summary>
+	/// Returns a semi-random number within a specified range.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <param name="a_lowerRange"> The minimum digit that can be returned. </param>
+	/// <param name="a_upperRange"> The maximum digit that can be returned. </param>
+	/// <returns> A semi-randomlly generated number. </returns>
 	template<typename T>
 	static inline T RandomRange(T a_lowerRange,
 		T a_upperRange);
 };
 
-// Returns a semi-random number between two ranges.
 template<typename T>
 T Utilities::RandomRange(T a_lowerRange,
 	T a_upperRange)
@@ -29,9 +36,9 @@ T Utilities::RandomRange(T a_lowerRange,
 	}
 
 	T wholeNumber = rand() % glm::abs((glm::int32)a_lowerRange - (glm::int32)a_upperRange) + a_lowerRange;
-	// 1000 produces decent random values.
+	// 1000 produces decent random values because its a high value.
 	unsigned int maxDecimalValue = 1000;
-	// Produce the decimal part of the semi-random number.
+	// Produces the decimal part of the semi-random number.
 	T decimals = rand() % maxDecimalValue;
 	unsigned int significantFigures = log10(decimals) + 1;
 	decimals *= 1 / pow(10, significantFigures);

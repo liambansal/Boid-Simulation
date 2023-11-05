@@ -11,14 +11,20 @@
 #include <map>
 #include <vector>
 
-// Divides a 3D space in smaller (more manageable) volumes.
+/// <summary>
+/// Subdivides a volume of space into several smaller areas for updating/tracking objects within that space in a 
+/// performant manner.
+/// </summary>
+/// <typeparam name="TObject"> The type of object to keep track of. </typeparam>
+/// <typeparam name="TVector"> The type of vector that stores each object's position. </typeparam>
 template <typename TObject, typename TVector>
 class OctTree
 {
 public:
 	typedef std::pair<TObject*, const Boundary<TVector>*> ObjectPair;
 
-	// Digits represent x, y and z coordinates.
+	// The digit suffix represents the x, y and z coordinates for a subdivided area within the oct-tree.
+	// E.g. 101 = (x = 1, y = 0, and z = 1).
 	enum SUB_TREE_POSITIONS
 	{
 		SUB_TREE_POSITIONS_000,
@@ -37,21 +43,42 @@ public:
 	~OctTree()
 	{}
 
+	/// <summary>
+	/// Registers an object with the oct-tree.
+	/// </summary>
+	/// <param name="a_pObject"> The object to register. </param>
+	/// <param name="a_rPosition"> The object's position. </param>
+	/// <returns>  </returns>
 	bool InsertObject(TObject* a_pObject,
 		const Boundary<TVector>& a_rPosition);
+	/// <summary>
+	/// Splits an area of the oct-tree in half across its x, y, and z axes, creating several smaller areas.
+	/// </summary>
 	void SubDivide();
+	/// <summary>
+	/// Finds an object within the oct-tree.
+	/// </summary>
+	/// <param name="a_queryVolume"> The space within the oct-tree that will be searched. </param>
+	/// <param name="a_rContainedEntities"> A collection of all the objects that are found within the space to search. </param>
 	void Query(Boundary<TVector> a_queryVolume,
 		std::vector<TObject*>& a_rContainedEntities) const;
 
 	inline const Boundary<TVector>& GetBoundary() const;
 
 private:
-	// Number of objects held within a boundary before it subdivided.
+	/// <summary>
+	/// The maximum number of objects that can exist within a single area of an oct-tree before it's subdivided.
+	/// </summary>
 	unsigned int m_uiCapacity;
 	bool m_bSubdivided;
-	// Measured width, height and depth.
+	/// <summary>
+	/// Represents the area that an oct-tree covers.
+	/// </summary>
 	Boundary<TVector> m_boundary;
 	std::map<TObject*, const Boundary<TVector>*> m_objects;
+	/// <summary>
+	/// Additional oct-trees for creating the subdivided areas across the volume of space that a larger oct-tree covers.
+	/// </summary>
 	OctTree* m_pSubTrees[8];
 };
 
@@ -73,7 +100,7 @@ bool OctTree<TObject, TVector>::InsertObject(TObject* a_pObject,
 		return false;
 	}
 
-	// Check that the entities position is within the boundary.
+	// Checks if the object is positioned within the area covered by the oct-tree.
 	if (!m_boundary.Contains(*a_rBoundary.GetPosition()))
 	{
 		return false;
@@ -91,7 +118,7 @@ bool OctTree<TObject, TVector>::InsertObject(TObject* a_pObject,
 			SubDivide();
 		}
 
-		// Try adding entity to one of the sub trees.
+		// Adds the object to the subdivided area that overlaps with its position.
 		if (m_pSubTrees[SUB_TREE_POSITIONS_000]->InsertObject(a_pObject, a_rBoundary))
 		{
 			return true;
@@ -204,13 +231,13 @@ template <typename TObject, typename TVector>
 void OctTree<TObject, TVector>::Query(Boundary<TVector> a_queryVolume,
 	std::vector<TObject*>& a_rContainedEntities) const
 {
-	// Check the position data has been set.
+	// Ensures the queried volume of space has a position to read from.
 	if (!a_queryVolume.GetPosition())
 	{
 		return;
 	}
 
-	// Ensure the volume of space being queried for objects intersects the oct-tree.
+	// Ensures the queried volume of space is positioned inside the oct-tree's area.
 	if (!m_boundary.Contains(*a_queryVolume.GetPosition()))
 	{
 		return;
@@ -219,13 +246,13 @@ void OctTree<TObject, TVector>::Query(Boundary<TVector> a_queryVolume,
 	{
 		for (ObjectPair object : m_objects)
 		{
+			// Checks if the data has been initialised.
 			if (!object.second || !object.second->GetPosition())
 			{
-				// Data has not been set, return.
 				continue;
 			}
 
-			// Make sure the oct tree's objects are inside space being queried.
+			// Checks if the object is positioned inside the queried volume of space.
 			if (a_queryVolume.Overlaps(*object.second))
 			{
 				a_rContainedEntities.push_back(object.first);
@@ -234,7 +261,7 @@ void OctTree<TObject, TVector>::Query(Boundary<TVector> a_queryVolume,
 
 		if (m_bSubdivided)
 		{
-			// Add objects from subdivision boundaries.
+			// Searches through the oct-tree's subdivided areas for additional objects.
 			m_pSubTrees[SUB_TREE_POSITIONS_000]->Query(a_queryVolume, a_rContainedEntities);
 			m_pSubTrees[SUB_TREE_POSITIONS_001]->Query(a_queryVolume, a_rContainedEntities);
 			m_pSubTrees[SUB_TREE_POSITIONS_101]->Query(a_queryVolume, a_rContainedEntities);

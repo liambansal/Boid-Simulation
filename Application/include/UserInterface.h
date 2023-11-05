@@ -6,9 +6,12 @@
 #ifndef USER_INTERFACE_H
 #define USER_INTERFACE_H
 
+// Forward declarations.
 class Application;
 
-// For creating an interactive user interface using Imgui.
+/// <summary>
+/// Draws a user interface for the application.
+/// </summary>
 class UserInterface
 {
 public:
@@ -17,10 +20,15 @@ public:
 	~UserInterface()
 	{}
 
+	/// <summary>
+	/// Draws all of the applications UI elements.
+	/// </summary>
 	void Draw();
 
 private:
-	// Application for the UI to appear on top of.
+	/// <summary>
+	/// The application instance that the UI is associated with.
+	/// </summary>
 	Application* m_pApplication;
 };
 

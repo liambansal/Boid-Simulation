@@ -6,7 +6,10 @@
 #ifndef BOUNDARY_H
 #define BOUNDARY_H
 
-// Represents a volume of space.
+/// <summary>
+/// Represents a volume of space with a central position.
+/// </summary>
+/// <typeparam name="TVector"> The type of vector that's used for storing the boundary's position and dimensions. </typeparam>
 template <typename TVector>
 class Boundary
 {
@@ -18,9 +21,17 @@ public:
 		TVector a_newDimensions);
 	~Boundary();
 
-	// Returns true if a point is located within a boundary.
+	/// <summary>
+	/// Returns true if the specified position is located within the boundary.
+	/// </summary>
+	/// <param name="a_position"> A position. </param>
+	/// <returns> True if the position is located within the boundary's area. </returns>
 	bool Contains(const TVector& a_position) const;
-	// Returns true if two boundaries share the same volume of space.
+	/// <summary>
+	/// Returns true if two boundaries share some the same space.
+	/// </summary>
+	/// <param name="a_otherBoundary"> The other boundary to check against this. </param>
+	/// <returns> True if the two boundaries overlap. </returns>
 	bool Overlaps(Boundary<TVector> a_otherBoundary) const;
 
 	inline void SetPosition(TVector* a_pNewPosition);
@@ -30,8 +41,13 @@ public:
 	inline const TVector GetDimensions() const;
 
 private:
+	/// <summary>
+	/// The position at the centre of the boundary.
+	/// </summary>
 	TVector* m_pPosition;
-	// Measured outward from position in order of width, height and length.
+	/// <summary>
+	/// The width, height, and depth of the boundary as measured outward from its central position.
+	/// </summary>
 	TVector m_dimensions;
 };
 
@@ -57,7 +73,6 @@ Boundary<TVector>::~Boundary()
 {}
 
 template <typename TVector>
-// Is a 3D position within the boundary's dimensions?
 bool Boundary<TVector>::Contains(const TVector& a_position) const
 {
 	if (!m_pPosition)
@@ -65,6 +80,8 @@ bool Boundary<TVector>::Contains(const TVector& a_position) const
 		return false;
 	}
 
+	// Checks if the argument position is located between the boundary's lower and upper extents (the distance that 
+	// the boundary is projected across, from its central position) along each axis of the boundary.
 	return (a_position.x >= m_pPosition->x - m_dimensions.x &&
 		a_position.x <= m_pPosition->x + m_dimensions.x &&
 		a_position.y >= m_pPosition->y - m_dimensions.y &&
@@ -74,9 +91,11 @@ bool Boundary<TVector>::Contains(const TVector& a_position) const
 }
 
 template <typename TVector>
-// Returns true if two boundaries share the same volume of space.
 bool Boundary<TVector>::Overlaps(Boundary a_otherBoundary) const
 {
+	// If the left extent of this boundary is further left than the other boundary's right extent, and.
+	// if the right extent of this boundary is further right than the other boundary's left extent then the 
+	// boundaries must overlap along that axis.
 	return (a_otherBoundary.GetPosition()->x - a_otherBoundary.GetDimensions().x <= m_pPosition->x + m_dimensions.x &&
 		a_otherBoundary.GetPosition()->x + a_otherBoundary.GetDimensions().x >= m_pPosition->x - m_dimensions.x &&
 		a_otherBoundary.GetPosition()->y - a_otherBoundary.GetDimensions().y <= m_pPosition->y + m_dimensions.y &&
