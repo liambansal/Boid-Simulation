@@ -148,7 +148,6 @@ void Framework::Destory()
 	glfwTerminate();
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void Framework::ProcessInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -192,7 +191,6 @@ void Framework::ProcessInput(GLFWwindow* window)
 	}
 }
 
-// glfw: whenever the window size changed (by OS or user resize) this callback function executes
 void Framework::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
 	// make sure the view port matches the new window dimensions; note that width and 
@@ -200,7 +198,6 @@ void Framework::FramebufferSizeCallback(GLFWwindow* window, int width, int heigh
 	glViewport(0, 0, width, height);
 }
 
-// glfw: whenever the mouse moves, this callback is called
 void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	Framework* pFramework = Framework::GetInstance();
@@ -230,7 +227,6 @@ void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	}
 }
 
-// glfw: whenever the mouse scroll wheel scrolls, this callback is called
 void Framework::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Framework* pFramework = Framework::GetInstance();

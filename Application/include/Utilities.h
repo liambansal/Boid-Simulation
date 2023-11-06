@@ -6,6 +6,7 @@
 #ifndef UTILITIES_H
 #define UTILITIES_H
 
+// Header includes.
 #include "glm/glm.hpp"
 
 /// <summary>
