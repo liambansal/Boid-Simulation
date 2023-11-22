@@ -87,18 +87,6 @@ void Application::Update()
 	}
 
 	m_pFramework->Update();
-	std::string boidTag = "Boid";
-
-	// Logic for automatically adding/destroying entities at runtime.
-	if (m_uiBoidCount > m_pScene->GetEntityCount(boidTag))
-	{
-		m_pScene->AddEntities(CreateBoid(), m_uiBoidCount - m_pScene->GetEntityCount(boidTag));
-	}
-	else if (m_uiBoidCount < m_pScene->GetEntityCount(boidTag))
-	{
-		m_pScene->DestroyEntitiesWithTag(boidTag, m_pScene->GetEntityCount(boidTag) - m_uiBoidCount);
-	}
-
 	ProcessInput();
 	m_pScene->Update(m_pFramework->GetDeltaTime());
 }
@@ -224,4 +212,20 @@ Entity* Application::CreateObstacle(glm::vec3 a_spawnPosition)
 	pObstacle->SetTag("Obstacle");
 	m_pScene->AddEntity(pObstacle);
 	m_bSpawnedObstacle = true;
+}
+
+void Application::SetBoidCount(unsigned int a_uiBoidCount)
+{
+	m_uiBoidCount = a_uiBoidCount;
+	std::string boidTag = "Boid";
+	unsigned int curentBoidCount = m_pScene->GetEntityCount(boidTag);
+
+	if (m_uiBoidCount > curentBoidCount)
+	{
+		m_pScene->AddEntities(CreateBoid(), m_uiBoidCount - curentBoidCount);
+	}
+	else if (m_uiBoidCount < curentBoidCount)
+	{
+		m_pScene->DestroyEntitiesWithTag(boidTag, curentBoidCount - m_uiBoidCount);
+	}
 }

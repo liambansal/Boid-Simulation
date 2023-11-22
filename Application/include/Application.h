@@ -58,7 +58,11 @@ public:
 	/// <returns> A pointer to the newly created obstacle entity. </returns>
 	Entity* CreateObstacle(glm::vec3 a_spawnPosition);
 
-	inline void SetBoidCount(unsigned int a_uiBoidCount);
+	/// <summary>
+	/// Sets how many boids should be simulated by the application.
+	/// </summary>
+	/// <param name="a_uiBoidCount"> The desired number of boids to simulate. </param>
+	void SetBoidCount(unsigned int a_uiBoidCount);
 
 	inline unsigned int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
@@ -94,11 +98,6 @@ private:
 	/// </summary>
 	Entity* m_pWorldCursor;
 };
-
-void Application::SetBoidCount(unsigned int a_uiBoidCount)
-{
-	m_uiBoidCount = a_uiBoidCount;
-}
 
 unsigned int Application::GetBoidCount() const
 {
