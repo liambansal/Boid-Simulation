@@ -59,10 +59,10 @@ public:
 	/// <returns> A pointer to the entity that was searched for, if it exists. </returns>
 	inline Entity* GetEntity(unsigned int a_uniqueID);
 	/// <summary>
-	/// Returns a collection reference of all the scene's entities.
+	/// Returns a reference to a collection containing all of the scene's entities.
 	/// </summary>
-	/// <returns> A collection that contains each entity within the scene. </returns>
-	inline const std::map<unsigned int, Entity*>& GetEntityMap() const;
+	/// <returns> A collection containing a pointer to each entity within the scene. </returns>
+	inline const std::map<unsigned int, Entity*>& GetAllEntities() const;
 	/// <summary>
 	/// Returns the total number of entities in the scene.
 	/// </summary>
@@ -97,7 +97,7 @@ Entity* Scene::GetEntity(unsigned int a_uniqueID)
 	return m_sceneEntities.empty() ? nullptr : m_sceneEntities[a_uniqueID];
 }
 
-const std::map<unsigned int, Entity*>& Scene::GetEntityMap() const
+const std::map<unsigned int, Entity*>& Scene::GetAllEntities() const
 {
 	return m_sceneEntities;
 }

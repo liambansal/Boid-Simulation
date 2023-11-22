@@ -17,8 +17,8 @@
 #include "Utilities.h"
 
 // Typedefs.
-typedef std::pair<unsigned int, Entity*> EntityPair;
 typedef std::map<unsigned int, Entity*> EntityMap;
+typedef std::pair<unsigned int, Entity*> EntityPair;
 
 Scene::Scene() : m_uiEntityCount(0),
 	m_sceneEntities(),
@@ -45,7 +45,7 @@ Scene::~Scene()
 
 void Scene::Update(float a_fDeltaTime)
 {
-	for (EntityPair entity : GetEntityMap())
+	for (EntityPair entity : GetAllEntities())
 	{
 		entity.second->Update(a_fDeltaTime);
 	}
@@ -66,13 +66,14 @@ void Scene::Draw(Framework* a_pRenderingFramework) const
 
 bool Scene::AddEntity(Entity* a_pNewEntity)
 {
-	if (m_sceneEntities.count(a_pNewEntity->GetID()) > 0)
+	// Checks if the entity already exists within the scene.
+	if (m_sceneEntities.find(a_pNewEntity->GetID()) != m_sceneEntities.cend())
 	{
-		// Entity is already in the scene, return.
 		return false;
 	}
 	
 	m_sceneEntities.insert(EntityPair(a_pNewEntity->GetID(), a_pNewEntity));
+	++m_uiEntityCount;
 	ColliderComponent* pCollider = static_cast<ColliderComponent*>(a_pNewEntity->GetComponentOfType(COMPONENT_TYPE_COLLIDER));
 
 	if (pCollider)
@@ -80,7 +81,6 @@ bool Scene::AddEntity(Entity* a_pNewEntity)
 		m_octTree.InsertObject(a_pNewEntity, *pCollider->GetBoundary());
 	}
 
-	++m_uiEntityCount;
 	return true;
 }
 
@@ -94,15 +94,13 @@ void Scene::AddEntities(Entity* a_pEntityToCopy, unsigned int a_spawnAmount)
 
 	for (unsigned int i = 0; i < a_spawnAmount; ++i)
 	{
-		Entity* pNewEntity = new Entity(*a_pEntityToCopy, this);
-		AddEntity(pNewEntity);
+		AddEntity(new Entity(*a_pEntityToCopy, this));
 	}
 }
 
 void Scene::DestroyEntity(Entity* a_pEntityToDestroy)
 {
-	// Check entity exists in the scene.
-	if (m_sceneEntities.count(a_pEntityToDestroy->GetID()) > 0)
+	if (m_sceneEntities.find(a_pEntityToDestroy->GetID()) != m_sceneEntities.cend())
 	{
 		m_sceneEntities.erase(a_pEntityToDestroy->GetID());
 		--m_uiEntityCount;
@@ -111,30 +109,24 @@ void Scene::DestroyEntity(Entity* a_pEntityToDestroy)
 
 void Scene::DestroyEntitiesWithTag(std::string a_entityTag, unsigned int a_uiDestroyAmount)
 {
-	// Test whether or not a type of entity exists in the scene.
-	bool entityTypeCleared = true;
+	if (a_entityTag.empty() || a_uiDestroyAmount == 0) {
+		return;
+	}
 
-	for (unsigned int i = 0; i < a_uiDestroyAmount; ++i)
+	for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin();
+		iterator != m_sceneEntities.cend();)
 	{
-		for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin();
-			iterator != m_sceneEntities.cend();
-			++iterator)
-		{
-			// Assume the entity type doesn't exist until we find one.
-			entityTypeCleared = true;
-
-			if (iterator->second->GetTag() == a_entityTag)
-			{
-				// May be more types of this entity, keep going until desired amount is cleared.
-				entityTypeCleared = false;
-				m_sceneEntities.erase(iterator);
-				--m_uiEntityCount;
-				break;
-			}
+		if (iterator->second->GetTag() != a_entityTag) {
+			++iterator;
+			continue;
 		}
 
-		if (entityTypeCleared)
-		{
+		EntityMap::const_iterator entityToDestroy = iterator++;
+		m_sceneEntities.erase(entityToDestroy);
+		--m_uiEntityCount;
+		--a_uiDestroyAmount;
+
+		if (a_uiDestroyAmount == 0) {
 			return;
 		}
 	}

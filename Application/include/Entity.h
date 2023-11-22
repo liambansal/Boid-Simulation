@@ -16,6 +16,10 @@
 class Framework;
 class Scene;
 
+// Typedefs.
+typedef std::map<COMPONENT_TYPE, Component*> ComponentMap;
+typedef std::pair<COMPONENT_TYPE, Component*> ComponentPair;
+
 /// <summary>
 /// The base class from which all entity types should derive from to support the creation of a 'game object'.
 /// </summary>
@@ -45,9 +49,9 @@ public:
 	/// <summary>
 	/// Attaches a new component to the entity.
 	/// </summary>
-	/// <param name="a_key"> The component's type. </param>
+	/// <param name="a_componentsType"> The component's type. </param>
 	/// <param name="a_pComponent"> A pointer to the component instance to attach to the entity. </param>
-	inline void AddComponent(COMPONENT_TYPE a_key, Component* a_pComponent);
+	inline void AddComponent(COMPONENT_TYPE a_componentsType, Component* a_pComponent);
 
 	inline void SetTag(std::string a_newTag);
 
@@ -71,12 +75,12 @@ private:
 	/// <summary>
 	/// A collection of all the components that are currently attached to the entity.
 	/// </summary>
-	std::map<COMPONENT_TYPE, Component*> m_components;
+	ComponentMap m_components;
 };
 
-void Entity::AddComponent(COMPONENT_TYPE a_key, Component* a_pComponent)
+void Entity::AddComponent(COMPONENT_TYPE a_componentsType, Component* a_pComponent)
 {
-	m_components.insert(std::pair<COMPONENT_TYPE, Component*>(a_key, a_pComponent));
+	m_components.insert(ComponentPair(a_componentsType, a_pComponent));
 }
 
 void Entity::SetTag(std::string a_newTag)
@@ -86,9 +90,11 @@ void Entity::SetTag(std::string a_newTag)
 
 Component* Entity::GetComponentOfType(COMPONENT_TYPE a_componentType) const
 {
-	if (m_components.count(a_componentType) > 0)
+	ComponentMap::const_iterator component = m_components.find(a_componentType);
+
+	if (component != m_components.cend())
 	{
-		return m_components.find(a_componentType)->second;
+		return component->second;
 	}
 
 	return nullptr;

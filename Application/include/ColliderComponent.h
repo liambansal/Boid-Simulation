@@ -76,7 +76,7 @@ private:
 	/// </summary>
 	float m_fColliderRange;
 	/// <summary>
-	/// The position and dimensions of the collider's bounds.
+	/// Stores the collider's position and dimensions.
 	/// </summary>
 	Boundary<glm::vec3> m_boundary;
 	/// <summary>
