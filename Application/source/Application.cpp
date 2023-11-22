@@ -26,8 +26,8 @@ Application::Application() : m_uiBoidCount(50),
 	m_bFrameworkInitialised(false),
 	m_bSpawnedObstacle(false),
 	m_pFramework(Framework::GetInstance()),
-	m_scene(new Scene()),
-	m_userInterface(new UserInterface(this)),
+	m_pScene(new Scene()),
+	m_pUserInterface(new UserInterface(this)),
 	m_pWorldCursor(new Entity())
 {
 	if (m_pFramework)
@@ -50,8 +50,8 @@ Application::Application() : m_uiBoidCount(50),
 		pModel->SetScale(glm::vec3(scaleScalar));
 		m_pWorldCursor->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 		m_pWorldCursor->SetTag("Marker");
-		m_scene->AddEntity(m_pWorldCursor);
-		m_scene->AddEntities(CreateBoid(), m_uiBoidCount);
+		m_pScene->AddEntity(m_pWorldCursor);
+		m_pScene->AddEntities(CreateBoid(), m_uiBoidCount);
 	}
 }
 
@@ -64,16 +64,24 @@ Application::~Application()
 
 void Application::Run()
 {
-	while (m_bFrameworkInitialised && glfwWindowShouldClose(m_pFramework->GetWindow()) == 0)
+	while (!CloseApplication())
 	{
 		Update();
 		Draw();
 	}
 }
 
+bool Application::CloseApplication() const {
+	if (!m_bFrameworkInitialised || glfwWindowShouldClose(m_pFramework->GetWindow()) != 0) {
+		return true;
+	}
+
+	return false;
+}
+
 void Application::Update()
 {
-	if (!m_scene)
+	if (!m_pScene)
 	{
 		return;
 	}
@@ -81,15 +89,21 @@ void Application::Update()
 	m_pFramework->Update();
 	std::string boidTag = "Boid";
 
-	if (m_uiBoidCount > m_scene->GetEntityCount(boidTag))
+	// Logic for automatically adding/destroying entities at runtime.
+	if (m_uiBoidCount > m_pScene->GetEntityCount(boidTag))
 	{
-		m_scene->AddEntities(CreateBoid(), m_uiBoidCount - m_scene->GetEntityCount(boidTag));
+		m_pScene->AddEntities(CreateBoid(), m_uiBoidCount - m_pScene->GetEntityCount(boidTag));
 	}
-	else if (m_uiBoidCount < m_scene->GetEntityCount(boidTag))
+	else if (m_uiBoidCount < m_pScene->GetEntityCount(boidTag))
 	{
-		m_scene->DestroyEntitiesWithTag(boidTag, m_scene->GetEntityCount(boidTag) - m_uiBoidCount);
+		m_pScene->DestroyEntitiesWithTag(boidTag, m_pScene->GetEntityCount(boidTag) - m_uiBoidCount);
 	}
 
+	ProcessInput();
+	m_pScene->Update(m_pFramework->GetDeltaTime());
+}
+
+void Application::ProcessInput() {
 	TransformComponent* pMarkerTransform = static_cast<TransformComponent*>(m_pWorldCursor->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
 	if (pMarkerTransform)
@@ -97,15 +111,15 @@ void Application::Update()
 		// Update the marker's position each frame.
 		pMarkerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
-	}
 
-	if (!m_bSpawnedObstacle && glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
-	{
-		CreateObstacle(pMarkerTransform);
-	}
-	else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_RELEASE)
-	{
-		m_bSpawnedObstacle = false;
+		if (!m_bSpawnedObstacle && glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
+		{
+			CreateObstacle(*pMarkerTransform->GetPosition());
+		}
+		else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_RELEASE)
+		{
+			m_bSpawnedObstacle = false;
+		}
 	}
 
 	if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_1) == GLFW_PRESS)
@@ -125,13 +139,11 @@ void Application::Update()
 	{
 		m_fMarkerZOffset = mc_fMimimumMarkerZOffset;
 	}
-
-	m_scene->Update(m_pFramework->GetDeltaTime());
 }
 
 void Application::Draw()
 {
-	if (!m_scene || !m_userInterface)
+	if (!m_pScene || !m_pUserInterface)
 	{
 		return;
 	}
@@ -144,17 +156,16 @@ void Application::Draw()
 		alphaColourValue);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	// Draw scene entities.
-	m_scene->Draw(m_pFramework);
+	m_pScene->Draw(m_pFramework);
 	// Draw UI overlay.
-	m_userInterface->Draw();
+	m_pUserInterface->Draw();
 	glfwSwapBuffers(m_pFramework->GetWindow());
 	glfwPollEvents();
 }
 
-// Creates a new boid entity.
 Entity* Application::CreateBoid()
 {
-	if (!m_scene)
+	if (!m_pScene)
 	{
 		return nullptr;
 	}
@@ -163,9 +174,9 @@ Entity* Application::CreateBoid()
 	// Create transform
 	TransformComponent* pTransform = new TransformComponent(pBoid);
 	// The absolute value for the maximum spawn distance.
-	const int absoluteXDistance = m_scene->GetOctTree().GetBoundary().GetDimensions().x;
-	const int absoluteYDistance = m_scene->GetOctTree().GetBoundary().GetDimensions().y;
-	const int absoluteZDistance = m_scene->GetOctTree().GetBoundary().GetDimensions().z;
+	const int absoluteXDistance = m_pScene->GetOctTree().GetBoundary().GetDimensions().x;
+	const int absoluteYDistance = m_pScene->GetOctTree().GetBoundary().GetDimensions().y;
+	const int absoluteZDistance = m_pScene->GetOctTree().GetBoundary().GetDimensions().z;
 	pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 		glm::vec3(Utilities::RandomRange(-absoluteXDistance, absoluteXDistance),
 			Utilities::RandomRange(-absoluteYDistance, absoluteYDistance),
@@ -179,39 +190,38 @@ Entity* Application::CreateBoid()
 	pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 	// Create a collider for collisions.
 	ColliderComponent* pCollider = new ColliderComponent(pBoid,
-		&m_scene->GetOctTree());
+		&m_pScene->GetOctTree());
 	pBoid->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 	// create brain i.e. AI controller
-	BrainComponent* pBrain = new BrainComponent(pBoid, m_scene);
+	BrainComponent* pBrain = new BrainComponent(pBoid, m_pScene);
 	pBoid->AddComponent(COMPONENT_TYPE_BRAIN, static_cast<Component*>(pBrain));
 	pBoid->SetTag("Boid");
 	return pBoid;
 }
 
-// Creates a new obstacle entity.
-Entity* Application::CreateObstacle(TransformComponent* a_pTransform)
+Entity* Application::CreateObstacle(glm::vec3 a_spawnPosition)
 {
-	if (!m_scene)
+	if (!m_pScene)
 	{
 		return nullptr;
 	}
 
 	Entity* pObstacle = new Entity();
-	// add a new transform component.
-	pObstacle->AddComponent(COMPONENT_TYPE_TRANSFORM,
-		static_cast<Component*>(new TransformComponent(pObstacle, *a_pTransform)));
-	// create a model to visualise the obstacle.
+	// Add a new transform component.
+	TransformComponent* obstaclesTransform = new TransformComponent(pObstacle);
+	obstaclesTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR, a_spawnPosition);
+	pObstacle->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(obstaclesTransform));
+	// Create a model to visualise the obstacle.
 	ModelComponent* pModel = new ModelComponent(pObstacle);
 	pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
 	const float scaleScalar = 0.01f;
 	pModel->SetScale(glm::vec3(scaleScalar));
 	pObstacle->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
-	ColliderComponent* pCollider = new ColliderComponent(pObstacle,
-		&m_scene->GetOctTree());
+	ColliderComponent* pCollider = new ColliderComponent(pObstacle, &m_pScene->GetOctTree());
 	const float dimensionsScale = 2.0f;
 	pCollider->SetDimensions(dimensionsScale);
 	pObstacle->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 	pObstacle->SetTag("Obstacle");
-	m_scene->AddEntity(pObstacle);
+	m_pScene->AddEntity(pObstacle);
 	m_bSpawnedObstacle = true;
 }

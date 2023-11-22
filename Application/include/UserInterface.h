@@ -24,6 +24,10 @@ public:
 	/// Draws all of the applications UI elements.
 	/// </summary>
 	void Draw();
+	/// <summary>
+	/// Draws the sliders that control the boids' movement forces.
+	/// </summary>
+	void DrawBoidsBehaviouralSliders();
 
 private:
 	/// <summary>

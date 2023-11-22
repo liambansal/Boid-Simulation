@@ -71,8 +71,7 @@ const glm::vec4& TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
 
 glm::vec3* TransformComponent::GetPosition() const
 {
-	glm::vec3& position = (glm::vec3&)m_matrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
-	return &position;
+	return &(glm::vec3&)m_matrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
 }
 
 #endif // !TRANSFORM_COMPONENT_H.
