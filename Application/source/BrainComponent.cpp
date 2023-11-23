@@ -29,8 +29,8 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	mc_fMaximumVelocity(1.5f),
 	mc_fMaximumNeighbourDistance(8.0f),
 	m_fLastUpdate(0.0f),
-	m_currentVelocity(0.0f),
-	m_behavioralVelocity(0.0f),
+	m_currentMovementVelocity(0.0f),
+	m_newMovementVelocity(0.0f),
 	m_collisionSeparationVelocity(0.0f),
 	m_wanderPoint(0.0f),
 	m_pScene(a_pScene),
@@ -47,8 +47,8 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	mc_fMaximumNeighbourDistance(a_rBrainToCopy.mc_fMaximumNeighbourDistance),
 	m_uiNeighbourCount(a_rBrainToCopy.m_uiNeighbourCount),
 	m_fLastUpdate(a_rBrainToCopy.m_fLastUpdate),
-	m_currentVelocity(a_rBrainToCopy.m_currentVelocity),
-	m_behavioralVelocity(a_rBrainToCopy.m_behavioralVelocity),
+	m_currentMovementVelocity(a_rBrainToCopy.m_currentMovementVelocity),
+	m_newMovementVelocity(a_rBrainToCopy.m_newMovementVelocity),
 	m_collisionSeparationVelocity(a_rBrainToCopy.m_collisionSeparationVelocity),
 	m_wanderPoint(a_rBrainToCopy.m_wanderPoint),
 	m_pScene(a_pScene),
@@ -92,32 +92,36 @@ void BrainComponent::Update(float a_fDeltaTime)
 	if (m_pEntityCollider && m_pEntityCollider->IsColliding())
 	{
 		CalculateCollisionVelocity(currentPosition);
-		m_currentVelocity = m_collisionSeparationVelocity;
+		m_currentMovementVelocity = m_collisionSeparationVelocity;
 	}
 	else
 	{
-		// Reset collision separation velocity now that all collisions are over.
-		m_collisionSeparationVelocity = glm::vec3(0.0f);
-		m_currentVelocity = m_behavioralVelocity;
+		if (glm::length(m_collisionSeparationVelocity) != 0) {
+			// Reset the collision separation velocity now that all collisions are over.
+			m_collisionSeparationVelocity = glm::vec3(0.0f);
+		}
+
+		m_currentMovementVelocity = m_newMovementVelocity;
 	}
 
-	// Check if entity is out of scene bounds.
-	if (m_pScene && !m_pScene->GetOctTree().GetBoundary().Contains(currentPosition))
+	glm::vec3 nextPosition = currentPosition + m_currentMovementVelocity * a_fDeltaTime;
+
+	// Check if the entity will move outside the scene's bounds.
+	if (m_pScene && !m_pScene->GetOctTree().GetBoundary().Contains(nextPosition))
 	{
-		// Make sure boids stay within the oct tree's bounds.
-		m_currentVelocity = *m_pScene->GetOctTree().GetBoundary().GetPosition() - currentPosition;
-		// Reset behaviour after reaching scene bounds.
-		m_behavioralVelocity = glm::vec3(0.0f);
+		// Reverse the boids movement directions.
+		m_currentMovementVelocity = -m_currentMovementVelocity;
+		m_newMovementVelocity = -m_newMovementVelocity;
 	}
 
-	m_currentVelocity = glm::clamp(m_currentVelocity,
+	m_currentMovementVelocity = glm::clamp(m_currentMovementVelocity,
 		glm::vec3(-mc_fMaximumVelocity, -mc_fMaximumVelocity, -mc_fMaximumVelocity),
 		glm::vec3(mc_fMaximumVelocity, mc_fMaximumVelocity, mc_fMaximumVelocity));
-	currentPosition += m_currentVelocity * a_fDeltaTime;
+	currentPosition += m_currentMovementVelocity * a_fDeltaTime;
 	// Update the entity's transform matrix.
 	UpdateMatrix(pOwnerTransform,
 		&currentPosition,
-		&m_currentVelocity);
+		&m_currentMovementVelocity);
 }
 
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
@@ -131,7 +135,7 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPositi
 	}
 
 	// Calculate new velocity.
-	glm::vec3 seekVelocity = targetDirection * mc_fSpeed - m_currentVelocity;
+	glm::vec3 seekVelocity = targetDirection * mc_fSpeed - m_currentMovementVelocity;
 	return seekVelocity;
 }
 
@@ -267,8 +271,8 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rCurrentPosition,
 	alignmentVelocity *= ms_fAlignmentForce;
 	cohesionVelocity *= ms_fCohesionForce;
 	glm::vec3 wanderVelocity = CalculateWanderVelocity(a_rEntityForward, a_rCurrentPosition) * ms_fWanderForce;
-	glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
-	m_behavioralVelocity += newForce;
+	glm::vec3 changeInMovement(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
+	m_newMovementVelocity += changeInMovement;
 }
 
 void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)

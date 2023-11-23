@@ -154,11 +154,14 @@ private:
 	/// Always starts at zero when the entity is created.
 	/// </summary>
 	float m_fLastUpdate;
-	glm::vec3 m_currentVelocity;
 	/// <summary>
-	/// The total sum of the boids movement velocity as calculated by its behavioral forces.
+	/// a velocity that describes the boids current movement.
 	/// </summary>
-	glm::vec3 m_behavioralVelocity;
+	glm::vec3 m_currentMovementVelocity;
+	/// <summary>
+	/// The boids current movement direction as calculated by its behavioral forces.
+	/// </summary>
+	glm::vec3 m_newMovementVelocity;
 	/// <summary>
 	/// The separation velocity that's calculated based on collisions, to move a boid away from collisions.
 	/// </summary>
@@ -196,7 +199,7 @@ void BrainComponent::SetWanderForce(float a_force)
 
 glm::vec3 BrainComponent::GetVelocity() const
 {
-	return m_currentVelocity;
+	return m_currentMovementVelocity;
 }
 
 float BrainComponent::GetSeparationForce()
