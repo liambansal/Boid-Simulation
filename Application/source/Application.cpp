@@ -85,8 +85,10 @@ void Application::Update() {
 	m_pFramework->Update();
 	ProcessInput();
 
-	if (!m_bPaused) {
+	if (!m_bPaused || m_bUpdateOnce) {
 		m_pScene->Update(m_pFramework->GetDeltaTime());
+		// Reset after updating the application once.
+		m_bUpdateOnce = false;
 	}
 }
 
@@ -211,4 +213,8 @@ void Application::SetBoidCount(unsigned int a_uiBoidCount) {
 
 void Application::SetPauseState(bool a_bPaused) {
 	m_bPaused = a_bPaused;
+}
+
+void Application::SetUpdateOnceState(bool a_bUpdateOnce) {
+	m_bUpdateOnce = a_bUpdateOnce;
 }

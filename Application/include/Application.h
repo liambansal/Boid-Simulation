@@ -63,10 +63,12 @@ public:
 	/// <param name="a_uiBoidCount"> The desired number of boids to simulate. </param>
 	void SetBoidCount(unsigned int a_uiBoidCount);
 	void SetPauseState(bool a_bPaused);
+	void SetUpdateOnceState(bool a_bUpdateOnce);
 
 	inline unsigned int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
 	inline bool GetPauseState() const;
+	inline bool GetUpdateOnceState() const;
 
 private:
 	/// <summary>
@@ -82,6 +84,10 @@ private:
 	const float mc_fMaximumMarkerZOffset;
 	bool m_bFrameworkInitialised;
 	bool m_bPaused;
+	/// <summary>
+	/// True if the application's state should be updated by a single tick.
+	/// </summary>
+	bool m_bUpdateOnce;
 	/// <summary>
 	/// True if the user has spawned an obstacle for the boids to avoid collisions with.
 	/// </summary>
@@ -111,6 +117,10 @@ unsigned int Application::GetMaximumBoidCount() const {
 
 bool Application::GetPauseState() const {
 	return m_bPaused;
+}
+
+bool Application::GetUpdateOnceState() const {
+	return m_bUpdateOnce;
 }
 
 #endif // !APPLICATION_H.

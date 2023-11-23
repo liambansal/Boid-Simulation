@@ -18,7 +18,7 @@ void UserInterface::Draw() const {
 	ImGui::NewFrame();
 	ImGuiIO& io = ImGui::GetIO();
 	const float xPosition = 1.0f;
-	const float yPosition = io.DisplaySize.y * 0.65f;
+	const float yPosition = io.DisplaySize.y * 0.6f;
 	const ImVec2 windowPosition = ImVec2(xPosition, yPosition);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
 
@@ -89,7 +89,11 @@ void UserInterface::DrawTimeControls() const {
 
 	// UI section header.
 	ImGui::Text("Time");
+
 	bool applicationPaused = m_pApplication->GetPauseState();
 	ImGui::Checkbox("Paused", &applicationPaused);
 	m_pApplication->SetPauseState(applicationPaused);
+
+	bool updateOnce = ImGui::Button("Update Once", ImVec2(100, 20));
+	m_pApplication->SetUpdateOnceState(updateOnce);
 }
