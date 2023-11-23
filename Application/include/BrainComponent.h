@@ -68,7 +68,7 @@ private:
 	/// </summary>
 	/// <param name="a_separationVelocity"> The boid's current separation velocity. </param>
 	/// <param name="a_targetVector"> The amount to increase the boid's separation velocity by. </param>
-	/// <param name="a_uiNeighbourCount"> The number of neighbouring boids. </param>
+	/// <param name="a_uiNeighbourCount"> The number of entities to move away from. </param>
 	/// <returns> The boid's new separation velocity. </returns>
 	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 		glm::vec3 a_targetVector,
@@ -85,12 +85,12 @@ private:
 	/// Generates a new cohesion velocity that moves the boid towards its neighbours.
 	/// </summary>
 	/// <param name="a_cohesionVelocity"> The boid's current cohesion velocity. </param>
-	/// <param name="a_targetPosition"> The amount to increase the boid's cohesion velocity by. </param>
-	/// <param name="a_localPosition"> The boid's current position. </param>
+	/// <param name="a_cohesionChange"> The amount to change the boid's cohesion velocity by. </param>
+	/// <param name="a_currentPosition"> The boid's current position. </param>
 	/// <returns> The boid's new cohesion velocity. </returns>
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
-		glm::vec3 a_targetPosition,
-		glm::vec3 a_localPosition);
+		glm::vec3 a_cohesionChange,
+		glm::vec3 a_currentPosition);
 	/// <summary>
 	/// Calculates the boid's overall movement.
 	/// </summary>

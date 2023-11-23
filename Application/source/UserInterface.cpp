@@ -46,26 +46,27 @@ void UserInterface::DrawBoidsBehaviouralSliders() const {
 	ImGui::SliderInt("Boid Count", &boidCount, 0, m_pApplication->GetMaximumBoidCount());
 	m_pApplication->SetBoidCount(boidCount);
 
+	const float minimumForceMultiplier = 0.0f;
 	const float maximumForceMultiplier = 1.0f;
 
 	// Slider for controlling the boids' separation force.
 	float separationForce = BrainComponent::GetSeparationForce();
-	ImGui::SliderFloat("Separation Force", &separationForce, 0.0f, maximumForceMultiplier);
+	ImGui::SliderFloat("Separation Force", &separationForce, minimumForceMultiplier, maximumForceMultiplier);
 	BrainComponent::SetSeparationForce(separationForce);
 
 	// Slider for controlling the boids' alignment force.
 	float alignmentForce = BrainComponent::GetAlignmentForce();
-	ImGui::SliderFloat("Alignment Force", &alignmentForce, 0.0f, maximumForceMultiplier);
+	ImGui::SliderFloat("Alignment Force", &alignmentForce, minimumForceMultiplier, maximumForceMultiplier);
 	BrainComponent::SetAlignmentForce(alignmentForce);
 
 	// Slider for controlling the boids' cohesion force.
 	float cohesionForce = BrainComponent::GetCohesionForce();
-	ImGui::SliderFloat("Cohesion Force", &cohesionForce, 0.0f, maximumForceMultiplier);
+	ImGui::SliderFloat("Cohesion Force", &cohesionForce, minimumForceMultiplier, maximumForceMultiplier);
 	BrainComponent::SetCohesionForce(cohesionForce);
 
 	// Slider for controlling the boids' wander force.
 	float wanderForce = BrainComponent::GetWanderForce();
-	ImGui::SliderFloat("Wander Force", &wanderForce, 0.0f, maximumForceMultiplier);
+	ImGui::SliderFloat("Wander Force", &wanderForce, minimumForceMultiplier, maximumForceMultiplier);
 	BrainComponent::SetWanderForce(wanderForce);
 }
 

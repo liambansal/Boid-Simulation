@@ -13,8 +13,10 @@
 #include "TransformComponent.h"
 #include "Utilities.h"
 
+// Typedefs.
 typedef std::vector<Entity*> pEntityVector;
 
+// Static variable initializations.
 float BrainComponent::ms_fSeparationForce = 0.4f;
 float BrainComponent::ms_fAlignmentForce = 0.2f;
 float BrainComponent::ms_fCohesionForce = 0.6f;
@@ -25,7 +27,7 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_uiNeighbourCount(0),
 	mc_fSpeed(1.0f),
 	mc_fMaximumVelocity(1.5f),
-	mc_fMaximumNeighbourDistance(4.0f),
+	mc_fMaximumNeighbourDistance(8.0f),
 	m_fLastUpdate(0.0f),
 	m_currentVelocity(0.0f),
 	m_behavioralVelocity(0.0f),
@@ -168,8 +170,7 @@ glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelo
 {
 	a_separationVelocity += a_targetVector;
 
-	if (glm::length(a_separationVelocity) > 0.0f &&
-		a_uiNeighbourCount > 0)
+	if (glm::length(a_separationVelocity) > 0.0f && a_uiNeighbourCount > 0)
 	{
 		// Average the separation force
 		a_separationVelocity /= a_uiNeighbourCount;
@@ -185,8 +186,7 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 {
 	a_alignmentVelocity += a_targetVector;
 
-	if (glm::length(a_alignmentVelocity) > 0.0f &&
-		m_uiNeighbourCount > 0)
+	if (glm::length(a_alignmentVelocity) > 0.0f && m_uiNeighbourCount > 0)
 	{
 		a_alignmentVelocity /= m_uiNeighbourCount;
 		a_alignmentVelocity = glm::normalize(a_alignmentVelocity);
@@ -196,22 +196,21 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 }
 
 glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
-	glm::vec3 a_targetPosition,
-	glm::vec3 a_localPosition)
+	glm::vec3 a_cohesionChange,
+	glm::vec3 a_currentPosition)
 {
-	a_cohesionVelocity += a_targetPosition;
+	a_cohesionVelocity += a_cohesionChange;
 
-	if (glm::length(a_cohesionVelocity) > 0.0f &&
-		m_uiNeighbourCount > 0)
+	if (glm::length(a_cohesionVelocity) > 0.0f && m_uiNeighbourCount > 0)
 	{
 		a_cohesionVelocity /= m_uiNeighbourCount;
-		a_cohesionVelocity = glm::normalize(a_cohesionVelocity - a_localPosition);
+		a_cohesionVelocity = glm::normalize(a_cohesionVelocity - a_currentPosition);
 	}
 
 	return a_cohesionVelocity;
 }
 
-void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
+void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rCurrentPosition,
 	glm::vec3& a_rEntityForward)
 {
 	// Get the component's owner entity.
@@ -225,7 +224,7 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 	m_uiNeighbourCount = 0;
 	pEntityVector nearbyEntities;
 	// Get all nearby entities.
-	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_rEntityPosition,
+	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_rCurrentPosition,
 		glm::vec3(mc_fMaximumNeighbourDistance)),
 		nearbyEntities);
 	m_uiNeighbourCount = nearbyEntities.size();
@@ -234,43 +233,40 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
 	glm::vec3 alignmentVelocity(0.0f);
 	glm::vec3 cohesionVelocity(0.0f);
 
-	// Loop over all entities in scene.
-	for (const Entity* entity : nearbyEntities)
-	{
-		if (!entity)
-		{
+	// Loop over all of the nearvy entities in scene.
+	for (const Entity* entity : nearbyEntities) {
+		if (!entity ||
+			// Check if an entity found itself.
+			entity->GetID() == pOwnerEntity->GetID() ||
+			entity->GetTag() != "Boid") {
 			continue;
 		}
 
-		// Make sure we haven't found this entity and it's a boid.
-		if (entity->GetID() != pOwnerEntity->GetID() && entity->GetTag() == "Boid")
-		{
-			const TransformComponent* ptargetTransform = static_cast<TransformComponent*>(entity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
-			const BrainComponent* pTargetBrain = static_cast<BrainComponent*>(entity->GetComponentOfType(COMPONENT_TYPE_BRAIN));
+		const TransformComponent* pNearbyTransform = static_cast<TransformComponent*>(entity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
+		const BrainComponent* pNearbyBrain = static_cast<BrainComponent*>(entity->GetComponentOfType(COMPONENT_TYPE_BRAIN));
 
-			if (!ptargetTransform || !pTargetBrain)
-			{
-				continue;
-			}
-
-			const glm::vec3 targetPosition = (const glm::vec3)ptargetTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
-			seperationVelocity = CalculateSeparationVelocity(seperationVelocity,
-				// Don't want positions to have the same value.
-				a_rEntityPosition == targetPosition ? GetRandomNearbyPoint(a_rEntityPosition) - a_rEntityPosition : a_rEntityPosition - targetPosition,
-				m_uiNeighbourCount);
-			alignmentVelocity = CalculateAlignmentVelocity(alignmentVelocity,
-				// Add the neighbouring boid's current velocity.
-				pTargetBrain->GetVelocity());
-			cohesionVelocity = CalculateCohesionVelocity(cohesionVelocity,
-				targetPosition,
-				a_rEntityPosition);
+		if (!pNearbyTransform || !pNearbyBrain) {
+			continue;
 		}
+
+		const glm::vec3 nearbyEntityPosition = (const glm::vec3)pNearbyTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
+		const glm::vec3 directionToNearbyEntity = nearbyEntityPosition - a_rCurrentPosition;
+		seperationVelocity = CalculateSeparationVelocity(seperationVelocity,
+			// Creates a direction that points towards the other entity if they have different positions.
+			a_rCurrentPosition == nearbyEntityPosition ? GetRandomNearbyPoint(a_rCurrentPosition) - a_rCurrentPosition : -directionToNearbyEntity,
+			m_uiNeighbourCount);
+		alignmentVelocity = CalculateAlignmentVelocity(alignmentVelocity,
+			// Add the neighbouring boid's current velocity.
+			pNearbyBrain->GetVelocity());
+		cohesionVelocity = CalculateCohesionVelocity(cohesionVelocity,
+			directionToNearbyEntity,
+			a_rCurrentPosition);
 	}
 
 	seperationVelocity *= ms_fSeparationForce;
 	alignmentVelocity *= ms_fAlignmentForce;
 	cohesionVelocity *= ms_fCohesionForce;
-	glm::vec3 wanderVelocity = CalculateWanderVelocity(a_rEntityForward, a_rEntityPosition) * ms_fWanderForce;
+	glm::vec3 wanderVelocity = CalculateWanderVelocity(a_rEntityForward, a_rCurrentPosition) * ms_fWanderForce;
 	glm::vec3 newForce(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
 	m_behavioralVelocity += newForce;
 }
