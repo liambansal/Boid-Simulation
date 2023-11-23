@@ -16,11 +16,9 @@ class Framework;
 /// <summary>
 /// Allows an entity to store position and rotation data.
 /// </summary>
-class TransformComponent : public Component
-{
+class TransformComponent : public Component {
 public:
-	enum MATRIX_ROW
-	{
+	enum MATRIX_ROW {
 		MATRIX_ROW_RIGHT_VECTOR,
 		MATRIX_ROW_UP_VECTOR,
 		MATRIX_ROW_FORWARD_VECTOR,
@@ -31,13 +29,10 @@ public:
 	TransformComponent(Entity* a_pOwner);
 	TransformComponent(Entity* a_pOwner,
 		TransformComponent& a_rTransformToCopy);
-	~TransformComponent()
-	{}
+	~TransformComponent() {}
 
-	virtual void Update(float a_fDeltaTime)
-	{}
-	virtual void Draw(Framework* a_pRenderingFramework)
-	{}
+	virtual void Update(float a_fDeltaTime) {}
+	virtual void Draw(Framework* a_pRenderingFramework) {}
 
 	/// <summary>
 	/// Sets a row within the transform component's position and rotation matrix.
@@ -59,18 +54,15 @@ private:
 	glm::mat4 m_matrix;
 };
 
-const glm::mat4& TransformComponent::GetMatrix() const
-{
+const glm::mat4& TransformComponent::GetMatrix() const {
 	return m_matrix;
 }
 
-const glm::vec4& TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const
-{
+const glm::vec4& TransformComponent::GetMatrixRow(MATRIX_ROW a_row) const {
 	return m_matrix[a_row];
 }
 
-glm::vec3* TransformComponent::GetPosition() const
-{
+glm::vec3* TransformComponent::GetPosition() const {
 	return &(glm::vec3&)m_matrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
 }
 

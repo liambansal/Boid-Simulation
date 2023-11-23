@@ -12,13 +12,10 @@ class Application;
 /// <summary>
 /// Draws a user interface for the application.
 /// </summary>
-class UserInterface
-{
+class UserInterface {
 public:
-	UserInterface(Application* a_pApplication) : m_pApplication(a_pApplication)
-	{}
-	~UserInterface()
-	{}
+	UserInterface(Application* a_pApplication) : m_pApplication(a_pApplication) {}
+	~UserInterface() {}
 
 	/// <summary>
 	/// Draws all of the applications UI elements.

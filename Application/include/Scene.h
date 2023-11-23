@@ -20,8 +20,7 @@ class Framework;
 /// <summary>
 /// Acts as a virtual environment for creating and managing entities.
 /// </summary>
-class Scene
-{
+class Scene {
 public:
 	Scene();
 	~Scene();
@@ -92,30 +91,24 @@ private:
 	OctTree<Entity, glm::vec3> m_octTree;
 };
 
-Entity* Scene::GetEntity(unsigned int a_uniqueID)
-{
+Entity* Scene::GetEntity(unsigned int a_uniqueID) {
 	return m_sceneEntities.empty() ? nullptr : m_sceneEntities[a_uniqueID];
 }
 
-const std::map<unsigned int, Entity*>& Scene::GetAllEntities() const
-{
+const std::map<unsigned int, Entity*>& Scene::GetAllEntities() const {
 	return m_sceneEntities;
 }
 
-const unsigned int Scene::GetEntityCount() const
-{
+const unsigned int Scene::GetEntityCount() const {
 	return m_uiEntityCount;
 }
 
-const unsigned int Scene::GetEntityCount(std::string a_tag) const
-{
+const unsigned int Scene::GetEntityCount(std::string a_tag) const {
 	// Entities in the scene with a matching tag.
 	unsigned int matchingEntities = 0;
 
-	for (std::pair<unsigned int, Entity*> entity : m_sceneEntities)
-	{
-		if (entity.second->GetTag() == a_tag)
-		{
+	for (std::pair<unsigned int, Entity*> entity : m_sceneEntities) {
+		if (entity.second->GetTag() == a_tag) {
 			++matchingEntities;
 		}
 	}
@@ -123,8 +116,7 @@ const unsigned int Scene::GetEntityCount(std::string a_tag) const
 	return matchingEntities;
 }
 
-const OctTree<Entity, glm::vec3>& Scene::GetOctTree() const
-{
+const OctTree<Entity, glm::vec3>& Scene::GetOctTree() const {
 	return m_octTree;
 }
 

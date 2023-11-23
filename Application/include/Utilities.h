@@ -12,8 +12,7 @@
 /// <summary>
 /// Contains miscellaneous functions that have a general purpose.
 /// </summary>
-class Utilities
-{
+class Utilities {
 public:
 	/// <summary>
 	/// Returns a semi-random number within a specified range.
@@ -29,10 +28,8 @@ public:
 
 template<typename T>
 T Utilities::RandomRange(T a_lowerRange,
-	T a_upperRange)
-{
-	if (a_lowerRange == 0 && a_upperRange == 0)
-	{
+	T a_upperRange) {
+	if (a_lowerRange == 0 && a_upperRange == 0) {
 		return 0;
 	}
 

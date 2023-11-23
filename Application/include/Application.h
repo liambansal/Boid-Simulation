@@ -19,8 +19,7 @@ class TransformComponent;
 /// <summary>
 /// A 'top level' class for simulating boids which everything else will work from.
 /// </summary>
-class Application
-{
+class Application {
 public:
 	Application();
 	~Application();
@@ -63,7 +62,7 @@ public:
 	/// </summary>
 	/// <param name="a_uiBoidCount"> The desired number of boids to simulate. </param>
 	void SetBoidCount(unsigned int a_uiBoidCount);
-	
+
 	inline unsigned int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
 
@@ -99,13 +98,11 @@ private:
 	Entity* m_pWorldCursor;
 };
 
-unsigned int Application::GetBoidCount() const
-{
+unsigned int Application::GetBoidCount() const {
 	return m_uiBoidCount;
 }
 
-unsigned int Application::GetMaximumBoidCount() const
-{
+unsigned int Application::GetMaximumBoidCount() const {
 	return mc_uiMaximumBoidCount;
 }
 

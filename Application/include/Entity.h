@@ -23,8 +23,7 @@ typedef std::pair<COMPONENT_TYPE, Component*> ComponentPair;
 /// <summary>
 /// The base class from which all entity types should derive from to support the creation of a 'game object'.
 /// </summary>
-class Entity
-{
+class Entity {
 public:
 	Entity();
 	/// <summary>
@@ -85,40 +84,33 @@ private:
 	static bool ms_bCollisionsOn;
 };
 
-void Entity::AddComponent(COMPONENT_TYPE a_componentsType, Component* a_pComponent)
-{
+void Entity::AddComponent(COMPONENT_TYPE a_componentsType, Component* a_pComponent) {
 	m_components.insert(ComponentPair(a_componentsType, a_pComponent));
 }
 
-void Entity::SetTag(std::string a_newTag)
-{
+void Entity::SetTag(std::string a_newTag) {
 	m_tag = a_newTag;
 }
 
-Component* Entity::GetComponentOfType(COMPONENT_TYPE a_componentType) const
-{
+Component* Entity::GetComponentOfType(COMPONENT_TYPE a_componentType) const {
 	ComponentMap::const_iterator component = m_components.find(a_componentType);
 
-	if (component != m_components.cend())
-	{
+	if (component != m_components.cend()) {
 		return component->second;
 	}
 
 	return nullptr;
 }
 
-const unsigned int Entity::GetID() const
-{
+const unsigned int Entity::GetID() const {
 	return m_uiEntityID;
 }
 
-const std::string Entity::GetTag() const
-{
+const std::string Entity::GetTag() const {
 	return m_tag;
 }
 
-bool Entity::GetCollisionsState()
-{
+bool Entity::GetCollisionsState() {
 	return ms_bCollisionsOn;
 }
 

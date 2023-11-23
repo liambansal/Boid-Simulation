@@ -11,8 +11,7 @@
 #include "BrainComponent.h"
 #include "Entity.h"
 
-void UserInterface::Draw() const
-{
+void UserInterface::Draw() const {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -23,8 +22,7 @@ void UserInterface::Draw() const
 	const ImVec2 windowPosition = ImVec2(xPosition, yPosition);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
 
-	if (ImGui::Begin("Slider Menu"))
-	{
+	if (ImGui::Begin("Slider Menu")) {
 		io.MouseDrawCursor = true;
 		DrawPhysicsControls();
 		// Add an empty line to separate the different UI sections.

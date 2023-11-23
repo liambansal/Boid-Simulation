@@ -24,20 +24,17 @@ typedef std::vector<Entity*> pEntityVector;
 /// <summary>
 /// Allows a boid to automatically move itself around a scene.
 /// </summary>
-class BrainComponent : public Component
-{
+class BrainComponent : public Component {
 public:
 	BrainComponent(Entity* a_pOwner,
 		Scene* a_pScene);
 	BrainComponent(Entity* a_pOwner,
 		BrainComponent& a_rBrainToCopy,
 		Scene* a_pScene);
-	~BrainComponent()
-	{}
+	~BrainComponent() {}
 
 	virtual void Update(float a_fDeltaTime);
-	virtual void Draw(Framework* a_pRenderingFramework)
-	{}
+	virtual void Draw(Framework* a_pRenderingFramework) {}
 
 	static inline void SetSeparationForce(float a_force);
 	static inline void SetAlignmentForce(float a_force);
@@ -185,48 +182,39 @@ private:
 	ColliderComponent* m_pEntityCollider;
 };
 
-void BrainComponent::SetSeparationForce(float a_force)
-{
+void BrainComponent::SetSeparationForce(float a_force) {
 	ms_fSeparationForce = a_force;
 }
 
-void BrainComponent::SetAlignmentForce(float a_force)
-{
+void BrainComponent::SetAlignmentForce(float a_force) {
 	ms_fAlignmentForce = a_force;
 }
 
-void BrainComponent::SetCohesionForce(float a_force)
-{
+void BrainComponent::SetCohesionForce(float a_force) {
 	ms_fCohesionForce = a_force;
 }
 
-void BrainComponent::SetWanderForce(float a_force)
-{
+void BrainComponent::SetWanderForce(float a_force) {
 	ms_fWanderForce = a_force;
 }
 
-glm::vec3 BrainComponent::GetVelocity() const
-{
+glm::vec3 BrainComponent::GetVelocity() const {
 	return m_currentMovementVelocity;
 }
 
-float BrainComponent::GetSeparationForce()
-{
+float BrainComponent::GetSeparationForce() {
 	return ms_fSeparationForce;
 }
 
-float BrainComponent::GetAlignmentForce()
-{
+float BrainComponent::GetAlignmentForce() {
 	return ms_fAlignmentForce;
 }
 
-float BrainComponent::GetCohesionForce()
-{
+float BrainComponent::GetCohesionForce() {
 	return ms_fCohesionForce;
 }
 
-float BrainComponent::GetWanderForce()
-{
+float BrainComponent::GetWanderForce() {
 	return ms_fWanderForce;
 }
 

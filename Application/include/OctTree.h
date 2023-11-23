@@ -18,15 +18,13 @@
 /// <typeparam name="TObject"> The type of object to keep track of. </typeparam>
 /// <typeparam name="TVector"> The type of vector that stores each object's position. </typeparam>
 template <typename TObject, typename TVector>
-class OctTree
-{
+class OctTree {
 public:
 	typedef std::pair<TObject*, const Boundary<TVector>*> ObjectPair;
 
 	// The digit suffix represents the x, y and z coordinates for a subdivided area within the oct-tree.
 	// E.g. 101 = (x = 1, y = 0, and z = 1).
-	enum SUB_TREE_POSITIONS
-	{
+	enum SUB_TREE_POSITIONS {
 		SUB_TREE_POSITIONS_000,
 		SUB_TREE_POSITIONS_001,
 		SUB_TREE_POSITIONS_101,
@@ -40,8 +38,7 @@ public:
 
 	OctTree(unsigned int a_capacity,
 		Boundary<TVector> a_boundary);
-	~OctTree()
-	{}
+	~OctTree() {}
 
 	/// <summary>
 	/// Registers an object with the oct-tree.
@@ -88,67 +85,44 @@ OctTree<TObject, TVector>::OctTree(unsigned int a_capacity,
 	m_bSubdivided(false),
 	m_boundary(a_boundary),
 	m_objects(),
-	m_pSubTrees()
-{}
+	m_pSubTrees() {}
 
 template <typename TObject, typename TVector>
 bool OctTree<TObject, TVector>::InsertObject(TObject* a_pObject,
-	const Boundary<TVector>& a_rBoundary)
-{
-	if (!a_pObject)
-	{
+	const Boundary<TVector>& a_rBoundary) {
+	if (!a_pObject) {
 		return false;
 	}
 
 	// Checks if the object is positioned within the area covered by the oct-tree.
-	if (!m_boundary.Contains(*a_rBoundary.GetPosition()))
-	{
+	if (!m_boundary.Contains(*a_rBoundary.GetPosition())) {
 		return false;
 	}
 
-	if (m_objects.size() < m_uiCapacity)
-	{
+	if (m_objects.size() < m_uiCapacity) {
 		m_objects.insert(ObjectPair(a_pObject, &a_rBoundary));
 		return true;
-	}
-	else
-	{
-		if (!m_bSubdivided)
-		{
+	} else {
+		if (!m_bSubdivided) {
 			SubDivide();
 		}
 
 		// Adds the object to the subdivided area that overlaps with its position.
-		if (m_pSubTrees[SUB_TREE_POSITIONS_000]->InsertObject(a_pObject, a_rBoundary))
-		{
+		if (m_pSubTrees[SUB_TREE_POSITIONS_000]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_001]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_001]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_101]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_101]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_100]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_100]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_010]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_010]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_011]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_011]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_111]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_111]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
-		}
-		else if (m_pSubTrees[SUB_TREE_POSITIONS_110]->InsertObject(a_pObject, a_rBoundary))
-		{
+		} else if (m_pSubTrees[SUB_TREE_POSITIONS_110]->InsertObject(a_pObject, a_rBoundary)) {
 			return true;
 		}
 	}
@@ -157,8 +131,7 @@ bool OctTree<TObject, TVector>::InsertObject(TObject* a_pObject,
 }
 
 template <typename TObject, typename TVector>
-void OctTree<TObject, TVector>::SubDivide()
-{
+void OctTree<TObject, TVector>::SubDivide() {
 	// Bottom left back.
 	glm::vec3 subTreePosition000(m_boundary.GetPosition()->x - m_boundary.GetDimensions().x / 2,
 		m_boundary.GetPosition()->y - m_boundary.GetDimensions().y / 2,
@@ -229,38 +202,29 @@ void OctTree<TObject, TVector>::SubDivide()
 
 template <typename TObject, typename TVector>
 void OctTree<TObject, TVector>::Query(Boundary<TVector> a_queryVolume,
-	std::vector<TObject*>& a_rContainedEntities) const
-{
+	std::vector<TObject*>& a_rContainedEntities) const {
 	// Ensures the queried volume of space has a position to read from.
-	if (!a_queryVolume.GetPosition())
-	{
+	if (!a_queryVolume.GetPosition()) {
 		return;
 	}
 
 	// Ensures the queried volume of space is positioned inside the oct-tree's area.
-	if (!m_boundary.Contains(*a_queryVolume.GetPosition()))
-	{
+	if (!m_boundary.Contains(*a_queryVolume.GetPosition())) {
 		return;
-	}
-	else
-	{
-		for (ObjectPair object : m_objects)
-		{
+	} else {
+		for (ObjectPair object : m_objects) {
 			// Checks if the data has been initialised.
-			if (!object.second || !object.second->GetPosition())
-			{
+			if (!object.second || !object.second->GetPosition()) {
 				continue;
 			}
 
 			// Checks if the object is positioned inside the queried volume of space.
-			if (a_queryVolume.Overlaps(*object.second))
-			{
+			if (a_queryVolume.Overlaps(*object.second)) {
 				a_rContainedEntities.push_back(object.first);
 			}
 		}
 
-		if (m_bSubdivided)
-		{
+		if (m_bSubdivided) {
 			// Searches through the oct-tree's subdivided areas for additional objects.
 			m_pSubTrees[SUB_TREE_POSITIONS_000]->Query(a_queryVolume, a_rContainedEntities);
 			m_pSubTrees[SUB_TREE_POSITIONS_001]->Query(a_queryVolume, a_rContainedEntities);
@@ -275,8 +239,7 @@ void OctTree<TObject, TVector>::Query(Boundary<TVector> a_queryVolume,
 }
 
 template<typename TObject, typename TVector>
-const Boundary<TVector>& OctTree<TObject, TVector>::GetBoundary() const
-{
+const Boundary<TVector>& OctTree<TObject, TVector>::GetBoundary() const {
 	return m_boundary;
 }
 

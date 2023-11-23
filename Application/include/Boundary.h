@@ -11,8 +11,7 @@
 /// </summary>
 /// <typeparam name="TVector"> The type of vector that's used for storing the boundary's position and dimensions. </typeparam>
 template <typename TVector>
-class Boundary
-{
+class Boundary {
 public:
 	Boundary();
 	Boundary(TVector a_newPosition,
@@ -53,30 +52,24 @@ private:
 
 template <typename TVector>
 Boundary<TVector>::Boundary() : m_pPosition(new TVector(1.0f)),
-m_dimensions(1.0f)
-{}
+m_dimensions(1.0f) {}
 
 template <typename TVector>
 Boundary<TVector>::Boundary(TVector a_newPosition,
 	TVector a_newDimensions) : m_pPosition(new TVector(a_newPosition)),
-	m_dimensions(a_newDimensions)
-{}
+	m_dimensions(a_newDimensions) {}
 
 template <typename TVector>
 Boundary<TVector>::Boundary(TVector* a_pNewPosition,
 	TVector a_newDimensions) : m_pPosition(a_pNewPosition),
-	m_dimensions(a_newDimensions)
-{}
+	m_dimensions(a_newDimensions) {}
 
 template <typename TVector>
-Boundary<TVector>::~Boundary()
-{}
+Boundary<TVector>::~Boundary() {}
 
 template <typename TVector>
-bool Boundary<TVector>::Contains(const TVector& a_position) const
-{
-	if (!m_pPosition)
-	{
+bool Boundary<TVector>::Contains(const TVector& a_position) const {
+	if (!m_pPosition) {
 		return false;
 	}
 
@@ -91,8 +84,7 @@ bool Boundary<TVector>::Contains(const TVector& a_position) const
 }
 
 template <typename TVector>
-bool Boundary<TVector>::Overlaps(Boundary a_otherBoundary) const
-{
+bool Boundary<TVector>::Overlaps(Boundary a_otherBoundary) const {
 	// If the left extent of this boundary is further left than the other boundary's right extent, and.
 	// if the right extent of this boundary is further right than the other boundary's left extent then the 
 	// boundaries must overlap along that axis.
@@ -105,26 +97,22 @@ bool Boundary<TVector>::Overlaps(Boundary a_otherBoundary) const
 }
 
 template <typename TVector>
-void Boundary<TVector>::SetPosition(TVector* a_pNewPosition)
-{
+void Boundary<TVector>::SetPosition(TVector* a_pNewPosition) {
 	m_pPosition = a_pNewPosition;
 }
 
 template <typename TVector>
-void Boundary<TVector>::SetDimensions(TVector a_newDimensions)
-{
+void Boundary<TVector>::SetDimensions(TVector a_newDimensions) {
 	m_dimensions = a_newDimensions;
 }
 
 template <typename TVector>
-const TVector* Boundary<TVector>::GetPosition() const
-{
+const TVector* Boundary<TVector>::GetPosition() const {
 	return m_pPosition;
 }
 
 template <typename TVector>
-const TVector Boundary<TVector>::GetDimensions() const
-{
+const TVector Boundary<TVector>::GetDimensions() const {
 	return m_dimensions;
 }
 

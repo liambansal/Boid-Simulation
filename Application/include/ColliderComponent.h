@@ -20,8 +20,7 @@ class OctTree;
 /// <summary>
 /// Allows an entity to trigger collisions with other colliders.
 /// </summary>
-class ColliderComponent : public Component
-{
+class ColliderComponent : public Component {
 public:
 	ColliderComponent(Entity* a_pOwner,
 		const OctTree<Entity, glm::vec3>* a_pOctTree);
@@ -38,7 +37,7 @@ public:
 	/// </summary>
 	/// <returns> True if the entity is colliding with something. </returns>
 	inline const bool IsColliding() const;
-	
+
 	/// <summary>
 	/// Sets the collider's width, height, and depth.
 	/// </summary>
@@ -89,24 +88,20 @@ private:
 	const OctTree<Entity, glm::vec3>* mc_pOctTree;
 };
 
-const bool ColliderComponent::IsColliding() const
-{
+const bool ColliderComponent::IsColliding() const {
 	return m_bIsColliding;
 }
 
-void ColliderComponent::SetDimensions(float a_dimensionScalar)
-{
+void ColliderComponent::SetDimensions(float a_dimensionScalar) {
 	m_fColliderRange = a_dimensionScalar;
 	m_boundary.SetDimensions(glm::vec3(m_fColliderRange));
 }
 
-Boundary<glm::vec3>* ColliderComponent::GetBoundary()
-{
+Boundary<glm::vec3>* ColliderComponent::GetBoundary() {
 	return &m_boundary;
 }
 
-const std::vector<ColliderComponent*>& ColliderComponent::GetCollisions() const
-{
+const std::vector<ColliderComponent*>& ColliderComponent::GetCollisions() const {
 	return m_collisionColldiers;
 }
 

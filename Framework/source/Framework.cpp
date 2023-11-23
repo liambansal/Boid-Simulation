@@ -20,27 +20,24 @@
 Framework* Framework::ms_pInstance = nullptr;
 
 Framework::Framework() : mc_uiScreenWidth(1280),
-	mc_uiScreenHeight(800),
-	m_fLastX(mc_uiScreenWidth * 0.5f),
-	m_fLastY(mc_uiScreenHeight * 0.5f),
-	m_fDeltaTime(0.0f),
-	m_fLastFrame(0.0f),
-	m_bFirstMouse(true),
-	m_pWindow(nullptr),
-	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, -20.0f))),
-	m_pShader(nullptr)
-{}
+mc_uiScreenHeight(800),
+m_fLastX(mc_uiScreenWidth * 0.5f),
+m_fLastY(mc_uiScreenHeight * 0.5f),
+m_fDeltaTime(0.0f),
+m_fLastFrame(0.0f),
+m_bFirstMouse(true),
+m_pWindow(nullptr),
+m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, -20.0f))),
+m_pShader(nullptr) {}
 
 bool Framework::Initialize(const char* a_windowName,
 	const int a_width,
 	const int a_height,
 	const char* a_pVertexShader,
-	const char* a_pFragmentShader)
-{
+	const char* a_pFragmentShader) {
 #pragma region GLFW Setup
 	// Initialize GLFW.
-	if (!glfwInit())
-	{
+	if (!glfwInit()) {
 		return false;
 	}
 
@@ -49,8 +46,7 @@ bool Framework::Initialize(const char* a_windowName,
 		a_windowName,
 		nullptr, nullptr);
 
-	if (!m_pWindow)
-	{
+	if (!m_pWindow) {
 		std::cout << "Error: Failed to create GLFW window.\n";
 		glfwTerminate();
 		return false;
@@ -68,8 +64,7 @@ bool Framework::Initialize(const char* a_windowName,
 
 #pragma region GLAD Setup
 	// Initialize GLAD.
-	if (!gladLoadGL())
-	{
+	if (!gladLoadGL()) {
 		std::cout << "Error: Failed to initialize GLAD.\n";
 		glfwDestroyWindow(m_pWindow);
 		glfwTerminate();
@@ -77,8 +72,7 @@ bool Framework::Initialize(const char* a_windowName,
 	}
 
 	// glad: load all OpenGL function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return false;
 	}
@@ -98,7 +92,7 @@ bool Framework::Initialize(const char* a_windowName,
 #pragma endregion
 
 	m_pShader = new Shader(a_pVertexShader, a_pFragmentShader);
-	
+
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);
 	const int major = glfwGetWindowAttrib(m_pWindow,
@@ -111,8 +105,7 @@ bool Framework::Initialize(const char* a_windowName,
 	return true;
 }
 
-void Framework::Update()
-{
+void Framework::Update() {
 	// Per-frame time logic.
 	float currentFrame = glfwGetTime();
 	m_fDeltaTime = currentFrame - m_fLastFrame;
@@ -120,8 +113,7 @@ void Framework::Update()
 	ProcessInput(m_pWindow);
 }
 
-void Framework::Draw(Model* a_pModel)
-{
+void Framework::Draw(Model* a_pModel) {
 	// Don't forget to enable shader before setting uniforms.
 	m_pShader->use();
 	// view/projection transforms.
@@ -132,8 +124,7 @@ void Framework::Draw(Model* a_pModel)
 	a_pModel->Draw(*m_pShader);
 }
 
-void Framework::Destory()
-{
+void Framework::Destory() {
 	delete m_pCamera;
 	m_pCamera = nullptr;
 	delete m_pShader;
@@ -148,68 +139,55 @@ void Framework::Destory()
 	glfwTerminate();
 }
 
-void Framework::ProcessInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
+void Framework::ProcessInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
 		glfwSetWindowShouldClose(window, true);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(FORWARD, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(BACKWARD, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(LEFT, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(RIGHT, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(UP, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(DOWN, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-	{
+	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(MOVE_FASTER, m_fDeltaTime);
 	}
 }
 
-void Framework::FramebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
+void Framework::FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
 	// make sure the view port matches the new window dimensions; note that width and 
 	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
 
-void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos)
-{
+void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos) {
 	Framework* pFramework = Framework::GetInstance();
 
-	if (!pFramework)
-	{
+	if (!pFramework) {
 		// Return early.
 		return;
 	}
 
-	if (pFramework->m_bFirstMouse)
-	{
+	if (pFramework->m_bFirstMouse) {
 		pFramework->m_fLastX = xpos;
 		pFramework->m_fLastY = ypos;
 		pFramework->m_bFirstMouse = false;
@@ -221,18 +199,15 @@ void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos)
 	pFramework->m_fLastY = ypos;
 
 	// Check left mouse button is being pressed.
-	if (pFramework->m_pCamera && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT))
-	{
+	if (pFramework->m_pCamera && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
 		pFramework->m_pCamera->ProcessMouseMovement(xoffset, yoffset);
 	}
 }
 
-void Framework::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
-{
+void Framework::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	Framework* pFramework = Framework::GetInstance();
 
-	if (!pFramework || !pFramework->m_pCamera)
-	{
+	if (!pFramework || !pFramework->m_pCamera) {
 		// Return early.
 		return;
 	}
@@ -240,10 +215,8 @@ void Framework::ScrollCallback(GLFWwindow* window, double xoffset, double yoffse
 	pFramework->m_pCamera->ProcessMouseScroll(yoffset);
 }
 
-Framework* Framework::GetInstance()
-{
-	if (ms_pInstance == nullptr)
-	{
+Framework* Framework::GetInstance() {
+	if (ms_pInstance == nullptr) {
 		ms_pInstance = new Framework();
 	}
 

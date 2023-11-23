@@ -30,8 +30,7 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_newMovementVelocity(0.0f),
 	m_collisionSeparationVelocity(0.0f),
 	m_pScene(a_pScene),
-	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER)))
-{
+	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER))) {
 	m_componentType = COMPONENT_TYPE_BRAIN;
 }
 
@@ -47,36 +46,31 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_newMovementVelocity(a_rBrainToCopy.m_newMovementVelocity),
 	m_collisionSeparationVelocity(a_rBrainToCopy.m_collisionSeparationVelocity),
 	m_pScene(a_pScene),
-	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER)))
-{
+	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER))) {
 	m_componentType = a_rBrainToCopy.m_componentType;
 }
 
-void BrainComponent::Update(float a_fDeltaTime)
-{
+void BrainComponent::Update(float a_fDeltaTime) {
 	m_fLastUpdate += a_fDeltaTime;
 	const float updateStep = 0.15f;
 
 	// Get this components owner entity.
 	Entity* pOwnerEntity = GetEntity();
 
-	if (!pOwnerEntity)
-	{
+	if (!pOwnerEntity) {
 		return;
 	}
 
 	TransformComponent* pOwnerTransform = static_cast<TransformComponent*>(pOwnerEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
-	if (!pOwnerTransform)
-	{
+	if (!pOwnerTransform) {
 		return;
 	}
 
 	glm::vec3 currentPosition = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR);
 	glm::vec3 forwardDirection = (glm::vec3)pOwnerTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR);
 
-	if (m_fLastUpdate >= updateStep)
-	{
+	if (m_fLastUpdate >= updateStep) {
 		m_fLastUpdate = 0.0f;
 		pEntityVector nearbyEntities = GetNeighbouringEntities(currentPosition);
 		m_uiNeighbourCount = nearbyEntities.size();
@@ -87,13 +81,10 @@ void BrainComponent::Update(float a_fDeltaTime)
 	}
 
 	// Check for any collisions.
-	if (m_pEntityCollider && m_pEntityCollider->IsColliding())
-	{
+	if (m_pEntityCollider && m_pEntityCollider->IsColliding()) {
 		CalculateCollisionVelocity(currentPosition);
 		m_currentMovementVelocity = m_collisionSeparationVelocity;
-	}
-	else
-	{
+	} else {
 		if (glm::length(m_collisionSeparationVelocity) != 0) {
 			// Reset the collision separation velocity now that all collisions are over.
 			m_collisionSeparationVelocity = glm::vec3(0.0f);
@@ -105,8 +96,7 @@ void BrainComponent::Update(float a_fDeltaTime)
 	glm::vec3 nextPosition = currentPosition + m_currentMovementVelocity * a_fDeltaTime;
 
 	// Check if the entity will move outside the scene's bounds.
-	if (m_pScene && !m_pScene->GetOctTree().GetBoundary().Contains(nextPosition))
-	{
+	if (m_pScene && !m_pScene->GetOctTree().GetBoundary().Contains(nextPosition)) {
 		// Reverse the boids movement directions.
 		m_currentMovementVelocity = -m_currentMovementVelocity;
 		m_newMovementVelocity = -m_newMovementVelocity;
@@ -123,12 +113,10 @@ void BrainComponent::Update(float a_fDeltaTime)
 }
 
 glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPosition,
-	const glm::vec3& a_rCurrentPosition) const
-{
+	const glm::vec3& a_rCurrentPosition) const {
 	glm::vec3 targetDirection(a_rTargetPosition - a_rCurrentPosition);
 
-	if (glm::length(targetDirection) > 0.0f)
-	{
+	if (glm::length(targetDirection) > 0.0f) {
 		targetDirection = glm::normalize(targetDirection);
 	}
 
@@ -138,8 +126,7 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPositi
 }
 
 glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
-	const glm::vec3& a_rCurrentPosition) const
-{
+	const glm::vec3& a_rCurrentPosition) const {
 	// Greater values result in wider turning angles.
 	const float projectionDistance = 4.0f;
 	// Project a point in front for the center of a sphere.
@@ -163,12 +150,10 @@ glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDir
 
 glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 	glm::vec3 a_targetVector,
-	unsigned int a_uiNeighbourCount) const
-{
+	unsigned int a_uiNeighbourCount) const {
 	a_separationVelocity += a_targetVector;
 
-	if (glm::length(a_separationVelocity) > 0.0f && a_uiNeighbourCount > 0)
-	{
+	if (glm::length(a_separationVelocity) > 0.0f && a_uiNeighbourCount > 0) {
 		// Average the separation force
 		a_separationVelocity /= a_uiNeighbourCount;
 		// Only normalise vector with length greater than zero
@@ -179,12 +164,10 @@ glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelo
 }
 
 glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
-	glm::vec3 a_targetVector) const
-{
+	glm::vec3 a_targetVector) const {
 	a_alignmentVelocity += a_targetVector;
 
-	if (glm::length(a_alignmentVelocity) > 0.0f && m_uiNeighbourCount > 0)
-	{
+	if (glm::length(a_alignmentVelocity) > 0.0f && m_uiNeighbourCount > 0) {
 		a_alignmentVelocity /= m_uiNeighbourCount;
 		a_alignmentVelocity = glm::normalize(a_alignmentVelocity);
 	}
@@ -194,12 +177,10 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 
 glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 	glm::vec3 a_cohesionChange,
-	glm::vec3 a_currentPosition)const
-{
+	glm::vec3 a_currentPosition) const {
 	a_cohesionVelocity += a_cohesionChange;
 
-	if (glm::length(a_cohesionVelocity) > 0.0f && m_uiNeighbourCount > 0)
-	{
+	if (glm::length(a_cohesionVelocity) > 0.0f && m_uiNeighbourCount > 0) {
 		a_cohesionVelocity /= m_uiNeighbourCount;
 		a_cohesionVelocity = glm::normalize(a_cohesionVelocity - a_currentPosition);
 	}
@@ -209,13 +190,11 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 
 glm::vec3 BrainComponent::CalculateNewMovementVelocity(glm::vec3& a_rCurrentPosition,
 	glm::vec3& a_rEntityForward,
-	pEntityVector nearbyEntities) const
-{
+	pEntityVector nearbyEntities) const {
 	// Get the component's owner entity.
 	const Entity* pOwnerEntity = GetEntity();
 
-	if (!pOwnerEntity)
-	{
+	if (!pOwnerEntity) {
 		return glm::vec3(0);
 	}
 
@@ -262,23 +241,19 @@ glm::vec3 BrainComponent::CalculateNewMovementVelocity(glm::vec3& a_rCurrentPosi
 	return changeInMovement;
 }
 
-void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)
-{
+void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition) {
 	for (std::vector<ColliderComponent*>::const_iterator iterator = m_pEntityCollider->GetCollisions().begin();
 		iterator != m_pEntityCollider->GetCollisions().end();
-		++iterator)
-	{
+		++iterator) {
 		Entity* pCollidingEntity = (*iterator)->GetEntity();
 
-		if (!pCollidingEntity)
-		{
+		if (!pCollidingEntity) {
 			return;
 		}
 
 		TransformComponent* pCollidingEntityTransform = static_cast<TransformComponent*>(pCollidingEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
-		if (!pCollidingEntityTransform)
-		{
+		if (!pCollidingEntityTransform) {
 			return;
 		}
 
@@ -296,30 +271,25 @@ void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition
 
 void BrainComponent::UpdateMatrix(TransformComponent* a_pTransform,
 	glm::vec3* a_pPosition,
-	glm::vec3* a_pForward)
-{
-	if (!a_pTransform || !a_pPosition || !a_pForward)
-	{
+	glm::vec3* a_pForward) {
+	if (!a_pTransform || !a_pPosition || !a_pForward) {
 		return;
 	}
 
-	if (glm::length(*a_pForward) > 0.0f)
-	{
+	if (glm::length(*a_pForward) > 0.0f) {
 		*a_pForward = glm::normalize(*a_pForward);
 	}
 
 	glm::vec3 upDirection = (glm::vec3)a_pTransform->GetMatrixRow(TransformComponent::MATRIX_ROW_UP_VECTOR);
 	upDirection -= (*a_pForward) * glm::dot(*a_pForward, upDirection);
 
-	if (glm::length(upDirection) > 0.0f)
-	{
+	if (glm::length(upDirection) > 0.0f) {
 		glm::normalize(upDirection);
 	}
 
 	glm::vec3 rightDirection = glm::cross(upDirection, *a_pForward);
 
-	if (glm::length(rightDirection) > 0.0f)
-	{
+	if (glm::length(rightDirection) > 0.0f) {
 		glm::normalize(rightDirection);
 	}
 
@@ -338,8 +308,7 @@ pEntityVector BrainComponent::GetNeighbouringEntities(glm::vec3 a_currentPositio
 	return nearbyEntities;
 }
 
-glm::vec3 BrainComponent::GetRandomNearbyPoint(glm::vec3 a_originPosition) const
-{
+glm::vec3 BrainComponent::GetRandomNearbyPoint(glm::vec3 a_originPosition) const {
 	const float absoluteRange = 1.0f;
 	return glm::vec3(a_originPosition.x + Utilities::RandomRange(-absoluteRange, absoluteRange),
 		a_originPosition.y + Utilities::RandomRange(-absoluteRange, absoluteRange),

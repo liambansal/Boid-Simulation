@@ -19,19 +19,17 @@
 #include "Utilities.h"
 
 Application::Application() : m_uiBoidCount(50),
-	mc_uiMaximumBoidCount(500),
-	m_fMarkerZOffset(10.0f),
-	mc_fMimimumMarkerZOffset(0.5f),
-	mc_fMaximumMarkerZOffset(50.0f),
-	m_bFrameworkInitialised(false),
-	m_bSpawnedObstacle(false),
-	m_pFramework(Framework::GetInstance()),
-	m_pScene(new Scene()),
-	m_pUserInterface(new UserInterface(this)),
-	m_pWorldCursor(new Entity())
-{
-	if (m_pFramework)
-	{
+mc_uiMaximumBoidCount(500),
+m_fMarkerZOffset(10.0f),
+mc_fMimimumMarkerZOffset(0.5f),
+mc_fMaximumMarkerZOffset(50.0f),
+m_bFrameworkInitialised(false),
+m_bSpawnedObstacle(false),
+m_pFramework(Framework::GetInstance()),
+m_pScene(new Scene()),
+m_pUserInterface(new UserInterface(this)),
+m_pWorldCursor(new Entity()) {
+	if (m_pFramework) {
 		// Seed rand number generator.
 		srand(time(nullptr));
 		const char* name = "Boids Simulation";
@@ -55,17 +53,14 @@ Application::Application() : m_uiBoidCount(50),
 	}
 }
 
-Application::~Application()
-{
+Application::~Application() {
 	m_pFramework->Destory();
 	delete m_pFramework;
 	m_pFramework = nullptr;
 }
 
-void Application::Run()
-{
-	while (!CloseApplication())
-	{
+void Application::Run() {
+	while (!CloseApplication()) {
 		Update();
 		Draw();
 	}
@@ -79,10 +74,8 @@ bool Application::CloseApplication() const {
 	return false;
 }
 
-void Application::Update()
-{
-	if (!m_pScene)
-	{
+void Application::Update() {
+	if (!m_pScene) {
 		return;
 	}
 
@@ -94,45 +87,33 @@ void Application::Update()
 void Application::ProcessInput() {
 	TransformComponent* pMarkerTransform = static_cast<TransformComponent*>(m_pWorldCursor->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
-	if (pMarkerTransform)
-	{
+	if (pMarkerTransform) {
 		// Update the marker's position each frame.
 		pMarkerTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
 
-		if (!m_bSpawnedObstacle && glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS)
-		{
+		if (!m_bSpawnedObstacle && glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_PRESS) {
 			CreateObstacle(*pMarkerTransform->GetPosition());
-		}
-		else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_RELEASE)
-		{
+		} else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_3) == GLFW_RELEASE) {
 			m_bSpawnedObstacle = false;
 		}
 	}
 
-	if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_1) == GLFW_PRESS)
-	{
+	if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_1) == GLFW_PRESS) {
 		--m_fMarkerZOffset;
-	}
-	else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_2) == GLFW_PRESS)
-	{
+	} else if (glfwGetKey(m_pFramework->GetWindow(), GLFW_KEY_2) == GLFW_PRESS) {
 		++m_fMarkerZOffset;
 	}
 
-	if (m_fMarkerZOffset > mc_fMaximumMarkerZOffset)
-	{
+	if (m_fMarkerZOffset > mc_fMaximumMarkerZOffset) {
 		m_fMarkerZOffset = mc_fMaximumMarkerZOffset;
-	}
-	else if (m_fMarkerZOffset < mc_fMimimumMarkerZOffset)
-	{
+	} else if (m_fMarkerZOffset < mc_fMimimumMarkerZOffset) {
 		m_fMarkerZOffset = mc_fMimimumMarkerZOffset;
 	}
 }
 
-void Application::Draw()
-{
-	if (!m_pScene || !m_pUserInterface)
-	{
+void Application::Draw() {
+	if (!m_pScene || !m_pUserInterface) {
 		return;
 	}
 
@@ -151,10 +132,8 @@ void Application::Draw()
 	glfwPollEvents();
 }
 
-Entity* Application::CreateBoid()
-{
-	if (!m_pScene)
-	{
+Entity* Application::CreateBoid() {
+	if (!m_pScene) {
 		return nullptr;
 	}
 
@@ -187,10 +166,8 @@ Entity* Application::CreateBoid()
 	return pBoid;
 }
 
-Entity* Application::CreateObstacle(glm::vec3 a_spawnPosition)
-{
-	if (!m_pScene)
-	{
+Entity* Application::CreateObstacle(glm::vec3 a_spawnPosition) {
+	if (!m_pScene) {
 		return nullptr;
 	}
 
@@ -214,18 +191,14 @@ Entity* Application::CreateObstacle(glm::vec3 a_spawnPosition)
 	m_bSpawnedObstacle = true;
 }
 
-void Application::SetBoidCount(unsigned int a_uiBoidCount)
-{
+void Application::SetBoidCount(unsigned int a_uiBoidCount) {
 	m_uiBoidCount = a_uiBoidCount;
 	std::string boidTag = "Boid";
 	unsigned int curentBoidCount = m_pScene->GetEntityCount(boidTag);
 
-	if (m_uiBoidCount > curentBoidCount)
-	{
+	if (m_uiBoidCount > curentBoidCount) {
 		m_pScene->AddEntities(CreateBoid(), m_uiBoidCount - curentBoidCount);
-	}
-	else if (m_uiBoidCount < curentBoidCount)
-	{
+	} else if (m_uiBoidCount < curentBoidCount) {
 		m_pScene->DestroyEntitiesWithTag(boidTag, curentBoidCount - m_uiBoidCount);
 	}
 }

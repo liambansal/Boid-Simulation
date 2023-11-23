@@ -19,17 +19,14 @@ class Model;
 /// <summary>
 /// Renders a 3D model on-screen for an entity.
 /// </summary>
-class ModelComponent : public Component
-{
+class ModelComponent : public Component {
 public:
 	ModelComponent(Entity* a_owner);
 	ModelComponent(Entity* a_owner,
 		ModelComponent& a_rModelToCopy);
-	~ModelComponent()
-	{}
+	~ModelComponent() {}
 
-	virtual void Update(float a_fDeltaTime)
-	{}
+	virtual void Update(float a_fDeltaTime) {}
 	virtual void Draw(Framework* a_pRenderingFramework);
 	/// <summary>
 	/// Loads a model to represent the entity.
@@ -59,8 +56,7 @@ private:
 	static std::map<const char*, Model*> ms_loadedModels;
 };
 
-Model* ModelComponent::GetModel()
-{
+Model* ModelComponent::GetModel() {
 	return m_pModel;
 }
 

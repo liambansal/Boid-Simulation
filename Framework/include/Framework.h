@@ -17,8 +17,7 @@ class Shader;
 /// and supports the use of an interactable camera to inspect the models.
 /// This is intended to act as a singleton class.
 /// </summary>
-class Framework
-{
+class Framework {
 public:
 	/// <summary>
 	/// Sets up the program's dependency programs and some important member variables.
@@ -101,7 +100,7 @@ private:
 	Framework();
 	Framework(const Framework& a_rFramework);
 	Framework& operator=(const Framework&);
-	
+
 	const unsigned int mc_uiScreenWidth;
 	const unsigned int mc_uiScreenHeight;
 	/// <summary>
@@ -139,33 +138,27 @@ private:
 	Shader* m_pShader;
 };
 
-GLFWwindow* Framework::GetWindow() const
-{
+GLFWwindow* Framework::GetWindow() const {
 	return m_pWindow;
 }
 
-Camera* Framework::GetCamera() const
-{
+Camera* Framework::GetCamera() const {
 	return m_pCamera;
 }
 
-const float Framework::GetDeltaTime() const
-{
+const float Framework::GetDeltaTime() const {
 	return m_fDeltaTime;
 }
 
-const Shader* Framework::GetShader() const
-{
+const Shader* Framework::GetShader() const {
 	return m_pShader;
 }
 
-const unsigned int Framework::GetScreenWidth() const
-{
+const unsigned int Framework::GetScreenWidth() const {
 	return mc_uiScreenWidth;
 }
 
-const unsigned int Framework::GetScreenHeight() const
-{
+const unsigned int Framework::GetScreenHeight() const {
 	return mc_uiScreenHeight;
 }
 

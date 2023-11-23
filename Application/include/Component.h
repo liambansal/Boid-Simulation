@@ -11,8 +11,7 @@ class Entity;
 class Framework;
 
 // An enum of all the possible component types.
-enum COMPONENT_TYPE
-{
+enum COMPONENT_TYPE {
 	COMPONENT_TYPE_NONE,
 	COMPONENT_TYPE_TRANSFORM,
 	COMPONENT_TYPE_MODEL,
@@ -25,8 +24,7 @@ enum COMPONENT_TYPE
 /// The base class for all component classes used by entities.
 /// Provides a set of generic functions and properties that are used throughout all the component classes.
 /// </summary>
-class Component
-{
+class Component {
 public:
 	Component(Entity* a_pOwner);
 
@@ -57,13 +55,11 @@ protected:
 	COMPONENT_TYPE m_componentType;
 };
 
-inline Entity* Component::GetEntity() const
-{
+inline Entity* Component::GetEntity() const {
 	return m_pAttachedEntity;
 }
 
-inline COMPONENT_TYPE Component::GetComponentType() const
-{
+inline COMPONENT_TYPE Component::GetComponentType() const {
 	return m_componentType;
 }
 
