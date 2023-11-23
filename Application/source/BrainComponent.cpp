@@ -13,9 +13,6 @@
 #include "TransformComponent.h"
 #include "Utilities.h"
 
-// Typedefs.
-typedef std::vector<Entity*> pEntityVector;
-
 // Static variable initializations.
 float BrainComponent::ms_fSeparationForce = 0.4f;
 float BrainComponent::ms_fAlignmentForce = 0.2f;
@@ -32,7 +29,6 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_currentMovementVelocity(0.0f),
 	m_newMovementVelocity(0.0f),
 	m_collisionSeparationVelocity(0.0f),
-	m_wanderPoint(0.0f),
 	m_pScene(a_pScene),
 	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER)))
 {
@@ -50,7 +46,6 @@ BrainComponent::BrainComponent(Entity* a_pOwner,
 	m_currentMovementVelocity(a_rBrainToCopy.m_currentMovementVelocity),
 	m_newMovementVelocity(a_rBrainToCopy.m_newMovementVelocity),
 	m_collisionSeparationVelocity(a_rBrainToCopy.m_collisionSeparationVelocity),
-	m_wanderPoint(a_rBrainToCopy.m_wanderPoint),
 	m_pScene(a_pScene),
 	m_pEntityCollider(static_cast<ColliderComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_COLLIDER)))
 {
@@ -83,9 +78,12 @@ void BrainComponent::Update(float a_fDeltaTime)
 	if (m_fLastUpdate >= updateStep)
 	{
 		m_fLastUpdate = 0.0f;
+		pEntityVector nearbyEntities = GetNeighbouringEntities(currentPosition);
+		m_uiNeighbourCount = nearbyEntities.size();
 		// Calculate our boid's behaviour.
-		CalculateBehaviouralVelocity(currentPosition,
-			forwardDirection);
+		m_newMovementVelocity += CalculateNewMovementVelocity(currentPosition,
+			forwardDirection,
+			nearbyEntities);
 	}
 
 	// Check for any collisions.
@@ -140,37 +138,32 @@ glm::vec3 BrainComponent::CalculateSeekVelocity(const glm::vec3& a_rTargetPositi
 }
 
 glm::vec3 BrainComponent::CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
-	const glm::vec3& a_rCurrentPosition)
+	const glm::vec3& a_rCurrentPosition) const
 {
 	// Greater values result in wider turning angles.
-	const float projectDistance = 4.0f;
+	const float projectionDistance = 4.0f;
 	// Project a point in front for the center of a sphere.
-	glm::vec3 sphereOrigin = a_rCurrentPosition + a_rForwardDirection * projectDistance;
-	const float jitter = 0.5f;
+	glm::vec3 wonderPointOrigin = a_rCurrentPosition + a_rForwardDirection * projectionDistance;
 	// Effects radius of sphere to cast forward.
 	const float wanderRadius = 2.0f;
-
-	if (glm::length(m_wanderPoint) == 0.0f)
-	{
-		// Find a random point on a forward casted sphere.
-		glm::vec3 randomPoint = glm::sphericalRand(wanderRadius);
-		// Add random point to sphere origin
-		m_wanderPoint = (sphereOrigin + randomPoint);
-	}
-	
+	// Find a random point on a forward casted sphere.
+	glm::vec3 randomPoint = glm::sphericalRand(wanderRadius);
+	// Gets random point in space ahead of the boid.
+	glm::vec3 wanderPoint = wonderPointOrigin + randomPoint;
 	// Direction to move along
-	glm::vec3 targetDirection = glm::normalize(m_wanderPoint - sphereOrigin) * wanderRadius;
+	glm::vec3 targetDirection = glm::normalize(wanderPoint - wonderPointOrigin) * wanderRadius;
 	// Calculate final target position
-	m_wanderPoint = sphereOrigin + targetDirection;
+	wanderPoint = wonderPointOrigin + targetDirection;
+	const float jitter = 0.5f;
 	// Add jitter to movement
-	m_wanderPoint += glm::sphericalRand(jitter);
+	wanderPoint += glm::sphericalRand(jitter);
 	// Seek to the wander point
-	return CalculateSeekVelocity(m_wanderPoint, a_rCurrentPosition);
+	return CalculateSeekVelocity(wanderPoint, a_rCurrentPosition);
 }
 
 glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 	glm::vec3 a_targetVector,
-	unsigned int a_uiNeighbourCount)
+	unsigned int a_uiNeighbourCount) const
 {
 	a_separationVelocity += a_targetVector;
 
@@ -186,7 +179,7 @@ glm::vec3 BrainComponent::CalculateSeparationVelocity(glm::vec3 a_separationVelo
 }
 
 glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
-	glm::vec3 a_targetVector)
+	glm::vec3 a_targetVector) const
 {
 	a_alignmentVelocity += a_targetVector;
 
@@ -201,7 +194,7 @@ glm::vec3 BrainComponent::CalculateAlignmentVelocity(glm::vec3 a_alignmentVeloci
 
 glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 	glm::vec3 a_cohesionChange,
-	glm::vec3 a_currentPosition)
+	glm::vec3 a_currentPosition)const
 {
 	a_cohesionVelocity += a_cohesionChange;
 
@@ -214,24 +207,18 @@ glm::vec3 BrainComponent::CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity
 	return a_cohesionVelocity;
 }
 
-void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rCurrentPosition,
-	glm::vec3& a_rEntityForward)
+glm::vec3 BrainComponent::CalculateNewMovementVelocity(glm::vec3& a_rCurrentPosition,
+	glm::vec3& a_rEntityForward,
+	pEntityVector nearbyEntities) const
 {
 	// Get the component's owner entity.
 	const Entity* pOwnerEntity = GetEntity();
 
 	if (!pOwnerEntity)
 	{
-		return;
+		return glm::vec3(0);
 	}
 
-	m_uiNeighbourCount = 0;
-	pEntityVector nearbyEntities;
-	// Get all nearby entities.
-	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_rCurrentPosition,
-		glm::vec3(mc_fMaximumNeighbourDistance)),
-		nearbyEntities);
-	m_uiNeighbourCount = nearbyEntities.size();
 	// Behavioural forces.
 	glm::vec3 seperationVelocity(0.0f);
 	glm::vec3 alignmentVelocity(0.0f);
@@ -272,7 +259,7 @@ void BrainComponent::CalculateBehaviouralVelocity(glm::vec3& a_rCurrentPosition,
 	cohesionVelocity *= ms_fCohesionForce;
 	glm::vec3 wanderVelocity = CalculateWanderVelocity(a_rEntityForward, a_rCurrentPosition) * ms_fWanderForce;
 	glm::vec3 changeInMovement(wanderVelocity + cohesionVelocity + alignmentVelocity + seperationVelocity);
-	m_newMovementVelocity += changeInMovement;
+	return changeInMovement;
 }
 
 void BrainComponent::CalculateCollisionVelocity(const glm::vec3 a_entityPosition)
@@ -341,6 +328,14 @@ void BrainComponent::UpdateMatrix(TransformComponent* a_pTransform,
 	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_RIGHT_VECTOR, rightDirection);
 	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_FORWARD_VECTOR, *a_pForward);
 	a_pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR, *a_pPosition);
+}
+
+pEntityVector BrainComponent::GetNeighbouringEntities(glm::vec3 a_currentPosition) const {
+	pEntityVector nearbyEntities;
+	m_pScene->GetOctTree().Query(Boundary<glm::vec3>(a_currentPosition,
+		glm::vec3(mc_fMaximumNeighbourDistance)),
+		nearbyEntities);
+	return nearbyEntities;
 }
 
 glm::vec3 BrainComponent::GetRandomNearbyPoint(glm::vec3 a_originPosition) const

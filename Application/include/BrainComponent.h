@@ -9,6 +9,7 @@
 // Header dependencies.
 #include "Component.h"
 #include "glm/glm.hpp"
+#include <vector>
 
 // Forward declarations
 class ColliderComponent;
@@ -16,6 +17,9 @@ class Entity;
 class Framework;
 class Scene;
 class TransformComponent;
+
+// Typedefs.
+typedef std::vector<Entity*> pEntityVector;
 
 /// <summary>
 /// Allows a boid to automatically move itself around a scene.
@@ -45,6 +49,12 @@ public:
 	static inline float GetAlignmentForce();
 	static inline float GetCohesionForce();
 	static inline float GetWanderForce();
+	/// <summary>
+	/// Gets a collection of all the nearby entities.
+	/// </summary>
+	/// <param name="a_currentPosition"> The entity's current world position. </param>
+	/// <returns> A collection of entity pointers. </returns>
+	pEntityVector GetNeighbouringEntities(glm::vec3 a_currentPosition) const;
 
 private:
 	/// <summary>
@@ -62,7 +72,7 @@ private:
 	/// <param name="a_rCurrentPosition"> The boid's current position. </param>
 	/// <returns> The boid's new wander velocity. </returns>
 	glm::vec3 CalculateWanderVelocity(const glm::vec3& a_rForwardDirection,
-		const glm::vec3& a_rCurrentPosition);
+		const glm::vec3& a_rCurrentPosition) const;
 	/// <summary>
 	/// Generates a new separation velocity that moves the boid away from its neighbours.
 	/// </summary>
@@ -72,7 +82,7 @@ private:
 	/// <returns> The boid's new separation velocity. </returns>
 	glm::vec3 CalculateSeparationVelocity(glm::vec3 a_separationVelocity,
 		glm::vec3 a_targetVector,
-		unsigned int a_uiNeighbourCount);
+		unsigned int a_uiNeighbourCount) const;
 	/// <summary>
 	/// Generates a new alignment velocity that moves the boid along a similar direction to its neighbours.
 	/// </summary>
@@ -80,7 +90,7 @@ private:
 	/// <param name="a_targetVector"> The amount to increase the boid's alignment velocity by. </param>
 	/// <returns> The boid's new alignment velocity. </returns>
 	glm::vec3 CalculateAlignmentVelocity(glm::vec3 a_alignmentVelocity,
-		glm::vec3 a_targetVector);
+		glm::vec3 a_targetVector)const;
 	/// <summary>
 	/// Generates a new cohesion velocity that moves the boid towards its neighbours.
 	/// </summary>
@@ -90,14 +100,15 @@ private:
 	/// <returns> The boid's new cohesion velocity. </returns>
 	glm::vec3 CalculateCohesionVelocity(glm::vec3 a_cohesionVelocity,
 		glm::vec3 a_cohesionChange,
-		glm::vec3 a_currentPosition);
+		glm::vec3 a_currentPosition)const;
 	/// <summary>
 	/// Calculates the boid's overall movement.
 	/// </summary>
 	/// <param name="a_rEntityPosition"> The boid's current position. </param>
 	/// <param name="a_rEntityForward"> The boid's forward direction. </param>
-	void CalculateBehaviouralVelocity(glm::vec3& a_rEntityPosition,
-		glm::vec3& a_rEntityForward);
+	glm::vec3 CalculateNewMovementVelocity(glm::vec3& a_rEntityPosition,
+		glm::vec3& a_rEntityForward,
+		pEntityVector nearbyEntities) const;
 	/// <summary>
 	/// Calculates a new velocity that moves the entity away from collisions.
 	/// </summary>
@@ -113,6 +124,7 @@ private:
 	void UpdateMatrix(TransformComponent* a_pTransform,
 		glm::vec3* a_pPosition,
 		glm::vec3* a_pForward);
+
 	/// <summary>
 	/// Gets a semi-random position near to the specified position.
 	/// </summary>
@@ -166,10 +178,6 @@ private:
 	/// The separation velocity that's calculated based on collisions, to move a boid away from collisions.
 	/// </summary>
 	glm::vec3 m_collisionSeparationVelocity;
-	/// <summary>
-	/// The random point in space that the boid will move towards when wandering.
-	/// </summary>
-	glm::vec3 m_wanderPoint;
 	/// <summary>
 	/// The scene that the entity belongs to.
 	/// </summary>
