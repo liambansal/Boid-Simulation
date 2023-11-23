@@ -9,8 +9,9 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "BrainComponent.h"
+#include "Entity.h"
 
-void UserInterface::Draw()
+void UserInterface::Draw() const
 {
 	// Start the Dear ImGui frame
 	ImGui_ImplOpenGL3_NewFrame();
@@ -18,13 +19,16 @@ void UserInterface::Draw()
 	ImGui::NewFrame();
 	ImGuiIO& io = ImGui::GetIO();
 	const float xPosition = 1.0f;
-	const float heightScale = 0.75;
-	const ImVec2 windowPosition = ImVec2(xPosition, io.DisplaySize.y * heightScale);
+	const float yPosition = io.DisplaySize.y * 0.65f;
+	const ImVec2 windowPosition = ImVec2(xPosition, yPosition);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
 
 	if (ImGui::Begin("Slider Menu"))
 	{
 		io.MouseDrawCursor = true;
+		DrawPhysicsControls();
+		// Add an empty line to separate the different UI sections.
+		ImGui::NewLine();
 		DrawBoidsBehaviouralSliders();
 	}
 
@@ -33,7 +37,10 @@ void UserInterface::Draw()
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UserInterface::DrawBoidsBehaviouralSliders() {
+void UserInterface::DrawBoidsBehaviouralSliders() const {
+	// UI section header.
+	ImGui::Text("Boid Forces");
+
 	// Slider for controlling the number of boids.
 	int boidCount = (int)m_pApplication->GetBoidCount();
 	ImGui::SliderInt("Boid Count", &boidCount, 0, m_pApplication->GetMaximumBoidCount());
@@ -60,4 +67,12 @@ void UserInterface::DrawBoidsBehaviouralSliders() {
 	float wanderForce = BrainComponent::GetWanderForce();
 	ImGui::SliderFloat("Wander Force", &wanderForce, 0.0f, maximumForceMultiplier);
 	BrainComponent::SetWanderForce(wanderForce);
+}
+
+void UserInterface::DrawPhysicsControls() const {
+	// UI section header.
+	ImGui::Text("Physics");
+	bool collisionsOn = Entity::GetCollisionsState();
+	ImGui::Checkbox("Boid Collisions On", &collisionsOn);
+	Entity::SetCollisionsState(collisionsOn);
 }

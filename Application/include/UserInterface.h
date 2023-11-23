@@ -23,11 +23,15 @@ public:
 	/// <summary>
 	/// Draws all of the applications UI elements.
 	/// </summary>
-	void Draw();
+	void Draw() const;
 	/// <summary>
 	/// Draws the sliders that control the boids' movement forces.
 	/// </summary>
-	void DrawBoidsBehaviouralSliders();
+	void DrawBoidsBehaviouralSliders() const;
+	/// <summary>
+	/// Draws the UI elements that control the physical properties of the simulation.
+	/// </summary>
+	void DrawPhysicsControls() const;
 
 private:
 	/// <summary>

@@ -44,7 +44,11 @@ ColliderComponent::~ColliderComponent()
 
 void ColliderComponent::Update(float a_fDeltaTime)
 {
-	static int frames = 0;
+	if (!Entity::GetCollisionsState()) {
+		m_bIsColliding = false;
+		return;
+	}
+
 	m_fLastUpdate += a_fDeltaTime;
 	const float updateStep = 0.15f;
 
@@ -52,9 +56,8 @@ void ColliderComponent::Update(float a_fDeltaTime)
 	{
 		m_fLastUpdate = 0.0f;
 		RegisterCollisions();
+		UnregisterCollisions();
 	}
-
-	UnregisterCollisions();
 }
 
 void ColliderComponent::Draw(Framework* a_pRenderingFramework)

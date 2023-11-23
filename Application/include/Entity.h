@@ -54,10 +54,16 @@ public:
 	inline void AddComponent(COMPONENT_TYPE a_componentsType, Component* a_pComponent);
 
 	inline void SetTag(std::string a_newTag);
+	/// <summary>
+	/// Toggles collisions between entities on/off.
+	/// </summary>
+	/// <param name="a_collisionOn"> The new collision state between all entities. </param>
+	void static SetCollisionsState(bool a_collisionOn);
 
 	inline Component* GetComponentOfType(COMPONENT_TYPE a_componentType) const;
 	inline const unsigned int GetID() const;
 	inline const std::string GetTag() const;
+	inline static bool GetCollisionsState();
 
 private:
 	/// <summary>
@@ -76,6 +82,7 @@ private:
 	/// A collection of all the components that are currently attached to the entity.
 	/// </summary>
 	ComponentMap m_components;
+	static bool ms_bCollisionsOn;
 };
 
 void Entity::AddComponent(COMPONENT_TYPE a_componentsType, Component* a_pComponent)
@@ -108,6 +115,11 @@ const unsigned int Entity::GetID() const
 const std::string Entity::GetTag() const
 {
 	return m_tag;
+}
+
+bool Entity::GetCollisionsState()
+{
+	return ms_bCollisionsOn;
 }
 
 #endif // !ENTITY_H.

@@ -17,8 +17,9 @@ typedef std::pair<const unsigned int, Entity*> EntityPair;
 typedef std::pair<COMPONENT_TYPE, Component*> ComponentPair;
 typedef std::vector<Component*> ComponentList;
 
-// Static variables.
+// Static variable initializations.
 unsigned int Entity::ms_uiEntityCount = 0;
+bool Entity::ms_bCollisionsOn = true;
 
 // Increment the entity count with each new instance.
 Entity::Entity() : m_uiEntityID(ms_uiEntityCount++),
@@ -109,3 +110,6 @@ void Entity::Draw(Framework* a_pRenderingFramework)
 	}
 }
 
+void Entity::SetCollisionsState(bool a_bCollisionsOn) {
+	ms_bCollisionsOn = a_bCollisionsOn;
+}

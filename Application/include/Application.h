@@ -63,7 +63,7 @@ public:
 	/// </summary>
 	/// <param name="a_uiBoidCount"> The desired number of boids to simulate. </param>
 	void SetBoidCount(unsigned int a_uiBoidCount);
-
+	
 	inline unsigned int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
 
