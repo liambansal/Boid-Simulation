@@ -29,6 +29,10 @@ public:
 	/// Draws the UI elements that control the physical properties of the simulation.
 	/// </summary>
 	void DrawPhysicsControls() const;
+	/// <summary>
+	/// Draws the UI elements that control the application's pause/play states.
+	/// </summary>
+	void DrawTimeControls() const;
 
 private:
 	/// <summary>

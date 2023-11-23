@@ -22,12 +22,14 @@ void UserInterface::Draw() const {
 	const ImVec2 windowPosition = ImVec2(xPosition, yPosition);
 	ImGui::SetNextWindowPos(windowPosition, ImGuiCond_Always);
 
-	if (ImGui::Begin("Slider Menu")) {
+	if (ImGui::Begin("Application User Interface")) {
 		io.MouseDrawCursor = true;
 		DrawPhysicsControls();
 		// Add an empty line to separate the different UI sections.
 		ImGui::NewLine();
 		DrawBoidsBehaviouralSliders();
+		ImGui::NewLine();
+		DrawTimeControls();
 	}
 
 	ImGui::End();
@@ -36,6 +38,10 @@ void UserInterface::Draw() const {
 }
 
 void UserInterface::DrawBoidsBehaviouralSliders() const {
+	if (!m_pApplication) {
+		return;
+	}
+
 	// UI section header.
 	ImGui::Text("Boid Forces");
 
@@ -74,4 +80,16 @@ void UserInterface::DrawPhysicsControls() const {
 	bool collisionsOn = Entity::GetCollisionsState();
 	ImGui::Checkbox("Boid Collisions On", &collisionsOn);
 	Entity::SetCollisionsState(collisionsOn);
+}
+
+void UserInterface::DrawTimeControls() const {
+	if (!m_pApplication) {
+		return;
+	}
+
+	// UI section header.
+	ImGui::Text("Time");
+	bool applicationPaused = m_pApplication->GetPauseState();
+	ImGui::Checkbox("Paused", &applicationPaused);
+	m_pApplication->SetPauseState(applicationPaused);
 }

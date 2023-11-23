@@ -19,38 +19,41 @@
 #include "Utilities.h"
 
 Application::Application() : m_uiBoidCount(50),
-mc_uiMaximumBoidCount(500),
-m_fMarkerZOffset(10.0f),
-mc_fMimimumMarkerZOffset(0.5f),
-mc_fMaximumMarkerZOffset(50.0f),
-m_bFrameworkInitialised(false),
-m_bSpawnedObstacle(false),
-m_pFramework(Framework::GetInstance()),
-m_pScene(new Scene()),
-m_pUserInterface(new UserInterface(this)),
-m_pWorldCursor(new Entity()) {
-	if (m_pFramework) {
-		// Seed rand number generator.
-		srand(time(nullptr));
-		const char* name = "Boids Simulation";
-		m_bFrameworkInitialised = m_pFramework->Initialize(name,
-			m_pFramework->GetScreenWidth(),
-			m_pFramework->GetScreenHeight(),
-			"Resources/Shaders/model_loading.vs",
-			"Resources/Shaders/model_loading.fs");
-		TransformComponent* pTransform = new TransformComponent(m_pWorldCursor);
-		pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
-			m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
-		m_pWorldCursor->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
-		ModelComponent* pModel = new ModelComponent(m_pWorldCursor);
-		pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
-		const float scaleScalar = 0.01f;
-		pModel->SetScale(glm::vec3(scaleScalar));
-		m_pWorldCursor->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
-		m_pWorldCursor->SetTag("Marker");
-		m_pScene->AddEntity(m_pWorldCursor);
-		m_pScene->AddEntities(CreateBoid(), m_uiBoidCount);
+	mc_uiMaximumBoidCount(500),
+	m_fMarkerZOffset(10.0f),
+	mc_fMimimumMarkerZOffset(0.5f),
+	mc_fMaximumMarkerZOffset(50.0f),
+	m_bFrameworkInitialised(false),
+	m_bPaused(false),
+	m_bSpawnedObstacle(false),
+	m_pFramework(Framework::GetInstance()),
+	m_pScene(new Scene()),
+	m_pUserInterface(new UserInterface(this)),
+	m_pWorldCursor(new Entity()) {
+	if (!m_pFramework) {
+		return;
 	}
+
+	// Seed rand number generator.
+	srand(time(nullptr));
+	const char* name = "Boids Simulation";
+	m_bFrameworkInitialised = m_pFramework->Initialize(name,
+		m_pFramework->GetScreenWidth(),
+		m_pFramework->GetScreenHeight(),
+		"Resources/Shaders/model_loading.vs",
+		"Resources/Shaders/model_loading.fs");
+	TransformComponent* pTransform = new TransformComponent(m_pWorldCursor);
+	pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
+		m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);
+	m_pWorldCursor->AddComponent(COMPONENT_TYPE_TRANSFORM, static_cast<Component*>(pTransform));
+	ModelComponent* pModel = new ModelComponent(m_pWorldCursor);
+	pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
+	const float scaleScalar = 0.01f;
+	pModel->SetScale(glm::vec3(scaleScalar));
+	m_pWorldCursor->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
+	m_pWorldCursor->SetTag("Marker");
+	m_pScene->AddEntity(m_pWorldCursor);
+	m_pScene->AddEntities(CreateBoid(), m_uiBoidCount);
 }
 
 Application::~Application() {
@@ -81,7 +84,10 @@ void Application::Update() {
 
 	m_pFramework->Update();
 	ProcessInput();
-	m_pScene->Update(m_pFramework->GetDeltaTime());
+
+	if (!m_bPaused) {
+		m_pScene->Update(m_pFramework->GetDeltaTime());
+	}
 }
 
 void Application::ProcessInput() {
@@ -201,4 +207,8 @@ void Application::SetBoidCount(unsigned int a_uiBoidCount) {
 	} else if (m_uiBoidCount < curentBoidCount) {
 		m_pScene->DestroyEntitiesWithTag(boidTag, curentBoidCount - m_uiBoidCount);
 	}
+}
+
+void Application::SetPauseState(bool a_bPaused) {
+	m_bPaused = a_bPaused;
 }

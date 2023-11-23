@@ -62,9 +62,11 @@ public:
 	/// </summary>
 	/// <param name="a_uiBoidCount"> The desired number of boids to simulate. </param>
 	void SetBoidCount(unsigned int a_uiBoidCount);
+	void SetPauseState(bool a_bPaused);
 
 	inline unsigned int GetBoidCount() const;
 	inline unsigned int GetMaximumBoidCount() const;
+	inline bool GetPauseState() const;
 
 private:
 	/// <summary>
@@ -79,6 +81,7 @@ private:
 	const float mc_fMimimumMarkerZOffset;
 	const float mc_fMaximumMarkerZOffset;
 	bool m_bFrameworkInitialised;
+	bool m_bPaused;
 	/// <summary>
 	/// True if the user has spawned an obstacle for the boids to avoid collisions with.
 	/// </summary>
@@ -104,6 +107,10 @@ unsigned int Application::GetBoidCount() const {
 
 unsigned int Application::GetMaximumBoidCount() const {
 	return mc_uiMaximumBoidCount;
+}
+
+bool Application::GetPauseState() const {
+	return m_bPaused;
 }
 
 #endif // !APPLICATION_H.
