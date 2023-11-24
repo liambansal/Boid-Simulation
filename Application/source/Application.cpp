@@ -121,7 +121,7 @@ void Application::ProcessInput() {
 }
 
 void Application::Draw() {
-	if (!m_pScene || !m_pUserInterface) {
+	if (!m_pScene || !m_pUserInterface || !m_pFramework) {
 		return;
 	}
 
@@ -136,6 +136,8 @@ void Application::Draw() {
 	m_pScene->Draw(m_pFramework);
 	// Draw UI overlay.
 	m_pUserInterface->Draw();
+	// Draw the scene's bounds.
+	m_pFramework->Draw();
 	glfwSwapBuffers(m_pFramework->GetWindow());
 	glfwPollEvents();
 }

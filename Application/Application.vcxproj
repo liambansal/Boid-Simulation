@@ -191,42 +191,44 @@
     <ClInclude Include="include\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-	<None Include="Resources\Shaders\model_loading.fs">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Shaders\model_loading.vs">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
+    <None Include="Resources\Shaders\lineRenderer.fs" />
+    <None Include="Resources\Shaders\lineRenderer.vs" />
+    <None Include="Resources\Shaders\model_loading.fs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Shaders\model_loading.vs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
-	<None Include="Resources\Models\Low_poly_UFO\Low_poly_UFO.mtl">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\Low_poly_UFO.obj">
-	  <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-	  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\Map__7_Normal_Bump.tga">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\ufo_diffuse.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\ufo_diffuse2.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\ufo_diffuse2_glow.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\ufo_diffuse_glow.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\ufo_normal.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
-	<None Include="Resources\Models\Low_poly_UFO\ufo_spec.png">
-		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-	</None>
+    <None Include="Resources\Models\Low_poly_UFO\Low_poly_UFO.mtl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\Low_poly_UFO.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\Map__7_Normal_Bump.tga">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse2_glow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_diffuse_glow.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_normal.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\Models\Low_poly_UFO\ufo_spec.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

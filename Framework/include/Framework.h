@@ -43,6 +43,7 @@ public:
 	/// </summary>
 	/// <param name="a_pModel"> The 3D model to draw on-screen. </param>
 	void Draw(Model* a_pModel);
+	void Draw();
 	void Destory();
 
 	/// <summary>
@@ -133,9 +134,13 @@ private:
 	/// </summary>
 	Camera* m_pCamera;
 	/// <summary>
-	/// A general purpose shader that draws the program's models.
+	/// A shader for rendering textured 3D models.
 	/// </summary>
-	Shader* m_pShader;
+	Shader* m_pModelShader;
+	/// <summary>
+	/// A shader for rendering lines in a 3D space.
+	/// </summary>
+	Shader* m_pLineShader;
 };
 
 GLFWwindow* Framework::GetWindow() const {
@@ -151,7 +156,7 @@ const float Framework::GetDeltaTime() const {
 }
 
 const Shader* Framework::GetShader() const {
-	return m_pShader;
+	return m_pModelShader;
 }
 
 const unsigned int Framework::GetScreenWidth() const {

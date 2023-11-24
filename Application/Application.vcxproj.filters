@@ -106,10 +106,16 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-	<None Include="Resources\Shaders\model_loading.fs">
+    <None Include="Resources\Shaders\model_loading.fs">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\model_loading.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\lineRenderer.vs">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="Resources\Shaders\lineRenderer.fs">
       <Filter>Resource Files\Shaders</Filter>
     </None>
   </ItemGroup>

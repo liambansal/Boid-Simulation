@@ -21,9 +21,9 @@ typedef std::map<unsigned int, Entity*> EntityMap;
 typedef std::pair<unsigned int, Entity*> EntityPair;
 
 Scene::Scene() : m_uiEntityCount(0),
-m_sceneEntities(),
-m_octTree(4,
-	Boundary<glm::vec3>(new glm::vec3(0.0f),
+	m_sceneEntities(),
+	m_octTree(4,
+		Boundary<glm::vec3>(new glm::vec3(0.0f),
 		glm::vec3(10.0f))) {}
 
 Scene::~Scene() {

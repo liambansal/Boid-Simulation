@@ -21,6 +21,10 @@ public:
 	~Boundary();
 
 	/// <summary>
+	/// Draws a line along each edge of the boundary.
+	/// </summary>
+	void Draw() const;
+	/// <summary>
 	/// Returns true if the specified position is located within the boundary.
 	/// </summary>
 	/// <param name="a_position"> A position. </param>
@@ -66,6 +70,9 @@ Boundary<TVector>::Boundary(TVector* a_pNewPosition,
 
 template <typename TVector>
 Boundary<TVector>::~Boundary() {}
+
+template <typename TVector>
+void Boundary<TVector>::Draw() const {}
 
 template <typename TVector>
 bool Boundary<TVector>::Contains(const TVector& a_position) const {

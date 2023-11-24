@@ -19,16 +19,31 @@
 
 Framework* Framework::ms_pInstance = nullptr;
 
+unsigned int linesVBO;
+unsigned int linesVAO;
+const float vertices[] = {
+	10.0f, -10.0f, 10.0f,
+	-10.0f, -10.0f, 10.0f,
+	-10.0f, -10.0f, -10.0f,
+	10.0f, -10.0f, -10.0f,
+	// Extra starting coordinate to join the last two vertices together.
+	10.0f, -10.0f, 10.0f
+};
+const unsigned int coordinatesPerVertex = 3;
+// Specifies the number of lines to draw for the scene's bounds.
+const GLsizei drawCount = sizeof(vertices) / sizeof(float) / coordinatesPerVertex;
+
 Framework::Framework() : mc_uiScreenWidth(1280),
-mc_uiScreenHeight(800),
-m_fLastX(mc_uiScreenWidth * 0.5f),
-m_fLastY(mc_uiScreenHeight * 0.5f),
-m_fDeltaTime(0.0f),
-m_fLastFrame(0.0f),
-m_bFirstMouse(true),
-m_pWindow(nullptr),
-m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, -20.0f))),
-m_pShader(nullptr) {}
+	mc_uiScreenHeight(800),
+	m_fLastX(mc_uiScreenWidth * 0.5f),
+	m_fLastY(mc_uiScreenHeight * 0.5f),
+	m_fDeltaTime(0.0f),
+	m_fLastFrame(0.0f),
+	m_bFirstMouse(true),
+	m_pWindow(nullptr),
+	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, -20.0f))),
+	m_pModelShader(nullptr),
+	m_pLineShader(nullptr) {}
 
 bool Framework::Initialize(const char* a_windowName,
 	const int a_width,
@@ -91,7 +106,8 @@ bool Framework::Initialize(const char* a_windowName,
 	ImGui_ImplOpenGL3_Init(glsl_version);
 #pragma endregion
 
-	m_pShader = new Shader(a_pVertexShader, a_pFragmentShader);
+	m_pModelShader = new Shader(a_pVertexShader, a_pFragmentShader);
+	m_pLineShader = new Shader("Resources/Shaders/lineRenderer.vs", "Resources/Shaders/lineRenderer.fs");
 
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);
@@ -102,6 +118,17 @@ bool Framework::Initialize(const char* a_windowName,
 	const int revision = glfwGetWindowAttrib(m_pWindow,
 		GLFW_CONTEXT_REVISION);
 	std::cout << "OpenGl Version Supported: " << major << "." << minor << "." << revision << std::endl;
+
+	// Create vertex buffer & array objects for drawing the scene's bounds.
+	glGenVertexArrays(1, &linesVAO);
+	glGenBuffers(1, &linesVBO);
+	glBindVertexArray(linesVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 	return true;
 }
 
@@ -115,20 +142,30 @@ void Framework::Update() {
 
 void Framework::Draw(Model* a_pModel) {
 	// Don't forget to enable shader before setting uniforms.
-	m_pShader->use();
+	m_pModelShader->use();
 	// view/projection transforms.
-	m_pShader->setMat4("projection",
-		GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
-	m_pShader->setMat4("view",
-		GetCamera()->GetViewMatrix());
-	a_pModel->Draw(*m_pShader);
+	m_pModelShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
+	m_pModelShader->setMat4("view", GetCamera()->GetViewMatrix());
+	a_pModel->Draw(*m_pModelShader);
+}
+
+void Framework::Draw() {
+	m_pLineShader->use();
+	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
+	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());
+	glBindVertexArray(linesVAO);
+	glDrawArrays(GL_LINE_STRIP, 0, drawCount);
 }
 
 void Framework::Destory() {
 	delete m_pCamera;
 	m_pCamera = nullptr;
-	delete m_pShader;
-	m_pShader = nullptr;
+	delete m_pModelShader;
+	m_pModelShader = nullptr;
+	delete m_pLineShader;
+	m_pLineShader = nullptr;
+	glDeleteBuffers(1, &linesVBO);
+	glDeleteVertexArrays(1, &linesVAO);
 	// Clean up imgui
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
