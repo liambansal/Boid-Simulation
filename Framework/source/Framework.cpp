@@ -35,11 +35,11 @@ const GLsizei drawCount = sizeof(vertices) / sizeof(float) / coordinatesPerVerte
 
 Framework::Framework() : mc_uiScreenWidth(1280),
 	mc_uiScreenHeight(800),
-	m_fLastX(mc_uiScreenWidth * 0.5f),
-	m_fLastY(mc_uiScreenHeight * 0.5f),
+	m_fLastCursorXPosition(0),
+	m_fLastCursorYPosition(0),
 	m_fDeltaTime(0.0f),
-	m_fLastFrame(0.0f),
-	m_bFirstMouse(true),
+	m_fTimeOfLastFrame(0.0f),
+	m_bLastCursorCoordinatesSet(false),
 	m_pWindow(nullptr),
 	m_pCamera(new Camera(glm::vec3(0.0f, 0.0f, -20.0f))),
 	m_pModelShader(nullptr),
@@ -119,24 +119,16 @@ bool Framework::Initialize(const char* a_windowName,
 		GLFW_CONTEXT_REVISION);
 	std::cout << "OpenGl Version Supported: " << major << "." << minor << "." << revision << std::endl;
 
-	// Create vertex buffer & array objects for drawing the scene's bounds.
 	glGenVertexArrays(1, &linesVAO);
 	glGenBuffers(1, &linesVBO);
-	glBindVertexArray(linesVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 	return true;
 }
 
 void Framework::Update() {
 	// Per-frame time logic.
-	float currentFrame = glfwGetTime();
-	m_fDeltaTime = currentFrame - m_fLastFrame;
-	m_fLastFrame = currentFrame;
+	float currentTime = glfwGetTime();
+	m_fDeltaTime = currentTime - m_fTimeOfLastFrame;
+	m_fTimeOfLastFrame = currentTime;
 	ProcessInput(m_pWindow);
 }
 
@@ -154,7 +146,13 @@ void Framework::Draw() {
 	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
 	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());
 	glBindVertexArray(linesVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glDrawArrays(GL_LINE_STRIP, 0, drawCount);
+	glBindVertexArray(0);
 }
 
 void Framework::Destory() {
@@ -176,80 +174,81 @@ void Framework::Destory() {
 	glfwTerminate();
 }
 
-void Framework::ProcessInput(GLFWwindow* window) {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
+void Framework::ProcessInput(GLFWwindow* a_pWindow) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		glfwSetWindowShouldClose(a_pWindow, true);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_W) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(FORWARD, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_S) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(BACKWARD, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_A) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(LEFT, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_D) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(RIGHT, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_E) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(UP, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_Q) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(DOWN, m_fDeltaTime);
 	}
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+	if (glfwGetKey(a_pWindow, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		m_pCamera->ProcessKeyboard(MOVE_FASTER, m_fDeltaTime);
 	}
 }
 
-void Framework::FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
-	// make sure the view port matches the new window dimensions; note that width and 
+void Framework::FramebufferSizeCallback(GLFWwindow* a_pWindow, int a_windowWidth, int a_windowHeight) {
+	// Make sure the view port matches the new window dimensions. The width and 
 	// height will be significantly larger than specified on retina displays.
-	glViewport(0, 0, width, height);
+	glViewport(0, 0, a_windowWidth, a_windowHeight);
 }
 
-void Framework::MouseCallback(GLFWwindow* window, double xpos, double ypos) {
+void Framework::MouseCallback(GLFWwindow* a_pWindow, double a_cursorsXPosition, double a_cursorsYPosition) {
 	Framework* pFramework = Framework::GetInstance();
 
 	if (!pFramework) {
-		// Return early.
 		return;
 	}
 
-	if (pFramework->m_bFirstMouse) {
-		pFramework->m_fLastX = xpos;
-		pFramework->m_fLastY = ypos;
-		pFramework->m_bFirstMouse = false;
+	if (!pFramework->m_bLastCursorCoordinatesSet) {
+		// Any change in the cursor's position shouldn't be registered if the previous coordinates haven't been set.
+		pFramework->m_fLastCursorXPosition = a_cursorsXPosition;
+		pFramework->m_fLastCursorYPosition = a_cursorsYPosition;
+		pFramework->m_bLastCursorCoordinatesSet = true;
 	}
 
-	float xoffset = xpos - pFramework->m_fLastX;
-	float yoffset = pFramework->m_fLastY - ypos; // reversed since y-coordinates go from bottom to top
-	pFramework->m_fLastX = xpos;
-	pFramework->m_fLastY = ypos;
+	float chagneInXPosition = a_cursorsXPosition - pFramework->m_fLastCursorXPosition;
+	// Screen-space coordinates start from the top left corner of the window. 
+	// Any change in position is added onto the camera's rotation. So positive numbers move up and negative numbers 
+	// moves down.
+	float changeInYPosition = pFramework->m_fLastCursorYPosition - a_cursorsYPosition;
+	pFramework->m_fLastCursorXPosition = a_cursorsXPosition;
+	pFramework->m_fLastCursorYPosition = a_cursorsYPosition;
 
-	// Check left mouse button is being pressed.
-	if (pFramework->m_pCamera && glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT)) {
-		pFramework->m_pCamera->ProcessMouseMovement(xoffset, yoffset);
+	if (pFramework->m_pCamera && glfwGetMouseButton(a_pWindow, GLFW_MOUSE_BUTTON_RIGHT)) {
+		pFramework->m_pCamera->ProcessMouseMovement(chagneInXPosition, changeInYPosition);
 	}
 }
 
-void Framework::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+void Framework::ScrollCallback(GLFWwindow* a_pWindow, double a_scrollXOffset, double a_scrollYOffset) {
 	Framework* pFramework = Framework::GetInstance();
 
 	if (!pFramework || !pFramework->m_pCamera) {
-		// Return early.
 		return;
 	}
 
-	pFramework->m_pCamera->ProcessMouseScroll(yoffset);
+	pFramework->m_pCamera->ProcessMouseScroll(a_scrollYOffset);
 }
 
 Framework* Framework::GetInstance() {

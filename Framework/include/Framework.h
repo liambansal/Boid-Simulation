@@ -34,7 +34,7 @@ public:
 		const char* a_pVertexShader,
 		const char* a_pFragmentShader);
 	/// <summary>
-	/// Updates the program's logic.
+	/// Updates the program's current state.
 	/// Always and only call once per frame.
 	/// </summary>
 	void Update();
@@ -107,20 +107,20 @@ private:
 	/// <summary>
 	/// The cursor's x-coordinate on the previous frame.
 	/// </summary>
-	float m_fLastX;
+	float m_fLastCursorXPosition;
 	/// <summary>
 	/// The cursor's y-coordinate on the previous frame.
 	/// </summary>
-	float m_fLastY;
+	float m_fLastCursorYPosition;
 	float m_fDeltaTime;
 	/// <summary>
 	/// The previous frame's timestamp.
 	/// </summary>
-	float m_fLastFrame;
+	float m_fTimeOfLastFrame;
 	/// <summary>
-	/// True during the program's first frame of execution while the previous-frame cursor's coordinates haven't been set.
+	/// True after one update loop has been executed and the previous-frame's cursor coordinates have been set.
 	/// </summary>
-	bool m_bFirstMouse;
+	bool m_bLastCursorCoordinatesSet;
 	/// <summary>
 	/// A pointer to the class' singleton instance.
 	/// </summary>
