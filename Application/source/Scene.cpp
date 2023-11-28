@@ -7,7 +7,6 @@
 #include "Scene.h"
 #include "BrainComponent.h"
 #include "Boundary.h"
-#include "glm/glm.hpp"
 #include "glm/ext.hpp"
 #include "LearnOpenGL/camera.h"
 #include "LearnOpenGL/shader.h"
@@ -45,13 +44,13 @@ void Scene::Update(float a_fDeltaTime) {
 	}
 }
 
-void Scene::Draw(Framework* a_pRenderingFramework) const {
-	if (m_sceneEntities.empty()) {
-		return;
-	}
+void Scene::Draw(Framework* a_pRenderingFramework) {
+	m_octTree.Draw();
 
-	for (EntityPair entity : m_sceneEntities) {
-		entity.second->Draw(a_pRenderingFramework);
+	if (!m_sceneEntities.empty()) {
+		for (EntityPair entity : m_sceneEntities) {
+			entity.second->Draw(a_pRenderingFramework);
+		}
 	}
 }
 

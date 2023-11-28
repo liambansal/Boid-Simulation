@@ -25,6 +25,7 @@ Application::Application() : m_uiBoidCount(50),
 	mc_fMaximumMarkerZOffset(50.0f),
 	m_bFrameworkInitialised(false),
 	m_bPaused(false),
+	m_bUpdateOnce(false),
 	m_bSpawnedObstacle(false),
 	m_pFramework(Framework::GetInstance()),
 	m_pScene(new Scene()),
@@ -136,8 +137,6 @@ void Application::Draw() {
 	m_pScene->Draw(m_pFramework);
 	// Draw UI overlay.
 	m_pUserInterface->Draw();
-	// Draw the scene's bounds.
-	m_pFramework->Draw();
 	glfwSwapBuffers(m_pFramework->GetWindow());
 	glfwPollEvents();
 }

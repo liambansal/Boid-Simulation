@@ -6,6 +6,24 @@
 #ifndef BOUNDARY_H
 #define BOUNDARY_H
 
+// Header includes.
+#include "glad/glad.h"
+
+// Forward declarations.
+class Framework;
+
+const float vertices[] = {
+	10.0f, -10.0f, 10.0f,
+	-10.0f, -10.0f, 10.0f,
+	-10.0f, -10.0f, -10.0f,
+	10.0f, -10.0f, -10.0f,
+	// Extra starting coordinate to join the last two vertices together.
+	10.0f, -10.0f, 10.0f
+};
+const unsigned int coordinatesPerVertex = 3;
+// Specifies the number of lines to draw for the scene's bounds.
+const GLsizei drawCount = sizeof(vertices) / sizeof(float) / coordinatesPerVertex;
+
 /// <summary>
 /// Represents a volume of space with a central position.
 /// </summary>
@@ -23,7 +41,7 @@ public:
 	/// <summary>
 	/// Draws a line along each edge of the boundary.
 	/// </summary>
-	void Draw() const;
+	void Draw();
 	/// <summary>
 	/// Returns true if the specified position is located within the boundary.
 	/// </summary>
@@ -39,9 +57,11 @@ public:
 
 	inline void SetPosition(TVector* a_pNewPosition);
 	inline void SetDimensions(TVector a_newDimensions);
+	void SetRenderingFramework(Framework* a_pRenderingFramework);
 
 	inline const TVector* GetPosition() const;
 	inline const TVector GetDimensions() const;
+	const Framework* GetRenderingFramework() const;
 
 private:
 	/// <summary>
@@ -52,6 +72,7 @@ private:
 	/// The width, height, and depth of the boundary as measured outward from its central position.
 	/// </summary>
 	TVector m_dimensions;
+	Framework* m_pRenderingFramework;
 };
 
 template <typename TVector>
@@ -72,7 +93,17 @@ template <typename TVector>
 Boundary<TVector>::~Boundary() {}
 
 template <typename TVector>
-void Boundary<TVector>::Draw() const {}
+void Boundary<TVector>::Draw() {
+	if (!m_pRenderingFramework) {
+		m_pRenderingFramework = Framework::GetInstance();
+
+		if (!m_pRenderingFramework) {
+			return;
+		}
+	}
+
+	m_pRenderingFramework->Draw(vertices, drawCount);
+}
 
 template <typename TVector>
 bool Boundary<TVector>::Contains(const TVector& a_position) const {
@@ -114,6 +145,11 @@ void Boundary<TVector>::SetDimensions(TVector a_newDimensions) {
 }
 
 template <typename TVector>
+void Boundary<TVector>::SetRenderingFramework(Framework* a_pRenderingFramework) {
+	m_pRenderingFramework = a_pRenderingFramework;
+}
+
+template <typename TVector>
 const TVector* Boundary<TVector>::GetPosition() const {
 	return m_pPosition;
 }
@@ -121,6 +157,11 @@ const TVector* Boundary<TVector>::GetPosition() const {
 template <typename TVector>
 const TVector Boundary<TVector>::GetDimensions() const {
 	return m_dimensions;
+}
+
+template <typename TVector>
+const Framework* Boundary<TVector>::GetRenderingFramework() const {
+	return m_pRenderingFramework;
 }
 
 #endif // !BOUNDARY_H

@@ -40,12 +40,14 @@ public:
 		Boundary<TVector> a_boundary);
 	~OctTree() {}
 
+	void Draw();
+
 	/// <summary>
 	/// Registers an object with the oct-tree.
 	/// </summary>
 	/// <param name="a_pObject"> The object to register. </param>
 	/// <param name="a_rPosition"> The object's position. </param>
-	/// <returns>  </returns>
+	/// <returns> True the object was successfully added to the oct-tree. </returns>
 	bool InsertObject(TObject* a_pObject,
 		const Boundary<TVector>& a_rPosition);
 	/// <summary>
@@ -86,6 +88,11 @@ OctTree<TObject, TVector>::OctTree(unsigned int a_capacity,
 	m_boundary(a_boundary),
 	m_objects(),
 	m_pSubTrees() {}
+
+template <typename TObject, typename TVector>
+void OctTree<TObject, TVector>::Draw() {
+	m_boundary.Draw();
+}
 
 template <typename TObject, typename TVector>
 bool OctTree<TObject, TVector>::InsertObject(TObject* a_pObject,

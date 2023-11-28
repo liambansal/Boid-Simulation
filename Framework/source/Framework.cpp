@@ -21,17 +21,6 @@ Framework* Framework::ms_pInstance = nullptr;
 
 unsigned int linesVBO;
 unsigned int linesVAO;
-const float vertices[] = {
-	10.0f, -10.0f, 10.0f,
-	-10.0f, -10.0f, 10.0f,
-	-10.0f, -10.0f, -10.0f,
-	10.0f, -10.0f, -10.0f,
-	// Extra starting coordinate to join the last two vertices together.
-	10.0f, -10.0f, 10.0f
-};
-const unsigned int coordinatesPerVertex = 3;
-// Specifies the number of lines to draw for the scene's bounds.
-const GLsizei drawCount = sizeof(vertices) / sizeof(float) / coordinatesPerVertex;
 
 Framework::Framework() : mc_uiScreenWidth(1280),
 	mc_uiScreenHeight(800),
@@ -141,17 +130,17 @@ void Framework::Draw(Model* a_pModel) {
 	a_pModel->Draw(*m_pModelShader);
 }
 
-void Framework::Draw() {
+void Framework::Draw(const float a_vertices[], unsigned int a_uiDrawCount) {
 	m_pLineShader->use();
 	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
 	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());
 	glBindVertexArray(linesVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(a_vertices), a_vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDrawArrays(GL_LINE_STRIP, 0, drawCount);
+	glDrawArrays(GL_LINE_STRIP, 0, a_uiDrawCount);
 	glBindVertexArray(0);
 }
 

@@ -35,7 +35,7 @@ public:
 	/// Draws all of the scene's elements on-screen.
 	/// </summary>
 	/// <param name="a_pRenderingFramework"> The program that handles drawing the scene's elements. </param>
-	void Draw(Framework* a_pRenderingFramework) const;
+	void Draw(Framework* a_pRenderingFramework);
 	/// <summary>
 	/// Registers a single entity with the scene.
 	/// </summary>

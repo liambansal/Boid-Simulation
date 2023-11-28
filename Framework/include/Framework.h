@@ -43,7 +43,7 @@ public:
 	/// </summary>
 	/// <param name="a_pModel"> The 3D model to draw on-screen. </param>
 	void Draw(Model* a_pModel);
-	void Draw();
+	void Draw(const float a_vertices[], unsigned int a_uiDrawCount);
 	void Destory();
 
 	/// <summary>
