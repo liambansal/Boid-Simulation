@@ -137,13 +137,16 @@ void Framework::DrawLine(const float* ac_fVertexCoordinates, const unsigned int 
 
 	glBindVertexArray(linesVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
+
 	void* vertexCoordinates = new void*[ac_uiCoordinatesCount];
+	const unsigned int sizeOfVertexData = ac_uiCoordinatesCount * sizeof(float);
 	// Retrieves the collection of vertex coordinates.
-	std::memcpy(vertexCoordinates, ac_fVertexCoordinates, ac_uiCoordinatesCount * sizeof(float));
+	std::memcpy(vertexCoordinates, ac_fVertexCoordinates, sizeOfVertexData);
 	// Fills the vertex buffer object with the line's vertex data.
-	glBufferData(GL_ARRAY_BUFFER, ac_uiCoordinatesCount * sizeof(float), vertexCoordinates, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeOfVertexData, vertexCoordinates, GL_STATIC_DRAW);
 	const unsigned int coordinatesPerVertex = 3;
 	glVertexAttribPointer(0, coordinatesPerVertex, GL_FLOAT, GL_FALSE, coordinatesPerVertex * sizeof(float), (void*)0);
+
 	glEnableVertexAttribArray(0);
 	glDrawArrays(GL_LINE_STRIP, 0, a_uiLineCount);
 	// Unbinds the VBO.

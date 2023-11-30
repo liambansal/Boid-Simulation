@@ -9,19 +9,7 @@
 // Header includes.
 #include "Framework.h";
 #include "glad/glad.h"
-
-const float boundaryVertexCoordinates[] = {
-	10.0f, -10.0f, 10.0f,
-	-10.0f, -10.0f, 10.0f,
-	-10.0f, -10.0f, -10.0f,
-	10.0f, -10.0f, -10.0f,
-	// Extra starting coordinate to join the last two vertices together.
-	10.0f, -10.0f, 10.0f
-};
-const unsigned int coordinatesPerVertex = 3;
-// Specifies the number of lines to draw for the scene's bounds.
-const GLsizei lineDrawCount = sizeof(boundaryVertexCoordinates) / sizeof(float) / coordinatesPerVertex;
-const unsigned int coordinatesCount = sizeof(boundaryVertexCoordinates) / sizeof(float);
+#include "glm/glm.hpp"
 
 /// <summary>
 /// Represents a volume of space with a central position.
@@ -72,26 +60,77 @@ private:
 	/// The width, height, and depth of the boundary as measured outward from its central position.
 	/// </summary>
 	TVector m_dimensions;
+
+	// Each boundary is a cube which means there's a maximum of 24 coordinates per boundary (3 per vertex).
+	/// <summary>
+	/// A collection of coordinates that make up each vertex of the boundary.
+	/// </summary>
+	float m_fVertexCoordinates[24];
+	unsigned int m_uiCoordinatesPerVertex;
+	unsigned int m_uiCoordinatesCount;
+	/// <summary>
+	/// Specifies the number of lines to draw for the scene's bounds.
+	/// </summary>
+	GLsizei m_iLineDrawCount;
 	Framework* m_pRenderingFramework;
 };
 
 template <typename TVector>
 Boundary<TVector>::Boundary() : m_pPosition(new TVector(1.0f)),
-m_dimensions(1.0f) {
+	m_dimensions(1.0f),
+	m_uiCoordinatesPerVertex(3),
+	m_uiCoordinatesCount(0),
+	m_iLineDrawCount(0),
+	m_pRenderingFramework(nullptr) {
+	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
 	SetRenderingFramework();
 }
 
 template <typename TVector>
 Boundary<TVector>::Boundary(TVector a_newPosition,
 	TVector a_newDimensions) : m_pPosition(new TVector(a_newPosition)),
-	m_dimensions(a_newDimensions) {
+	m_dimensions(a_newDimensions),
+	m_uiCoordinatesPerVertex(3),
+	m_uiCoordinatesCount(0),
+	m_iLineDrawCount(0),
+	m_pRenderingFramework(nullptr) {
+	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
 	SetRenderingFramework();
 }
 
 template <typename TVector>
 Boundary<TVector>::Boundary(TVector* a_pPositionToCopy,
 	TVector a_newDimensions) : m_pPosition(a_pPositionToCopy),
-	m_dimensions(a_newDimensions) {
+	m_dimensions(a_newDimensions),
+	m_uiCoordinatesPerVertex(3),
+	m_uiCoordinatesCount(0),
+	m_iLineDrawCount(0),
+	m_pRenderingFramework(nullptr) {
+	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
+
+	if (a_pPositionToCopy) {
+		const float half = 0.5f;
+		unsigned int j = 0;
+		// Front left vertex.
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->x - half * a_newDimensions.x;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->z + half * a_newDimensions.z;
+		// Back left vertex.
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->x - half * a_newDimensions.x;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->z - half * a_newDimensions.z;
+		// Back right vertex.
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->x + half * a_newDimensions.x;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->z - half * a_newDimensions.z;
+		// Front right vertex.
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->x + half * a_newDimensions.x;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
+		m_fVertexCoordinates[j++] = a_pPositionToCopy->z + half * a_newDimensions.z;
+		m_iLineDrawCount = sizeof(m_fVertexCoordinates) / sizeof(float) / m_uiCoordinatesPerVertex;
+		m_uiCoordinatesCount = sizeof(m_fVertexCoordinates) / sizeof(float);
+	}
+
 	SetRenderingFramework();
 }
 
@@ -100,11 +139,11 @@ Boundary<TVector>::~Boundary() {}
 
 template <typename TVector>
 void Boundary<TVector>::Draw() {
-	if (!m_pRenderingFramework) {
+	if (!m_pRenderingFramework || !m_fVertexCoordinates || m_uiCoordinatesCount == 0 || m_iLineDrawCount == 0) {
 		return;
 	}
 
-	m_pRenderingFramework->DrawLine(boundaryVertexCoordinates, coordinatesCount, lineDrawCount);
+	m_pRenderingFramework->DrawLine(m_fVertexCoordinates, m_uiCoordinatesCount, m_iLineDrawCount);
 }
 
 template <typename TVector>
