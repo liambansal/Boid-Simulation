@@ -42,8 +42,13 @@ public:
 	/// Uses the program's shader to draw a specified model on-screen.
 	/// </summary>
 	/// <param name="a_pModel"> The 3D model to draw on-screen. </param>
-	void Draw(Model* a_pModel);
-	void Draw(const float a_vertices[], unsigned int a_uiDrawCount);
+	void DrawModel(Model* a_pModel);
+	/// <summary>
+	/// Draws a line within a 3D space.
+	/// </summary>
+	/// <param name="ac_fVertexCoordinates"> A collection of coordinates that make up each vertex in the line(s). </param>
+	/// <param name="a_uiLineCount"> The number of lines to draw. </param>
+	void DrawLine(const float ac_fVertexCoordinates[], unsigned int a_uiLineCount);
 	void Destory();
 
 	/// <summary>

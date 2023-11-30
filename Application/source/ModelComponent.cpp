@@ -44,7 +44,7 @@ void ModelComponent::Draw(Framework* a_pRenderingFramework) {
 	m_scaleMatrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR] = pTransform->GetMatrix()[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
 	a_pRenderingFramework->GetShader()->setMat4("model", m_scaleMatrix);
 	// Render the loaded model.
-	a_pRenderingFramework->Draw(m_pModel);
+	a_pRenderingFramework->DrawModel(m_pModel);
 }
 
 void ModelComponent::LoadModel(const char* a_pFilepath) {

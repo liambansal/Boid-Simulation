@@ -7,12 +7,10 @@
 #define BOUNDARY_H
 
 // Header includes.
+#include "Framework.h";
 #include "glad/glad.h"
 
-// Forward declarations.
-class Framework;
-
-const float vertices[] = {
+const float boundaryVertexCoordinates[] = {
 	10.0f, -10.0f, 10.0f,
 	-10.0f, -10.0f, 10.0f,
 	-10.0f, -10.0f, -10.0f,
@@ -22,19 +20,20 @@ const float vertices[] = {
 };
 const unsigned int coordinatesPerVertex = 3;
 // Specifies the number of lines to draw for the scene's bounds.
-const GLsizei drawCount = sizeof(vertices) / sizeof(float) / coordinatesPerVertex;
+const GLsizei lineDrawCount = sizeof(boundaryVertexCoordinates) / sizeof(float) / coordinatesPerVertex;
 
 /// <summary>
 /// Represents a volume of space with a central position.
 /// </summary>
-/// <typeparam name="TVector"> The type of vector that's used for storing the boundary's position and dimensions. </typeparam>
+/// <typeparam name="TVector"> The type of vector that's used for storing the boundary's position and dimensions.
+/// Must be a complete type. </typeparam>
 template <typename TVector>
 class Boundary {
 public:
 	Boundary();
 	Boundary(TVector a_newPosition,
 		TVector a_newDimensions);
-	Boundary(TVector* a_pNewPosition,
+	Boundary(TVector* a_pPositionToCopy,
 		TVector a_newDimensions);
 	~Boundary();
 
@@ -57,7 +56,7 @@ public:
 
 	inline void SetPosition(TVector* a_pNewPosition);
 	inline void SetDimensions(TVector a_newDimensions);
-	void SetRenderingFramework(Framework* a_pRenderingFramework);
+	void SetRenderingFramework();
 
 	inline const TVector* GetPosition() const;
 	inline const TVector GetDimensions() const;
@@ -77,17 +76,23 @@ private:
 
 template <typename TVector>
 Boundary<TVector>::Boundary() : m_pPosition(new TVector(1.0f)),
-m_dimensions(1.0f) {}
+m_dimensions(1.0f) {
+	SetRenderingFramework();
+}
 
 template <typename TVector>
 Boundary<TVector>::Boundary(TVector a_newPosition,
 	TVector a_newDimensions) : m_pPosition(new TVector(a_newPosition)),
-	m_dimensions(a_newDimensions) {}
+	m_dimensions(a_newDimensions) {
+	SetRenderingFramework();
+}
 
 template <typename TVector>
-Boundary<TVector>::Boundary(TVector* a_pNewPosition,
-	TVector a_newDimensions) : m_pPosition(a_pNewPosition),
-	m_dimensions(a_newDimensions) {}
+Boundary<TVector>::Boundary(TVector* a_pPositionToCopy,
+	TVector a_newDimensions) : m_pPosition(a_pPositionToCopy),
+	m_dimensions(a_newDimensions) {
+	SetRenderingFramework();
+}
 
 template <typename TVector>
 Boundary<TVector>::~Boundary() {}
@@ -95,14 +100,10 @@ Boundary<TVector>::~Boundary() {}
 template <typename TVector>
 void Boundary<TVector>::Draw() {
 	if (!m_pRenderingFramework) {
-		m_pRenderingFramework = Framework::GetInstance();
-
-		if (!m_pRenderingFramework) {
-			return;
-		}
+		return;
 	}
 
-	m_pRenderingFramework->Draw(vertices, drawCount);
+	m_pRenderingFramework->DrawLine(boundaryVertexCoordinates, lineDrawCount);
 }
 
 template <typename TVector>
@@ -145,8 +146,8 @@ void Boundary<TVector>::SetDimensions(TVector a_newDimensions) {
 }
 
 template <typename TVector>
-void Boundary<TVector>::SetRenderingFramework(Framework* a_pRenderingFramework) {
-	m_pRenderingFramework = a_pRenderingFramework;
+void Boundary<TVector>::SetRenderingFramework() {
+	m_pRenderingFramework = Framework::GetInstance();
 }
 
 template <typename TVector>

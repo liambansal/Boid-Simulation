@@ -121,7 +121,7 @@ void Framework::Update() {
 	ProcessInput(m_pWindow);
 }
 
-void Framework::Draw(Model* a_pModel) {
+void Framework::DrawModel(Model* a_pModel) {
 	// Don't forget to enable shader before setting uniforms.
 	m_pModelShader->use();
 	// view/projection transforms.
@@ -130,7 +130,7 @@ void Framework::Draw(Model* a_pModel) {
 	a_pModel->Draw(*m_pModelShader);
 }
 
-void Framework::Draw(const float a_vertices[], unsigned int a_uiDrawCount) {
+void Framework::DrawLine(const float ac_fVertexCoordinates[], unsigned int a_uiLineCount) {
 	m_pLineShader->use();
 	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
 	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());

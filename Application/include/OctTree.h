@@ -15,8 +15,8 @@
 /// Subdivides a volume of space into several smaller areas for updating/tracking objects within that space in a 
 /// performant manner.
 /// </summary>
-/// <typeparam name="TObject"> The type of object to keep track of. </typeparam>
-/// <typeparam name="TVector"> The type of vector that stores each object's position. </typeparam>
+/// <typeparam name="TObject"> The type of object to keep track of. Can be an incomplete type. </typeparam>
+/// <typeparam name="TVector"> The type of vector that stores each object's position. Must be a complete type. </typeparam>
 template <typename TObject, typename TVector>
 class OctTree {
 public:
