@@ -47,8 +47,9 @@ public:
 	/// Draws a line within a 3D space.
 	/// </summary>
 	/// <param name="ac_fVertexCoordinates"> A collection of coordinates that make up each vertex in the line(s). </param>
+	/// <param name="ac_uiCoordinatesCount"> The total number of coordinates used for drawing the line(s). </param>
 	/// <param name="a_uiLineCount"> The number of lines to draw. </param>
-	void DrawLine(const float ac_fVertexCoordinates[], unsigned int a_uiLineCount);
+	void DrawLine(const float* ac_fVertexCoordinates, const unsigned int ac_uiCoordinatesCount, unsigned int a_uiLineCount);
 	void Destory();
 
 	/// <summary>

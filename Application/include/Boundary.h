@@ -21,6 +21,7 @@ const float boundaryVertexCoordinates[] = {
 const unsigned int coordinatesPerVertex = 3;
 // Specifies the number of lines to draw for the scene's bounds.
 const GLsizei lineDrawCount = sizeof(boundaryVertexCoordinates) / sizeof(float) / coordinatesPerVertex;
+const unsigned int coordinatesCount = sizeof(boundaryVertexCoordinates) / sizeof(float);
 
 /// <summary>
 /// Represents a volume of space with a central position.
@@ -103,7 +104,7 @@ void Boundary<TVector>::Draw() {
 		return;
 	}
 
-	m_pRenderingFramework->DrawLine(boundaryVertexCoordinates, lineDrawCount);
+	m_pRenderingFramework->DrawLine(boundaryVertexCoordinates, coordinatesCount, lineDrawCount);
 }
 
 template <typename TVector>

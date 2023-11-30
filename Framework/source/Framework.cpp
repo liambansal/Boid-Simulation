@@ -130,18 +130,27 @@ void Framework::DrawModel(Model* a_pModel) {
 	a_pModel->Draw(*m_pModelShader);
 }
 
-void Framework::DrawLine(const float ac_fVertexCoordinates[], unsigned int a_uiLineCount) {
+void Framework::DrawLine(const float* ac_fVertexCoordinates, const unsigned int ac_uiCoordinatesCount, unsigned int a_uiLineCount) {
 	m_pLineShader->use();
 	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
 	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());
+
 	glBindVertexArray(linesVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(a_vertices), a_vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	void* vertexCoordinates = new void*[ac_uiCoordinatesCount];
+	// Retrieves the collection of vertex coordinates.
+	std::memcpy(vertexCoordinates, ac_fVertexCoordinates, ac_uiCoordinatesCount * sizeof(float));
+	// Fills the vertex buffer object with the line's vertex data.
+	glBufferData(GL_ARRAY_BUFFER, ac_uiCoordinatesCount * sizeof(float), vertexCoordinates, GL_STATIC_DRAW);
+	const unsigned int coordinatesPerVertex = 3;
+	glVertexAttribPointer(0, coordinatesPerVertex, GL_FLOAT, GL_FALSE, coordinatesPerVertex * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glDrawArrays(GL_LINE_STRIP, 0, a_uiLineCount);
+	// Unbinds the VBO.
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glDrawArrays(GL_LINE_STRIP, 0, a_uiDrawCount);
+	// Unbinds the vertex array buffer.
 	glBindVertexArray(0);
+	delete[] vertexCoordinates;
 }
 
 void Framework::Destory() {
