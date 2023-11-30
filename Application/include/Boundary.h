@@ -52,6 +52,8 @@ public:
 	const Framework* GetRenderingFramework() const;
 
 private:
+	inline void FindVertexPositions();
+
 	/// <summary>
 	/// The position at the centre of the boundary.
 	/// </summary>
@@ -82,7 +84,7 @@ Boundary<TVector>::Boundary() : m_pPosition(new TVector(1.0f)),
 	m_uiCoordinatesCount(0),
 	m_iLineDrawCount(0),
 	m_pRenderingFramework(nullptr) {
-	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
+	FindVertexPositions();
 	SetRenderingFramework();
 }
 
@@ -94,7 +96,7 @@ Boundary<TVector>::Boundary(TVector a_newPosition,
 	m_uiCoordinatesCount(0),
 	m_iLineDrawCount(0),
 	m_pRenderingFramework(nullptr) {
-	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
+	FindVertexPositions();
 	SetRenderingFramework();
 }
 
@@ -106,31 +108,7 @@ Boundary<TVector>::Boundary(TVector* a_pPositionToCopy,
 	m_uiCoordinatesCount(0),
 	m_iLineDrawCount(0),
 	m_pRenderingFramework(nullptr) {
-	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
-
-	if (a_pPositionToCopy) {
-		const float half = 0.5f;
-		unsigned int j = 0;
-		// Front left vertex.
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->x - half * a_newDimensions.x;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->z + half * a_newDimensions.z;
-		// Back left vertex.
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->x - half * a_newDimensions.x;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->z - half * a_newDimensions.z;
-		// Back right vertex.
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->x + half * a_newDimensions.x;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->z - half * a_newDimensions.z;
-		// Front right vertex.
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->x + half * a_newDimensions.x;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->y - half * a_newDimensions.y;
-		m_fVertexCoordinates[j++] = a_pPositionToCopy->z + half * a_newDimensions.z;
-		m_iLineDrawCount = sizeof(m_fVertexCoordinates) / sizeof(float) / m_uiCoordinatesPerVertex;
-		m_uiCoordinatesCount = sizeof(m_fVertexCoordinates) / sizeof(float);
-	}
-
+	FindVertexPositions();
 	SetRenderingFramework();
 }
 
@@ -151,7 +129,7 @@ bool Boundary<TVector>::Contains(const TVector& a_position) const {
 	if (!m_pPosition) {
 		return false;
 	}
-
+	
 	// Checks if the argument position is located between the boundary's lower and upper extents (the distance that 
 	// the boundary is projected across, from its central position) along each axis of the boundary.
 	return (a_position.x >= m_pPosition->x - m_dimensions.x &&
@@ -203,6 +181,55 @@ const TVector Boundary<TVector>::GetDimensions() const {
 template <typename TVector>
 const Framework* Boundary<TVector>::GetRenderingFramework() const {
 	return m_pRenderingFramework;
+}
+
+template <typename TVector>
+void Boundary<TVector>::FindVertexPositions() {
+	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
+
+	if (!a_pPositionToCopy) {
+		return;
+	}
+
+	const float half = 0.5f;
+	unsigned int j = 0;
+	// Bottom vertices.
+	// Front left vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	// Back left vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	// Back right vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	// Front right vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+
+	// Top vertices.
+	// Front left vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	// Back left vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	// Back right vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	// Front right vertex.
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
+	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	m_uiCoordinatesCount = sizeof(m_fVertexCoordinates) / sizeof(float);
+	m_iLineDrawCount = sizeof(m_fVertexCoordinates) / sizeof(float) / m_uiCoordinatesPerVertex;
 }
 
 #endif // !BOUNDARY_H
