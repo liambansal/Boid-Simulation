@@ -37,12 +37,7 @@ Application::Application() : m_uiBoidCount(50),
 
 	// Seed rand number generator.
 	srand(time(nullptr));
-	const char* name = "Boids Simulation";
-	m_bFrameworkInitialised = m_pFramework->Initialize(name,
-		m_pFramework->GetScreenWidth(),
-		m_pFramework->GetScreenHeight(),
-		"Resources/Shaders/model_loading.vs",
-		"Resources/Shaders/model_loading.fs");
+	m_bFrameworkInitialised = m_pFramework->GetInitializationState();
 	TransformComponent* pTransform = new TransformComponent(m_pWorldCursor);
 	pTransform->SetMatrixRow(TransformComponent::MATRIX_ROW_POSITION_VECTOR,
 		m_pFramework->GetCamera()->Position + m_pFramework->GetCamera()->Front * m_fMarkerZOffset);

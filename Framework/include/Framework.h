@@ -83,6 +83,7 @@ public:
 	/// </summary>
 	/// <returns> An instance of this class. </returns>
 	static Framework* GetInstance();
+	inline const bool GetInitializationState() const;
 	/// <summary>
 	/// Returns the program's display window.
 	/// </summary>
@@ -148,6 +149,10 @@ private:
 	/// </summary>
 	Shader* m_pLineShader;
 };
+
+const bool Framework::GetInitializationState() const {
+	return m_bInitialized;
+}
 
 GLFWwindow* Framework::GetWindow() const {
 	return m_pWindow;
