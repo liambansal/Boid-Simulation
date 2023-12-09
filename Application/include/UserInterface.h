@@ -24,7 +24,7 @@ public:
 	/// <summary>
 	/// Draws the sliders that control the boids' movement forces.
 	/// </summary>
-	void DrawBoidsBehaviouralSliders() const;
+	void DrawBoidControls() const;
 	/// <summary>
 	/// Draws the UI elements that control the physical properties of the simulation.
 	/// </summary>

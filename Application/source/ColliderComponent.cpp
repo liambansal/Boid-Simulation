@@ -10,6 +10,8 @@
 #include "TransformComponent.h"
 #include <vector>
 
+bool ColliderComponent::m_bDrawColliders = false;
+
 ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	const OctTree<Entity, glm::vec3>* a_pOctTree) : Component(a_pOwner),
 	m_bIsColliding(false),
@@ -58,6 +60,10 @@ void ColliderComponent::Update(float a_fDeltaTime) {
 }
 
 void ColliderComponent::Draw(Framework* a_pRenderingFramework) {
+	if (!m_bDrawColliders) {
+		return;
+	}
+
 	m_boundary.Draw();
 }
 

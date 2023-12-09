@@ -9,6 +9,7 @@
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
 #include "BrainComponent.h"
+#include "ColliderComponent.h"
 #include "Entity.h"
 
 void UserInterface::Draw() const {
@@ -27,7 +28,7 @@ void UserInterface::Draw() const {
 		DrawPhysicsControls();
 		// Add an empty line to separate the different UI sections.
 		ImGui::NewLine();
-		DrawBoidsBehaviouralSliders();
+		DrawBoidControls();
 		ImGui::NewLine();
 		DrawTimeControls();
 	}
@@ -37,7 +38,7 @@ void UserInterface::Draw() const {
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-void UserInterface::DrawBoidsBehaviouralSliders() const {
+void UserInterface::DrawBoidControls() const {
 	if (!m_pApplication) {
 		return;
 	}
@@ -72,6 +73,10 @@ void UserInterface::DrawBoidsBehaviouralSliders() const {
 	float wanderForce = BrainComponent::GetWanderForce();
 	ImGui::SliderFloat("Wander Force", &wanderForce, minimumForceMultiplier, maximumForceMultiplier);
 	BrainComponent::SetWanderForce(wanderForce);
+
+	bool drawColliders = ColliderComponent::GetColliderDrawState();
+	ImGui::Checkbox("Draw Colliders", &drawColliders);
+	ColliderComponent::SetColliderDrawState(drawColliders);
 }
 
 void UserInterface::DrawPhysicsControls() const {

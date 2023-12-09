@@ -43,6 +43,7 @@ public:
 	/// </summary>
 	/// <param name="a_dimensionScalar"> The value to set for each dimension. </param>
 	inline void SetDimensions(float a_dimensionScalar);
+	inline static void SetColliderDrawState(bool a_drawColliders);
 
 	inline Boundary<glm::vec3>* GetBoundary();
 	/// <summary>
@@ -50,6 +51,7 @@ public:
 	/// </summary>
 	/// <returns> All the colliding entities. </returns>
 	inline const std::vector<ColliderComponent*>& GetCollisions() const;
+	inline static const bool GetColliderDrawState() { return m_bDrawColliders; }
 
 private:
 	/// <summary>
@@ -78,6 +80,7 @@ private:
 	/// Stores the collider's position and dimensions.
 	/// </summary>
 	Boundary<glm::vec3> m_boundary;
+	static bool m_bDrawColliders;
 	/// <summary>
 	/// A collection of all the colliders that are in contact with this entity.
 	/// </summary>
@@ -95,6 +98,10 @@ const bool ColliderComponent::IsColliding() const {
 void ColliderComponent::SetDimensions(float a_dimensionScalar) {
 	m_fColliderRange = a_dimensionScalar;
 	m_boundary.SetDimensions(glm::vec3(m_fColliderRange));
+}
+
+void ColliderComponent::SetColliderDrawState(bool a_drawColliders) {
+	m_bDrawColliders = a_drawColliders;
 }
 
 Boundary<glm::vec3>* ColliderComponent::GetBoundary() {
