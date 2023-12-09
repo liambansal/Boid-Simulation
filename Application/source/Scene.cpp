@@ -7,12 +7,12 @@
 #include "Scene.h"
 #include "BrainComponent.h"
 #include "Boundary.h"
+#include "ColliderComponent.h"
+#include "Framework.h"
 #include "glm/ext.hpp"
 #include "LearnOpenGL/camera.h"
 #include "LearnOpenGL/shader.h"
 #include "ModelComponent.h"
-#include "Framework.h"
-#include "ColliderComponent.h"
 #include "Utilities.h"
 
 // Typedefs.
@@ -22,8 +22,8 @@ typedef std::pair<unsigned int, Entity*> EntityPair;
 Scene::Scene() : m_uiEntityCount(0),
 	m_sceneEntities(),
 	m_octTree(4,
-		Boundary<glm::vec3>(new glm::vec3(0.0f),
-		glm::vec3(10.0f))) {}
+		glm::vec3(0.0f),
+		glm::vec3(10.0f)) {}
 
 Scene::~Scene() {
 	for (EntityMap::const_iterator iterator = m_sceneEntities.cbegin();

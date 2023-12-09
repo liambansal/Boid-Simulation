@@ -36,8 +36,16 @@ public:
 		SUB_TREE_POSITIONS_COUNT
 	};
 
+	/// <summary>
+	/// Creates a new oct-tree.
+	/// </summary>
+	/// <param name="a_capacity"> The maximum number of elements than can exist within a single area of the
+	/// oct-tree before it's subdivided. </param>
+	/// <param name="a_position"> The oct-tree's central position. </param>
+	/// <param name="a_dimensions"> The oct-tree's width, height, and depth. </param>
 	OctTree(unsigned int a_capacity,
-		Boundary<TVector> a_boundary);
+		TVector a_position,
+		TVector a_dimensions);
 	~OctTree() {}
 
 	void Draw();
@@ -51,10 +59,6 @@ public:
 	bool InsertObject(TObject* a_pObject,
 		const Boundary<TVector>& a_rPosition);
 	/// <summary>
-	/// Splits an area of the oct-tree in half across its x, y, and z axes, creating several smaller areas.
-	/// </summary>
-	void SubDivide();
-	/// <summary>
 	/// Finds an object within the oct-tree.
 	/// </summary>
 	/// <param name="a_queryVolume"> The space within the oct-tree that will be searched. </param>
@@ -65,6 +69,21 @@ public:
 	inline const Boundary<TVector>& GetBoundary() const;
 
 private:
+	/// <summary>
+	/// Private because the boundary will be copied and lose the ability to render its bounds, which is only okay
+	/// for an oct-tree's subdivided areas.
+	/// </summary>
+	/// <param name="a_capacity"> The maximum number of elements than can exist within a single area of the
+	/// oct-tree before it's subdivided. </param>
+	/// <param name="a_boundary"> The oct-tree's area of coverage. </param>
+	OctTree(unsigned int a_capacity,
+		Boundary<TVector> a_boundary);
+
+	/// <summary>
+	/// Splits an area of the oct-tree in half across its x, y, and z axes, creating several smaller areas.
+	/// </summary>
+	void SubDivide();
+
 	/// <summary>
 	/// The maximum number of objects that can exist within a single area of an oct-tree before it's subdivided.
 	/// </summary>
@@ -80,6 +99,15 @@ private:
 	/// </summary>
 	OctTree* m_pSubTrees[8];
 };
+
+template <typename TObject, typename TVector>
+OctTree<TObject, TVector>::OctTree(unsigned int a_capacity,
+	TVector a_position,
+	TVector a_dimensions) : m_uiCapacity(a_capacity),
+	m_bSubdivided(false),
+	m_boundary(Boundary<TVector>(a_position, a_dimensions)),
+	m_objects(),
+	m_pSubTrees() {}
 
 template <typename TObject, typename TVector>
 OctTree<TObject, TVector>::OctTree(unsigned int a_capacity,
