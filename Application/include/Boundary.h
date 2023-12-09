@@ -20,10 +20,13 @@ template <typename TVector>
 class Boundary {
 public:
 	Boundary();
-	Boundary(TVector a_newPosition,
+	Boundary(TVector a_pPositionToCopy,
 		TVector a_newDimensions);
-	Boundary(TVector* a_pPositionToCopy,
+	Boundary(TVector* a_newPosition,
 		TVector a_newDimensions);
+	Boundary(TVector* a_newPosition,
+		TVector a_newDimensions,
+		bool a_stationary);
 	~Boundary();
 
 	/// <summary>
@@ -57,7 +60,8 @@ private:
 	/// <param name="a_pBoundaryPosition"> The boundary's central position. </param>
 	/// <param name="a_pBoundaryDimensions"> The boundary's width, height, and depth. </param>
 	void FindVertexPositions(TVector* a_pBoundaryPosition, TVector* a_pBoundaryDimensions);
-	void SetupRenderingBuffers();
+	void GenerateRenderingBuffers();
+	void FillRenderingBuffers();
 
 	/// <summary>
 	/// The position at the centre of the boundary.
@@ -67,6 +71,8 @@ private:
 	/// The width, height, and depth of the boundary as measured outward from its central position.
 	/// </summary>
 	TVector m_dimensions;
+
+	bool m_bStationary = true;
 
 	// Each boundary is a cube which means there's a maximum of 24 coordinates per boundary (3 per vertex).
 	/// <summary>
@@ -81,6 +87,7 @@ private:
 	GLsizei m_iLineDrawCount = 0;
 	unsigned int linesVAO = 0;
 	unsigned int linesVBO = 0;
+
 	Framework* m_pRenderingFramework;
 };
 
@@ -88,8 +95,9 @@ template <typename TVector>
 Boundary<TVector>::Boundary() : m_pPosition(new TVector(1.0f)),
 	m_dimensions(1.0f),
 	m_pRenderingFramework(Framework::GetInstance()) {
+	GenerateRenderingBuffers();
 	FindVertexPositions(m_pPosition, &m_dimensions);
-	SetupRenderingBuffers();
+	FillRenderingBuffers();
 }
 
 template <typename TVector>
@@ -97,8 +105,9 @@ Boundary<TVector>::Boundary(TVector a_pPositionToCopy,
 	TVector a_newDimensions) : m_pPosition(new TVector(a_pPositionToCopy)),
 	m_dimensions(a_newDimensions),
 	m_pRenderingFramework(Framework::GetInstance()) {
+	GenerateRenderingBuffers();
 	FindVertexPositions(m_pPosition, &m_dimensions);
-	SetupRenderingBuffers();
+	FillRenderingBuffers();
 }
 
 template <typename TVector>
@@ -106,8 +115,21 @@ Boundary<TVector>::Boundary(TVector* a_newPosition,
 	TVector a_newDimensions) : m_pPosition(a_newPosition),
 	m_dimensions(a_newDimensions),
 	m_pRenderingFramework(Framework::GetInstance()) {
+	GenerateRenderingBuffers();
 	FindVertexPositions(m_pPosition, &m_dimensions);
-	SetupRenderingBuffers();
+	FillRenderingBuffers();
+}
+
+template <typename TVector>
+Boundary<TVector>::Boundary(TVector* a_newPosition,
+	TVector a_newDimensions,
+	bool a_stationary) : m_pPosition(a_newPosition),
+	m_dimensions(a_newDimensions),
+	m_bStationary(a_stationary),
+	m_pRenderingFramework(Framework::GetInstance()) {
+	GenerateRenderingBuffers();
+	FindVertexPositions(m_pPosition, &m_dimensions);
+	FillRenderingBuffers();
 }
 
 template <typename TVector>
@@ -120,6 +142,11 @@ template <typename TVector>
 void Boundary<TVector>::Draw() {
 	if (!m_pRenderingFramework || !m_fVertexCoordinates || m_uiCoordinatesCount == 0 || m_iLineDrawCount == 0) {
 		return;
+	}
+
+	if (!m_bStationary) {
+		FindVertexPositions(m_pPosition, &m_dimensions);
+		FillRenderingBuffers();
 	}
 
 	m_pRenderingFramework->UseLineShader();
@@ -273,18 +300,21 @@ void Boundary<TVector>::FindVertexPositions(TVector* a_pBoundaryPosition, TVecto
 }
 
 template <typename TVector>
-void Boundary<TVector>::SetupRenderingBuffers() {
+void Boundary<TVector>::GenerateRenderingBuffers() {
 	// Generate buffer objects.
 	glGenVertexArrays(1, &linesVAO);
 	glGenBuffers(1, &linesVBO);
+}
 
+template <typename TVector>
+void Boundary<TVector>::FillRenderingBuffers() {
 	// Bind a buffer object to fill with data.
 	glBindVertexArray(linesVAO);
 	GLenum bufferType = GL_ARRAY_BUFFER;
 	glBindBuffer(bufferType, linesVBO);
 
 	// Fill the vertex buffer object with the line's vertex data.
-	glBufferData(bufferType, sizeof(m_fVertexCoordinates), m_fVertexCoordinates, GL_STATIC_DRAW);
+	glBufferData(bufferType, sizeof(m_fVertexCoordinates), m_fVertexCoordinates, m_bStationary ? GL_STATIC_DRAW : GL_DYNAMIC_DRAW);
 	int vertexAttributeIndex = 0;
 	// Sets what type of vertices will be passed to the relevant vertex shader.
 	glVertexAttribPointer(vertexAttributeIndex, m_uiCoordinatesPerVertex, GL_FLOAT, GL_FALSE, m_uiCoordinatesPerVertex * sizeof(float), (void*)0);

@@ -19,7 +19,8 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	mc_pOctTree(a_pOctTree) {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 	m_boundary = Boundary<glm::vec3>(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
-		glm::vec3(m_fColliderRange));
+		glm::vec3(m_fColliderRange),
+		false);
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
 
@@ -33,7 +34,8 @@ ColliderComponent::ColliderComponent(Entity* a_pOwner,
 	mc_pOctTree(a_pOctTree) {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(a_pOwner->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 	m_boundary = Boundary<glm::vec3>(pTransform ? pTransform->GetPosition() : new glm::vec3(0.0f),
-		a_rColliderToCopy.GetBoundary()->GetDimensions());
+		a_rColliderToCopy.GetBoundary()->GetDimensions(),
+		false);
 	m_componentType = COMPONENT_TYPE_COLLIDER;
 }
 
@@ -55,7 +57,9 @@ void ColliderComponent::Update(float a_fDeltaTime) {
 	}
 }
 
-void ColliderComponent::Draw(Framework* a_pRenderingFramework) {}
+void ColliderComponent::Draw(Framework* a_pRenderingFramework) {
+	m_boundary.Draw();
+}
 
 void ColliderComponent::RegisterCollisions() {
 	if (!mc_pOctTree) {
