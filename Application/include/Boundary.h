@@ -72,7 +72,7 @@ private:
 	/// <summary>
 	/// A collection of coordinates that make up each vertex of the boundary.
 	/// </summary>
-	float m_fVertexCoordinates[24];
+	float m_fVertexCoordinates[51];
 	unsigned int m_uiCoordinatesPerVertex = 3;
 	unsigned int m_uiCoordinatesCount = 0;
 	/// <summary>
@@ -192,41 +192,82 @@ void Boundary<TVector>::FindVertexPositions(TVector* a_pBoundaryPosition, TVecto
 
 	const float half = 0.5f;
 	unsigned int coordinateIndex = 0;
-	// Bottom vertices.
-	// Front left vertex.
+	// Left face.
+	// Top back left vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
+	// Top front left vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
+	// Bottom front left vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
-	// Back left vertex.
+	// Bottom back left vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
-	// Back right vertex.
+	// Back face.
+	// Bottom back right vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
-	// Front right vertex.
+	// Top back right vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
+	// Top back left vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
+	// Bottom back left vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
+
+	// Connecting line.
+	// Bottom front left vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
 
-	// Top vertices.
-	// Front left vertex.
+	// Front face.
+	// Bottom front right vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
-	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
-	// Back left vertex.
+	// Bottom back right vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
+	// Top back right vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
-	// Back right vertex.
-	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	// Top front right vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
-	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
-	// Front right vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
+	// Right face.
+	// Top front left vertex.
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
 	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
+	// Bottom front left vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
+	// Bottom front right vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
+	// Top front right vertex.
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
+
 	m_uiCoordinatesCount = sizeof(m_fVertexCoordinates) / sizeof(float);
 	m_iLineDrawCount = sizeof(m_fVertexCoordinates) / sizeof(float) / m_uiCoordinatesPerVertex;
 }
