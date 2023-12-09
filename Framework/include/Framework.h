@@ -32,7 +32,9 @@ public:
 		const int a_width,
 		const int a_height,
 		const char* a_pVertexShader,
-		const char* a_pFragmentShader);
+		const char* a_pFragmentShader,
+		const char* a_pLineVertexShader,
+		const char* a_pLineFragmentShader);
 	/// <summary>
 	/// Updates the program's current state.
 	/// Always and only call once per frame.
@@ -46,10 +48,7 @@ public:
 	/// <summary>
 	/// Draws a line within a 3D space.
 	/// </summary>
-	/// <param name="ac_fVertexCoordinates"> A collection of coordinates that make up each vertex in the line(s). </param>
-	/// <param name="ac_uiCoordinatesCount"> The total number of coordinates used for drawing the line(s). </param>
-	/// <param name="a_uiLineCount"> The number of lines to draw. </param>
-	void DrawLine(const float* ac_fVertexCoordinates, const unsigned int ac_uiCoordinatesCount, unsigned int a_uiLineCount);
+	void UseLineShader();
 	void Destory();
 
 	/// <summary>
@@ -108,6 +107,7 @@ private:
 	Framework(const Framework& a_rFramework);
 	Framework& operator=(const Framework&);
 
+	bool m_bInitialized;
 	const unsigned int mc_uiScreenWidth;
 	const unsigned int mc_uiScreenHeight;
 	/// <summary>

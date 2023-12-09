@@ -19,10 +19,8 @@
 
 Framework* Framework::ms_pInstance = nullptr;
 
-unsigned int linesVBO;
-unsigned int linesVAO;
-
-Framework::Framework() : mc_uiScreenWidth(1280),
+Framework::Framework() : m_bInitialized(false),
+	mc_uiScreenWidth(1280),
 	mc_uiScreenHeight(800),
 	m_fLastCursorXPosition(0),
 	m_fLastCursorYPosition(0),
@@ -37,8 +35,10 @@ Framework::Framework() : mc_uiScreenWidth(1280),
 bool Framework::Initialize(const char* a_windowName,
 	const int a_width,
 	const int a_height,
-	const char* a_pVertexShader,
-	const char* a_pFragmentShader) {
+	const char* a_pModelVertexShader,
+	const char* a_pModelFragmentShader,
+	const char* a_pLineVertexShader,
+	const char* a_pLineFragmentShader) {
 #pragma region GLFW Setup
 	// Initialize GLFW.
 	if (!glfwInit()) {
@@ -95,8 +95,8 @@ bool Framework::Initialize(const char* a_windowName,
 	ImGui_ImplOpenGL3_Init(glsl_version);
 #pragma endregion
 
-	m_pModelShader = new Shader(a_pVertexShader, a_pFragmentShader);
-	m_pLineShader = new Shader("Resources/Shaders/lineRenderer.vs", "Resources/Shaders/lineRenderer.fs");
+	m_pModelShader = new Shader(a_pModelVertexShader, a_pModelFragmentShader);
+	m_pLineShader = new Shader(a_pLineVertexShader, a_pLineFragmentShader);
 
 	// Configure global opengl state.
 	glEnable(GL_DEPTH_TEST);
@@ -108,8 +108,7 @@ bool Framework::Initialize(const char* a_windowName,
 		GLFW_CONTEXT_REVISION);
 	std::cout << "OpenGl Version Supported: " << major << "." << minor << "." << revision << std::endl;
 
-	glGenVertexArrays(1, &linesVAO);
-	glGenBuffers(1, &linesVBO);
+	m_bInitialized = true;
 	return true;
 }
 
@@ -130,30 +129,10 @@ void Framework::DrawModel(Model* a_pModel) {
 	a_pModel->Draw(*m_pModelShader);
 }
 
-void Framework::DrawLine(const float* ac_fVertexCoordinates, const unsigned int ac_uiCoordinatesCount, unsigned int a_uiLineCount) {
+void Framework::UseLineShader() {
 	m_pLineShader->use();
 	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
 	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());
-
-	glBindVertexArray(linesVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
-
-	void* vertexCoordinates = new void*[ac_uiCoordinatesCount];
-	const unsigned int sizeOfVertexData = ac_uiCoordinatesCount * sizeof(float);
-	// Retrieves the collection of vertex coordinates.
-	std::memcpy(vertexCoordinates, ac_fVertexCoordinates, sizeOfVertexData);
-	// Fills the vertex buffer object with the line's vertex data.
-	glBufferData(GL_ARRAY_BUFFER, sizeOfVertexData, vertexCoordinates, GL_STATIC_DRAW);
-	const unsigned int coordinatesPerVertex = 3;
-	glVertexAttribPointer(0, coordinatesPerVertex, GL_FLOAT, GL_FALSE, coordinatesPerVertex * sizeof(float), (void*)0);
-
-	glEnableVertexAttribArray(0);
-	glDrawArrays(GL_LINE_STRIP, 0, a_uiLineCount);
-	// Unbinds the VBO.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// Unbinds the vertex array buffer.
-	glBindVertexArray(0);
-	delete[] vertexCoordinates;
 }
 
 void Framework::Destory() {
@@ -163,8 +142,6 @@ void Framework::Destory() {
 	m_pModelShader = nullptr;
 	delete m_pLineShader;
 	m_pLineShader = nullptr;
-	glDeleteBuffers(1, &linesVBO);
-	glDeleteVertexArrays(1, &linesVAO);
 	// Clean up imgui
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();

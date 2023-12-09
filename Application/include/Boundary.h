@@ -27,7 +27,7 @@ public:
 	~Boundary();
 
 	/// <summary>
-	/// Draws a line along each edge of the boundary.
+	/// Draws a line along each of the boundary's edges.
 	/// </summary>
 	void Draw();
 	/// <summary>
@@ -45,14 +45,19 @@ public:
 
 	inline void SetPosition(TVector* a_pNewPosition);
 	inline void SetDimensions(TVector a_newDimensions);
-	void SetRenderingFramework();
 
 	inline const TVector* GetPosition() const;
 	inline const TVector GetDimensions() const;
 	const Framework* GetRenderingFramework() const;
 
 private:
-	inline void FindVertexPositions();
+	/// <summary>
+	/// Calculates where a boundary's vertices would be positioned.
+	/// </summary>
+	/// <param name="a_pBoundaryPosition"> The boundary's central position. </param>
+	/// <param name="a_pBoundaryDimensions"> The boundary's width, height, and depth. </param>
+	void FindVertexPositions(TVector* a_pBoundaryPosition, TVector* a_pBoundaryDimensions);
+	void SetupRenderingBuffers();
 
 	/// <summary>
 	/// The position at the centre of the boundary.
@@ -68,52 +73,48 @@ private:
 	/// A collection of coordinates that make up each vertex of the boundary.
 	/// </summary>
 	float m_fVertexCoordinates[24];
-	unsigned int m_uiCoordinatesPerVertex;
-	unsigned int m_uiCoordinatesCount;
+	unsigned int m_uiCoordinatesPerVertex = 3;
+	unsigned int m_uiCoordinatesCount = 0;
 	/// <summary>
 	/// Specifies the number of lines to draw for the scene's bounds.
 	/// </summary>
-	GLsizei m_iLineDrawCount;
+	GLsizei m_iLineDrawCount = 0;
+	unsigned int linesVAO = 0;
+	unsigned int linesVBO = 0;
 	Framework* m_pRenderingFramework;
 };
 
 template <typename TVector>
 Boundary<TVector>::Boundary() : m_pPosition(new TVector(1.0f)),
 	m_dimensions(1.0f),
-	m_uiCoordinatesPerVertex(3),
-	m_uiCoordinatesCount(0),
-	m_iLineDrawCount(0),
-	m_pRenderingFramework(nullptr) {
-	FindVertexPositions();
-	SetRenderingFramework();
+	m_pRenderingFramework(Framework::GetInstance()) {
+	FindVertexPositions(m_pPosition, &m_dimensions);
+	SetupRenderingBuffers();
 }
 
 template <typename TVector>
-Boundary<TVector>::Boundary(TVector a_newPosition,
-	TVector a_newDimensions) : m_pPosition(new TVector(a_newPosition)),
+Boundary<TVector>::Boundary(TVector a_pPositionToCopy,
+	TVector a_newDimensions) : m_pPosition(new TVector(a_pPositionToCopy)),
 	m_dimensions(a_newDimensions),
-	m_uiCoordinatesPerVertex(3),
-	m_uiCoordinatesCount(0),
-	m_iLineDrawCount(0),
-	m_pRenderingFramework(nullptr) {
-	FindVertexPositions();
-	SetRenderingFramework();
+	m_pRenderingFramework(Framework::GetInstance()) {
+	FindVertexPositions(m_pPosition, &m_dimensions);
+	SetupRenderingBuffers();
 }
 
 template <typename TVector>
-Boundary<TVector>::Boundary(TVector* a_pPositionToCopy,
-	TVector a_newDimensions) : m_pPosition(a_pPositionToCopy),
+Boundary<TVector>::Boundary(TVector* a_newPosition,
+	TVector a_newDimensions) : m_pPosition(a_newPosition),
 	m_dimensions(a_newDimensions),
-	m_uiCoordinatesPerVertex(3),
-	m_uiCoordinatesCount(0),
-	m_iLineDrawCount(0),
-	m_pRenderingFramework(nullptr) {
-	FindVertexPositions();
-	SetRenderingFramework();
+	m_pRenderingFramework(Framework::GetInstance()) {
+	FindVertexPositions(m_pPosition, &m_dimensions);
+	SetupRenderingBuffers();
 }
 
 template <typename TVector>
-Boundary<TVector>::~Boundary() {}
+Boundary<TVector>::~Boundary() {
+	glDeleteVertexArrays(1, &linesVAO);
+	glDeleteBuffers(1, &linesVBO);
+}
 
 template <typename TVector>
 void Boundary<TVector>::Draw() {
@@ -121,7 +122,10 @@ void Boundary<TVector>::Draw() {
 		return;
 	}
 
-	m_pRenderingFramework->DrawLine(m_fVertexCoordinates, m_uiCoordinatesCount, m_iLineDrawCount);
+	m_pRenderingFramework->UseLineShader();
+	glBindVertexArray(linesVAO);
+	glDrawArrays(GL_LINE_STRIP, 0, m_iLineDrawCount);
+	glBindVertexArray(0);
 }
 
 template <typename TVector>
@@ -164,11 +168,6 @@ void Boundary<TVector>::SetDimensions(TVector a_newDimensions) {
 }
 
 template <typename TVector>
-void Boundary<TVector>::SetRenderingFramework() {
-	m_pRenderingFramework = Framework::GetInstance();
-}
-
-template <typename TVector>
 const TVector* Boundary<TVector>::GetPosition() const {
 	return m_pPosition;
 }
@@ -184,52 +183,76 @@ const Framework* Boundary<TVector>::GetRenderingFramework() const {
 }
 
 template <typename TVector>
-void Boundary<TVector>::FindVertexPositions() {
+void Boundary<TVector>::FindVertexPositions(TVector* a_pBoundaryPosition, TVector* a_pBoundaryDimensions) {
 	memset(m_fVertexCoordinates, 0, sizeof(m_fVertexCoordinates));
 
-	if (!a_pPositionToCopy) {
+	if (!a_pBoundaryPosition || !a_pBoundaryDimensions) {
 		return;
 	}
 
 	const float half = 0.5f;
-	unsigned int j = 0;
+	unsigned int coordinateIndex = 0;
 	// Bottom vertices.
 	// Front left vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
 	// Back left vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
 	// Back right vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
 	// Front right vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y - a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y - a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
 
 	// Top vertices.
 	// Front left vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
 	// Back left vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x + a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x + a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
 	// Back right vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z - a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z - a_pBoundaryDimensions->z;
 	// Front right vertex.
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->x - a_newDimensions.x;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->y + a_newDimensions.y;
-	m_fVertexCoordinates[j++] = a_pPositionToCopy->z + a_newDimensions.z;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->x - a_pBoundaryDimensions->x;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->y + a_pBoundaryDimensions->y;
+	m_fVertexCoordinates[coordinateIndex++] = a_pBoundaryPosition->z + a_pBoundaryDimensions->z;
 	m_uiCoordinatesCount = sizeof(m_fVertexCoordinates) / sizeof(float);
 	m_iLineDrawCount = sizeof(m_fVertexCoordinates) / sizeof(float) / m_uiCoordinatesPerVertex;
+}
+
+template <typename TVector>
+void Boundary<TVector>::SetupRenderingBuffers() {
+	// Generate buffer objects.
+	glGenVertexArrays(1, &linesVAO);
+	glGenBuffers(1, &linesVBO);
+
+	// Bind a buffer object to fill with data.
+	glBindVertexArray(linesVAO);
+	GLenum bufferType = GL_ARRAY_BUFFER;
+	glBindBuffer(bufferType, linesVBO);
+
+	// Fill the vertex buffer object with the line's vertex data.
+	glBufferData(bufferType, sizeof(m_fVertexCoordinates), m_fVertexCoordinates, GL_STATIC_DRAW);
+	int vertexAttributeIndex = 0;
+	// Sets what type of vertices will be passed to the relevant vertex shader.
+	glVertexAttribPointer(vertexAttributeIndex, m_uiCoordinatesPerVertex, GL_FLOAT, GL_FALSE, m_uiCoordinatesPerVertex * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(vertexAttributeIndex);
+
+	// Unbinds the vertex buffer object.
+	glBindBuffer(bufferType, 0);
+	// Unbinds the vertex array object.
+	glBindVertexArray(0);
 }
 
 #endif // !BOUNDARY_H
