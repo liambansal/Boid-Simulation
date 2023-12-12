@@ -12,6 +12,7 @@
 #include "LearnOpenGL/shader.h"
 #include "LearnOpenGL/model.h"
 #include "TransformComponent.h"
+#include "Utilities.h"
 
 // Typedefs
 typedef Component Parent;
@@ -31,19 +32,19 @@ ModelComponent::ModelComponent(Entity* a_owner,
 	m_componentType = a_rModelToCopy.m_componentType;
 }
 
-void ModelComponent::Draw(Framework* a_pRenderingFramework) {
-	// Get transform component.
+void ModelComponent::Update(float a_fDeltaTime) {
 	TransformComponent* pTransform = static_cast<TransformComponent*>(m_pAttachedEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
-	if (!m_pModel || !pTransform) {
-		// Early out if any pointers are null.
+	if (!pTransform) {
 		return;
 	}
 
 	// Update the scale transform's position row.
-	m_scaleMatrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR] = pTransform->GetMatrix()[TransformComponent::MATRIX_ROW_POSITION_VECTOR];
+	m_scaleMatrix[TransformComponent::MATRIX_ROW_POSITION_VECTOR] = glm::vec4(*pTransform->GetPosition() + m_positionOffset, 1.0f);
+}
+
+void ModelComponent::Draw(Framework* a_pRenderingFramework) {
 	a_pRenderingFramework->GetShader()->setMat4("model", m_scaleMatrix);
-	// Render the loaded model.
 	a_pRenderingFramework->DrawModel(m_pModel);
 }
 
@@ -61,7 +62,6 @@ void ModelComponent::LoadModel(const char* a_pFilepath) {
 
 
 void ModelComponent::SetScale(glm::vec3 a_scale) {
-	// Get transform component.
 	TransformComponent* pTransform = static_cast<TransformComponent*>(m_pAttachedEntity->GetComponentOfType(COMPONENT_TYPE_TRANSFORM));
 
 	if (!pTransform) {

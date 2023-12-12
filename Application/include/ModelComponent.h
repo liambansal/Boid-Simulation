@@ -26,7 +26,7 @@ public:
 		ModelComponent& a_rModelToCopy);
 	~ModelComponent() {}
 
-	virtual void Update(float a_fDeltaTime) {}
+	virtual void Update(float a_fDeltaTime);
 	virtual void Draw(Framework* a_pRenderingFramework);
 	/// <summary>
 	/// Loads a model to represent the entity.
@@ -38,7 +38,9 @@ public:
 	/// </summary>
 	/// <param name="a_scale"> The model's new scale. </param>
 	void SetScale(glm::vec3 a_scale);
+	inline void SetOffset(glm::vec3 a_offset);
 
+	inline glm::vec3 GetOffset() const { return m_positionOffset; }
 	inline Model* GetModel();
 
 private:
@@ -46,6 +48,10 @@ private:
 	/// A matrix that represents the models dimensions.
 	/// </summary>
 	glm::mat4 m_scaleMatrix;
+	/// <summary>
+	/// The difference between the entity's position and where the model is rendered.
+	/// </summary>
+	glm::vec3 m_positionOffset;
 	/// <summary>
 	/// The model that represents the entity.
 	/// </summary>
@@ -55,6 +61,10 @@ private:
 	/// </summary>
 	static std::map<const char*, Model*> ms_loadedModels;
 };
+
+void ModelComponent::SetOffset(glm::vec3 a_offset) {
+	m_positionOffset = a_offset;
+}
 
 Model* ModelComponent::GetModel() {
 	return m_pModel;

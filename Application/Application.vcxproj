@@ -173,6 +173,7 @@
     <ClCompile Include="source\Scene.cpp" />
     <ClCompile Include="source\TransformComponent.cpp" />
     <ClCompile Include="source\UserInterface.cpp" />
+    <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Game Development\Programming Resources\imgui\backends\imgui_impl_glfw.h" />

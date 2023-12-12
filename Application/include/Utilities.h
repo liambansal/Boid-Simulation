@@ -14,6 +14,13 @@
 /// </summary>
 class Utilities {
 public:
+	static const glm::vec3 Right;
+	static const glm::vec3 Left;
+	static const glm::vec3 Up;
+	static const glm::vec3 Down;
+	static const glm::vec3 Forward;
+	static const glm::vec3 Back;
+
 	/// <summary>
 	/// Returns a semi-random number within a specified range.
 	/// </summary>

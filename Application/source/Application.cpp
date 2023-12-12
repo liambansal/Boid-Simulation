@@ -158,6 +158,7 @@ Entity* Application::CreateBoid() {
 	pModel->LoadModel("Resources/Models/Low_poly_UFO/Low_poly_UFO.obj");
 	const float scaleScalar = 0.01f;
 	pModel->SetScale(glm::vec3(scaleScalar));
+	pModel->SetOffset(glm::vec3(0.0f, -0.25f, 0.0f));
 	pBoid->AddComponent(COMPONENT_TYPE_MODEL, static_cast<Component*>(pModel));
 	// Create a collider for collisions.
 	ColliderComponent* pCollider = new ColliderComponent(pBoid,

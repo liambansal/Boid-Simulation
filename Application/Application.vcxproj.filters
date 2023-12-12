@@ -60,6 +60,9 @@
     <ClCompile Include="..\..\..\Game Development\Programming Resources\imgui\backends\imgui_impl_opengl3.cpp">
       <Filter>Resource Files\Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Scene.h">
