@@ -13,8 +13,8 @@
 class Entity;
 class Framework;
 class Scene;
-class UserInterface;
 class TransformComponent;
+class UserInterface;
 
 /// <summary>
 /// A 'top level' class for simulating boids which everything else will work from.

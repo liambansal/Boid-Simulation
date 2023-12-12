@@ -121,18 +121,26 @@ void Framework::Update() {
 }
 
 void Framework::DrawModel(Model* a_pModel) {
+	if (!m_pModelShader || !m_pCamera || !a_pModel) {
+		return;
+	}
+
 	// Don't forget to enable shader before setting uniforms.
 	m_pModelShader->use();
 	// view/projection transforms.
-	m_pModelShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
-	m_pModelShader->setMat4("view", GetCamera()->GetViewMatrix());
+	m_pModelShader->setMat4("projection", m_pCamera->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
+	m_pModelShader->setMat4("view", m_pCamera->GetViewMatrix());
 	a_pModel->Draw(*m_pModelShader);
 }
 
 void Framework::UseLineShader() {
+	if (!m_pLineShader || !m_pCamera) {
+		return;
+	}
+
 	m_pLineShader->use();
-	m_pLineShader->setMat4("projection", GetCamera()->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
-	m_pLineShader->setMat4("view", GetCamera()->GetViewMatrix());
+	m_pLineShader->setMat4("projection", m_pCamera->GetProjectionMatrix(mc_uiScreenWidth, mc_uiScreenHeight));
+	m_pLineShader->setMat4("view", m_pCamera->GetViewMatrix());
 }
 
 void Framework::Destory() {

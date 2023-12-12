@@ -29,8 +29,8 @@ public:
 		ColliderComponent& a_rColliderToCopy);
 	~ColliderComponent();
 
-	virtual void Update(float a_fDeltaTime);
-	virtual void Draw(Framework* a_pRenderingFramework);
+	void Update(float a_fDeltaTime);
+	void Draw(Framework* a_pRenderingFramework);
 
 	/// <summary>
 	/// Checks if the entity is in contact with another collider.

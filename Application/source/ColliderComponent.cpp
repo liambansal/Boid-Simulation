@@ -8,7 +8,6 @@
 #include "Entity.h"
 #include "OctTree.h"
 #include "TransformComponent.h"
-#include <vector>
 
 bool ColliderComponent::m_bDrawColliders = false;
 
