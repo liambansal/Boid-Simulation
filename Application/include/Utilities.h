@@ -14,6 +14,10 @@
 /// </summary>
 class Utilities {
 public:
+	static const float Half;
+	static const float Third;
+	static const float Quarter;
+
 	static const glm::vec3 Right;
 	static const glm::vec3 Left;
 	static const glm::vec3 Up;

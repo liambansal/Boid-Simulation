@@ -163,6 +163,7 @@ Entity* Application::CreateBoid() {
 	// Create a collider for collisions.
 	ColliderComponent* pCollider = new ColliderComponent(pBoid,
 		&m_pScene->GetOctTree());
+	pCollider->SetDimensions(glm::vec3(Utilities::Third, 0.15f, Utilities::Third));
 	pBoid->AddComponent(COMPONENT_TYPE_COLLIDER, pCollider);
 	// create brain i.e. AI controller
 	BrainComponent* pBrain = new BrainComponent(pBoid, m_pScene);

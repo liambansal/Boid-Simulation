@@ -10,6 +10,7 @@
 #include "Component.h"
 #include "Boundary.h"
 #include "glm/glm.hpp"
+#include "Utilities.h"
 #include <vector>
 
 // Forward declarations.
@@ -39,10 +40,15 @@ public:
 	inline const bool IsColliding() const;
 
 	/// <summary>
-	/// Sets the collider's width, height, and depth.
+	/// Sets the collider's width, height, and depth to the same value.
 	/// </summary>
 	/// <param name="a_dimensionScalar"> The value to set for each dimension. </param>
 	inline void SetDimensions(float a_dimensionScalar);
+	/// <summary>
+	/// Sets the collider's width, height, and depth individually.
+	/// </summary>
+	/// <param name="a_dimensionScalar"> The . </param>
+	inline void SetDimensions(glm::vec3 a_dimensions);
 	inline static void SetColliderDrawState(bool a_drawColliders);
 
 	inline Boundary<glm::vec3>* GetBoundary();
@@ -75,7 +81,7 @@ private:
 	/// <summary>
 	/// The greatest distance between any two bounds of the collider.
 	/// </summary>
-	float m_fColliderRange;
+	float m_fColliderRadius;
 	/// <summary>
 	/// Stores the collider's position and dimensions.
 	/// </summary>
@@ -96,8 +102,14 @@ const bool ColliderComponent::IsColliding() const {
 }
 
 void ColliderComponent::SetDimensions(float a_dimensionScalar) {
-	m_fColliderRange = a_dimensionScalar;
-	m_boundary.SetDimensions(glm::vec3(m_fColliderRange));
+	m_fColliderRadius = a_dimensionScalar;
+	m_boundary.SetDimensions(glm::vec3(a_dimensionScalar));
+}
+
+void ColliderComponent::SetDimensions(glm::vec3 a_dimensionScalar) {
+	// Get the average length to make up for the collider potentially having different dimensions.
+	m_fColliderRadius = (a_dimensionScalar.x + a_dimensionScalar.y + a_dimensionScalar.z) * Utilities::Third;
+	m_boundary.SetDimensions(a_dimensionScalar);
 }
 
 void ColliderComponent::SetColliderDrawState(bool a_drawColliders) {
