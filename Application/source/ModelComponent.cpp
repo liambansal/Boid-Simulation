@@ -20,14 +20,16 @@ typedef Component Parent;
 std::map<const char*, Model*> ModelComponent::ms_loadedModels = std::map<const char*, Model*>();
 
 ModelComponent::ModelComponent(Entity* a_owner) : Parent(a_owner),
-m_scaleMatrix(glm::mat4(1.0f)),
-m_pModel(nullptr) {
+	m_scaleMatrix(glm::mat4(1.0f)),
+	m_positionOffset(glm::vec3(0.0f)),
+	m_pModel(nullptr) {
 	m_componentType = COMPONENT_TYPE_MODEL;
 }
 
 ModelComponent::ModelComponent(Entity* a_owner,
 	ModelComponent& a_rModelToCopy) : Parent(a_owner),
 	m_scaleMatrix(a_rModelToCopy.m_scaleMatrix),
+	m_positionOffset(a_rModelToCopy.m_positionOffset),
 	m_pModel(a_rModelToCopy.m_pModel) {
 	m_componentType = a_rModelToCopy.m_componentType;
 }

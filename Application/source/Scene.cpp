@@ -72,11 +72,6 @@ bool Scene::AddEntity(Entity* a_pNewEntity) {
 }
 
 void Scene::AddEntities(Entity* a_pEntityToCopy, unsigned int a_spawnAmount) {
-	// Try adding entity in case it isn't already in the scene.
-	if (AddEntity(a_pEntityToCopy)) {
-		--a_spawnAmount;
-	}
-
 	for (unsigned int i = 0; i < a_spawnAmount; ++i) {
 		AddEntity(new Entity(*a_pEntityToCopy, this));
 	}
